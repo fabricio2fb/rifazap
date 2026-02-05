@@ -25,10 +25,10 @@ export default function Home() {
             <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/login">
+            <Link href="/admin">
               <Button variant="outline" className="font-bold border-2">Entrar</Button>
             </Link>
-            <Link href="/login">
+            <Link href="/admin">
               <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Registrar</Button>
             </Link>
           </div>
@@ -54,12 +54,12 @@ export default function Home() {
               A maneira mais simples, rápida e profissional de organizar sorteios, gerenciar pagamentos via PIX e crescer sua audiência.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-              <Link href="/login">
+              <Link href="/admin">
                 <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
                   Criar Minha Rifa <ArrowRight className="w-6 h-6" />
                 </Button>
               </Link>
-              <Link href="/login">
+              <Link href="/admin">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
                   Começar Agora
                 </Button>
@@ -154,7 +154,7 @@ export default function Home() {
               Junte-se a milhares de organizadores que já arrecadaram mais de R$ 2 milhões com a nossa plataforma.
             </p>
             <div className="pt-4">
-              <Link href="/login">
+              <Link href="/admin">
                 <Button size="lg" className="h-16 px-12 text-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3">
                   Criar Rifa Agora <Zap className="w-6 h-6 fill-current" />
                 </Button>
@@ -184,7 +184,7 @@ export default function Home() {
           <div className="space-y-4">
             <h4 className="font-bold uppercase tracking-wider text-sm">Plataforma</h4>
             <ul className="space-y-3 text-muted-foreground text-sm font-medium">
-              <li><Link href="/login" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
+              <li><Link href="/admin" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
             </ul>
           </div>
 
