@@ -1,0 +1,77 @@
+
+{
+  "entities": {
+    "Raffle": {
+      "title": "Raffle",
+      "description": "Uma rifa criada no sistema",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Título da rifa"
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL amigável da rifa"
+        },
+        "description": {
+          "type": "string",
+          "description": "Descrição detalhada"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Link da imagem do prêmio"
+        },
+        "pricePerNumber": {
+          "type": "number",
+          "description": "Valor de cada cota"
+        },
+        "totalNumbers": {
+          "type": "number",
+          "description": "Quantidade total de números"
+        },
+        "drawDate": {
+          "type": "string",
+          "description": "Data prevista do sorteio"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "closed",
+            "drawn"
+          ],
+          "description": "Status atual da rifa"
+        },
+        "pixKey": {
+          "type": "string",
+          "description": "Chave PIX do organizador"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Data de criação"
+        }
+      },
+      "required": [
+        "title",
+        "slug",
+        "pricePerNumber",
+        "totalNumbers",
+        "status",
+        "pixKey"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "google.com"
+    ]
+  },
+  "firestore": {
+    "/raffles/{raffleId}": {
+      "schema": "Raffle",
+      "description": "Coleção principal de rifas"
+    }
+  }
+}

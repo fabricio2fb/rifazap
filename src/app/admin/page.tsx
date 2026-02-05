@@ -2,16 +2,23 @@
 "use client";
 
 import { useState } from "react";
-import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
+import { useCollection, useFirestore } from "@/firebase";
+import { collection, query, orderBy } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Users, Settings, Trophy, Check, X, ExternalLink } from "lucide-react";
+import { Trophy, ExternalLink, Package } from "lucide-react";
 import Link from "next/link";
+import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
+import { Raffle } from "@/lib/types";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("raffles");
+  const db = useFirestore();
+
+  const rafflesQuery = db ? query(collection(db, "raffles"), orderBy("createdAt", "desc")) : null;
+  const { data: raffles, loading: rafflesLoading } = useCollection<Raffle>(rafflesQuery);
 
   return (
     <div className="min-h-screen bg-muted/30 p-4 md:p-8">
@@ -21,9 +28,7 @@ export default function AdminDashboard() {
             <h1 className="text-3xl font-bold text-foreground">Painel RifaZap</h1>
             <p className="text-muted-foreground">Gerencie suas rifas e participantes</p>
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 gap-2">
-            <Plus className="w-5 h-5" /> Criar Nova Rifa
-          </Button>
+          <CreateRaffleDialog />
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -33,8 +38,17 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="raffles" className="mt-6 space-y-4">
+            {rafflesLoading && <div className="text-center py-12">Carregando rifas...</div>}
+            
+            {!rafflesLoading && raffles?.length === 0 && (
+              <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-muted flex flex-col items-center">
+                <Package className="w-12 h-12 text-muted-foreground mb-4 opacity-20" />
+                <p className="text-muted-foreground font-medium">Nenhuma rifa encontrada. Crie sua primeira rifa!</p>
+              </div>
+            )}
+
             <div className="grid gap-4">
-              {MOCK_RAFFLES.map((raffle) => (
+              {raffles?.map((raffle) => (
                 <Card key={raffle.id} className="overflow-hidden hover:shadow-md transition-shadow">
                   <div className="flex flex-col sm:flex-row">
                     <div className="relative w-full sm:w-48 h-32 bg-slate-100">
@@ -53,7 +67,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center justify-between mt-4">
                         <div className="flex gap-4 text-sm font-medium">
                           <span>{raffle.totalNumbers} números</span>
-                          <span>R$ {raffle.pricePerNumber}</span>
+                          <span>R$ {raffle.pricePerNumber.toFixed(2)}</span>
                         </div>
                         <div className="flex gap-2">
                           <Link href={`/rifa/${raffle.slug}`} target="_blank">
@@ -77,49 +91,8 @@ export default function AdminDashboard() {
                 <CardTitle>Últimas Reservas</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead className="border-b bg-muted/50">
-                      <tr>
-                        <th className="text-left p-4">Participante</th>
-                        <th className="text-left p-4">WhatsApp</th>
-                        <th className="text-left p-4">Números</th>
-                        <th className="text-left p-4">Status</th>
-                        <th className="text-right p-4">Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      {MOCK_PARTICIPANTS.map((p) => (
-                        <tr key={p.id} className="hover:bg-muted/30">
-                          <td className="p-4 font-medium">{p.name}</td>
-                          <td className="p-4">{p.whatsapp}</td>
-                          <td className="p-4">
-                            <div className="flex flex-wrap gap-1">
-                              {p.selectedNumbers.map(n => (
-                                <Badge key={n} variant="outline" className="bg-white">{n}</Badge>
-                              ))}
-                            </div>
-                          </td>
-                          <td className="p-4">
-                            <Badge className={p.status === 'confirmed' ? 'bg-rifa-available text-white' : 'bg-rifa-reserved text-white'}>
-                              {p.status === 'confirmed' ? 'Pago' : 'Pendente'}
-                            </Badge>
-                          </td>
-                          <td className="p-4 text-right">
-                            {p.status === 'pending' ? (
-                              <Button variant="outline" size="sm" className="text-rifa-available border-rifa-available hover:bg-rifa-available/10 gap-2">
-                                <Check className="w-4 h-4" /> Confirmar
-                              </Button>
-                            ) : (
-                              <Button variant="ghost" size="sm" className="text-muted-foreground">
-                                <X className="w-4 h-4" /> Estornar
-                              </Button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="py-12 text-center text-muted-foreground">
+                  Funcionalidade de vendas sendo integrada...
                 </div>
               </CardContent>
             </Card>

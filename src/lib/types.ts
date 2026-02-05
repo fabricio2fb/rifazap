@@ -3,7 +3,7 @@ export type RaffleStatus = 'active' | 'closed' | 'drawn';
 export type NumberStatus = 'available' | 'reserved' | 'paid';
 
 export interface Raffle {
-  id: string;
+  id?: string;
   slug: string;
   title: string;
   description: string;
@@ -14,6 +14,7 @@ export interface Raffle {
   status: RaffleStatus;
   whatsappGroupLink?: string;
   pixKey: string;
+  createdAt?: any;
 }
 
 export interface Participant {
