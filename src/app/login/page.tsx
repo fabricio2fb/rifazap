@@ -15,7 +15,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Zap, Loader2, Mail, Lock } from "lucide-react";
+import { Zap, Loader2, Mail, Lock, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
@@ -86,10 +86,19 @@ export default function LoginPage() {
     }
   };
 
+  const fillDemoAccount = () => {
+    setEmail("demo@rifazap.com");
+    setPassword("123456");
+    toast({
+      title: "Dados preenchidos",
+      description: "Agora basta clicar em 'Acessar Painel'.",
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-10 h-10 animate-spin text-primary-foreground" />
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
@@ -151,6 +160,16 @@ export default function LoginPage() {
               >
                 {authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Acessar Painel"}
               </Button>
+
+              <div className="pt-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full h-10 border-dashed gap-2 text-xs font-medium"
+                  onClick={fillDemoAccount}
+                >
+                  <Info className="w-4 h-4" /> Preencher Conta Demo
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="register" className="space-y-4">
