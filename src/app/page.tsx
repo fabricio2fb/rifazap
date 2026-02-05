@@ -24,7 +24,6 @@ export default function Home() {
             <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
-            <Link href="#beneficios" className="text-sm font-medium hover:text-primary transition-colors">Benefícios</Link>
             <Link href="/admin">
               <Button variant="outline" className="font-bold">Acessar Painel</Button>
             </Link>
@@ -222,7 +221,6 @@ export default function Home() {
           <div className="space-y-4">
             <h4 className="font-bold uppercase tracking-wider text-sm">Plataforma</h4>
             <ul className="space-y-3 text-muted-foreground text-sm font-medium">
-              <li><Link href="#beneficios" className="hover:text-primary transition-colors">Benefícios</Link></li>
               <li><Link href="/admin" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
             </ul>
           </div>
