@@ -3,126 +3,322 @@ import { MOCK_RAFFLES } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ArrowRight, Zap, Share2, MessageCircle } from "lucide-react";
+import { 
+  Trophy, 
+  ArrowRight, 
+  Zap, 
+  Share2, 
+  MessageCircle, 
+  CheckCircle2, 
+  Smartphone, 
+  Users, 
+  ShieldCheck,
+  Menu
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-primary py-16 px-6 text-center space-y-6">
-        <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider">
-          <Zap className="w-4 h-4 text-primary-foreground" />
-          Rifas Profissionais via WhatsApp
-        </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-primary-foreground leading-tight">
-          Crie sua Rifa em <br /> <span className="text-white">Segundos</span>
-        </h1>
-        <p className="max-w-2xl mx-auto text-lg text-primary-foreground/80 font-medium">
-          A ferramenta mais simples e bonita para organizar rifas beneficentes ou comerciais.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/admin">
-            <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-lg font-bold bg-foreground text-background hover:bg-foreground/90 gap-2">
-              Começar Agora <ArrowRight className="w-5 h-5" />
-            </Button>
-          </Link>
-          <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-lg font-bold border-foreground/20 text-foreground">
-            Saiba Mais
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between px-6 mx-auto">
+          <div className="flex items-center gap-2">
+            <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
+            <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
+          </div>
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="#como-funciona" className="text-sm font-medium hover:text-primary transition-colors">Como Funciona</Link>
+            <Link href="#beneficios" className="text-sm font-medium hover:text-primary transition-colors">Benefícios</Link>
+            <Link href="#rifas" className="text-sm font-medium hover:text-primary transition-colors">Rifas</Link>
+            <Link href="/admin">
+              <Button variant="outline" className="font-bold">Acessar Painel</Button>
+            </Link>
+            <Link href="/admin">
+              <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90">Criar Rifa</Button>
+            </Link>
+          </div>
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-6 w-6" />
           </Button>
         </div>
-      </section>
+      </nav>
 
-      {/* Featured Raffles */}
-      <section className="max-w-6xl mx-auto py-16 px-6">
-        <div className="flex justify-between items-end mb-10">
-          <div>
-            <h2 className="text-3xl font-bold mb-2">Rifas em Destaque</h2>
-            <p className="text-muted-foreground">Participe das rifas mais populares do momento</p>
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative bg-primary py-20 px-6 overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+          <div className="container relative mx-auto text-center space-y-8">
+            <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider text-primary-foreground">
+              <Zap className="w-4 h-4" />
+              Plataforma #1 para Rifas Digitais
+            </div>
+            <h1 className="text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight tracking-tight">
+              Sua Rifa no WhatsApp <br /> <span className="text-white">em 60 Segundos</span>
+            </h1>
+            <p className="max-w-2xl mx-auto text-xl text-primary-foreground/90 font-medium">
+              A maneira mais simples, rápida e profissional de organizar sorteios, gerenciar pagamentos via PIX e crescer sua audiência.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+              <Link href="/admin">
+                <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
+                  Criar Minha Rifa <ArrowRight className="w-6 h-6" />
+                </Button>
+              </Link>
+              <Link href="#rifas">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
+                  Ver Exemplos
+                </Button>
+              </Link>
+            </div>
           </div>
-          <Link href="/rifas">
-            <Button variant="ghost" className="font-bold gap-2">Ver Todas <ArrowRight className="w-4 h-4" /></Button>
-          </Link>
-        </div>
+        </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {MOCK_RAFFLES.map((raffle) => (
-            <Card key={raffle.id} className="overflow-hidden group hover:shadow-xl transition-all border-none shadow-lg">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image 
-                  src={raffle.imageUrl} 
-                  alt={raffle.title} 
-                  fill 
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  data-ai-hint="raffle prize"
-                />
-                <div className="absolute top-4 left-4">
-                  <Badge className="bg-white/90 backdrop-blur-md text-foreground border-none font-bold">
-                    Ativa
-                  </Badge>
+        {/* Stats Section */}
+        <section className="py-12 border-b bg-muted/30">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div>
+                <p className="text-3xl font-bold">+10k</p>
+                <p className="text-sm text-muted-foreground uppercase font-semibold">Rifas Criadas</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold">R$ 2M+</p>
+                <p className="text-sm text-muted-foreground uppercase font-semibold">Em Prêmios</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold">100%</p>
+                <p className="text-sm text-muted-foreground uppercase font-semibold">Seguro (PIX)</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold">24/7</p>
+                <p className="text-sm text-muted-foreground uppercase font-semibold">Suporte WhatsApp</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Explaining Section: Como Funciona */}
+        <section id="como-funciona" className="py-24 bg-background">
+          <div className="container mx-auto px-6">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">Como o RifaZap Funciona?</h2>
+              <p className="text-lg text-muted-foreground">Tudo foi desenhado para ser intuitivo tanto para você quanto para seus participantes.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              {[
+                {
+                  icon: <Zap className="h-10 w-10 text-primary-foreground" />,
+                  title: "1. Crie sua Rifa",
+                  desc: "Defina o prêmio, o valor do número e a data do sorteio em poucos cliques no nosso painel intuitivo."
+                },
+                {
+                  icon: <Share2 className="h-10 w-10 text-primary-foreground" />,
+                  title: "2. Compartilhe o Link",
+                  desc: "Gere um link personalizado e envie para seus contatos e grupos de WhatsApp. O site é 100% otimizado para celular."
+                },
+                {
+                  icon: <Trophy className="h-10 w-10 text-primary-foreground" />,
+                  title: "3. Gerencie e Sorteie",
+                  desc: "Acompanhe as reservas, confirme pagamentos PIX automaticamente e realize o sorteio de forma transparente."
+                }
+              ].map((step, i) => (
+                <div key={i} className="flex flex-col items-center text-center space-y-4 group">
+                  <div className="h-20 w-20 rounded-3xl bg-primary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold">{step.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits Section */}
+        <section id="beneficios" className="py-24 bg-muted/30">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-8">
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Por que escolher o RifaZap?</h2>
+                <div className="space-y-6">
+                  {[
+                    {
+                      icon: <Smartphone className="h-6 w-6 text-primary-foreground" />,
+                      title: "Foco Total em Mobile",
+                      desc: "99% das rifas são acessadas pelo celular. Nossa plataforma é a mais rápida e bonita no smartphone."
+                    },
+                    {
+                      icon: <ShieldCheck className="h-6 w-6 text-primary-foreground" />,
+                      title: "Pagamento Via PIX",
+                      desc: "Integração nativa com PIX Copia e Cola para facilitar a vida do seu cliente e a sua gestão."
+                    },
+                    {
+                      icon: <Users className="h-6 w-6 text-primary-foreground" />,
+                      title: "Gestão de Participantes",
+                      desc: "Lista completa de nomes e telefones organizada. Exporte para Excel ou use para remarketing."
+                    },
+                    {
+                      icon: <CheckCircle2 className="h-6 w-6 text-primary-foreground" />,
+                      title: "Transparência Total",
+                      desc: "Seus clientes veem em tempo real quais números estão disponíveis, reservados ou pagos."
+                    }
+                  ].map((benefit, i) => (
+                    <div key={i} className="flex gap-4">
+                      <div className="mt-1 h-10 w-10 shrink-0 rounded-xl bg-primary flex items-center justify-center">
+                        {benefit.icon}
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold">{benefit.title}</h4>
+                        <p className="text-muted-foreground">{benefit.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <CardHeader className="space-y-1">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl group-hover:text-primary-foreground transition-colors">{raffle.title}</CardTitle>
-                </div>
-                <CardDescription className="line-clamp-2">{raffle.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Trophy className="w-4 h-4 text-primary-foreground/50" />
-                    <span className="text-sm font-semibold">Valor do Número</span>
+              <div className="relative aspect-square md:aspect-video lg:aspect-square bg-primary/20 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white">
+                <Image 
+                  src="https://images.unsplash.com/photo-1556742049-139b12cc20c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzbWFydHBob25lJTIwcGF5bWVudHxlbnwwfHx8fDE3NzAxNzIyNDl8MA&ixlib=rb-4.1.0&q=80&w=1080" 
+                  alt="Gestão de Rifa no Celular" 
+                  fill 
+                  className="object-cover"
+                  data-ai-hint="smartphone payment"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Raffles */}
+        <section id="rifas" className="max-w-6xl mx-auto py-24 px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+            <div className="space-y-2">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Rifas Ativas</h2>
+              <p className="text-lg text-muted-foreground">Participe agora e garanta sua chance de ganhar!</p>
+            </div>
+            <Link href="/rifas">
+              <Button variant="ghost" className="font-bold text-lg gap-2">Ver Todas <ArrowRight className="w-5 h-5" /></Button>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {MOCK_RAFFLES.map((raffle) => (
+              <Card key={raffle.id} className="overflow-hidden group hover:shadow-2xl transition-all duration-300 border-none shadow-xl rounded-[2rem]">
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image 
+                    src={raffle.imageUrl} 
+                    alt={raffle.title} 
+                    fill 
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    data-ai-hint="raffle prize"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <Badge className="bg-white/90 backdrop-blur-md text-foreground border-none font-bold px-3 py-1">
+                      Ativa
+                    </Badge>
                   </div>
-                  <span className="text-lg font-bold text-foreground">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber)}
-                  </span>
                 </div>
-              </CardContent>
-              <CardFooter className="gap-2">
-                <Link href={`/rifa/${raffle.slug}`} className="flex-1">
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
-                    Participar
+                <CardHeader className="space-y-1">
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">{raffle.title}</CardTitle>
+                  </div>
+                  <CardDescription className="line-clamp-2 text-base">{raffle.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl">
+                    <div className="flex items-center gap-2">
+                      <Trophy className="w-5 h-5 text-primary-foreground/50" />
+                      <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Valor do Número</span>
+                    </div>
+                    <span className="text-xl font-bold text-foreground">
+                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber)}
+                    </span>
+                  </div>
+                </CardContent>
+                <CardFooter className="gap-3 p-6 pt-0">
+                  <Link href={`/rifa/${raffle.slug}`} className="flex-1">
+                    <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/20">
+                      Participar Agora
+                    </Button>
+                  </Link>
+                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-muted shrink-0">
+                    <Share2 className="w-5 h-5" />
                   </Button>
-                </Link>
-                <Button variant="outline" size="icon">
-                  <Share2 className="w-4 h-4" />
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Final CTA Section */}
+        <section className="py-24 px-6 bg-foreground text-background">
+          <div className="container mx-auto text-center space-y-8">
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight">Pronto para começar sua rifa?</h2>
+            <p className="text-xl text-background/70 max-w-2xl mx-auto">
+              Junte-se a milhares de organizadores que já arrecadaram mais de R$ 2 milhões com a nossa plataforma.
+            </p>
+            <div className="pt-4">
+              <Link href="/admin">
+                <Button size="lg" className="h-16 px-12 text-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3">
+                  Criar Rifa Agora <Zap className="w-6 h-6 fill-current" />
                 </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      </section>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="bg-foreground text-background py-12 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div className="space-y-4">
-            <h3 className="text-2xl font-bold italic tracking-tighter">RifaZap</h3>
-            <p className="text-background/60 text-sm">
-              Sua plataforma completa para criação e gestão de rifas digitais. Simples, rápido e profissional.
+      <footer className="bg-muted py-16 px-6 border-t">
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+          <div className="space-y-6">
+            <div className="flex items-center gap-2">
+              <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
+              <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
+            </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              A plataforma definitiva para criar e gerenciar rifas profissionais. Simplicidade, segurança e resultados para você.
             </p>
+            <div className="flex gap-4">
+              <Button variant="ghost" size="icon" className="rounded-full bg-white"><Share2 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" className="rounded-full bg-white"><MessageCircle className="h-4 w-4" /></Button>
+            </div>
           </div>
+          
           <div className="space-y-4">
-            <h4 className="font-bold uppercase tracking-wider text-sm">Links Úteis</h4>
-            <ul className="space-y-2 text-background/60 text-sm">
-              <li><Link href="/termos" className="hover:text-white">Termos de Uso</Link></li>
-              <li><Link href="/privacidade" className="hover:text-white">Privacidade</Link></li>
-              <li><Link href="/faq" className="hover:text-white">Perguntas Frequentes</Link></li>
+            <h4 className="font-bold uppercase tracking-wider text-sm">Plataforma</h4>
+            <ul className="space-y-3 text-muted-foreground text-sm font-medium">
+              <li><Link href="#como-funciona" className="hover:text-primary transition-colors">Como Funciona</Link></li>
+              <li><Link href="#beneficios" className="hover:text-primary transition-colors">Benefícios</Link></li>
+              <li><Link href="#rifas" className="hover:text-primary transition-colors">Rifas Ativas</Link></li>
+              <li><Link href="/admin" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
             </ul>
           </div>
+
           <div className="space-y-4">
+            <h4 className="font-bold uppercase tracking-wider text-sm">Legal</h4>
+            <ul className="space-y-3 text-muted-foreground text-sm font-medium">
+              <li><Link href="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link></li>
+              <li><Link href="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link></li>
+              <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ / Ajuda</Link></li>
+            </ul>
+          </div>
+
+          <div className="space-y-6">
             <h4 className="font-bold uppercase tracking-wider text-sm">Suporte</h4>
-            <Button variant="outline" className="w-full border-background/20 text-background hover:bg-white hover:text-foreground font-bold h-12 gap-2">
+            <p className="text-sm text-muted-foreground">Precisa de ajuda? Nossa equipe está pronta para te atender.</p>
+            <Button className="w-full bg-green-500 hover:bg-green-600 text-white font-bold h-12 gap-2 rounded-xl">
               <MessageCircle className="w-5 h-5" /> Falar no WhatsApp
             </Button>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-background/10 text-center text-xs text-background/40">
-          © 2024 RifaZap. Todos os direitos reservados.
+        <div className="container mx-auto mt-16 pt-8 border-t text-center text-xs text-muted-foreground/60 font-medium">
+          © 2024 RifaZap. Desenvolvido com ❤️ para organizadores de todo o Brasil.
         </div>
       </footer>
     </div>
   );
 }
+
