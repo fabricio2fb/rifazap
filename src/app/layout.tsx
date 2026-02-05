@@ -1,5 +1,9 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
+import { FirebaseClientProvider } from '@/firebase';
+import { Toaster } from '@/components/ui/toaster';
+import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 export const metadata: Metadata = {
   title: 'RifaZap - Sua Rifa Online Profissional',
@@ -19,7 +23,11 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased min-h-screen bg-background text-foreground">
-        {children}
+        <FirebaseClientProvider>
+          {children}
+          <FirebaseErrorListener />
+          <Toaster />
+        </FirebaseClientProvider>
       </body>
     </html>
   );
