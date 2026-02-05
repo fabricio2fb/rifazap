@@ -1,10 +1,5 @@
-
-import { MOCK_RAFFLES } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
-  Trophy, 
   ArrowRight, 
   Zap, 
   Share2, 
@@ -31,7 +26,6 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-8">
             <Link href="#como-funciona" className="text-sm font-medium hover:text-primary transition-colors">Como Funciona</Link>
             <Link href="#beneficios" className="text-sm font-medium hover:text-primary transition-colors">Benefícios</Link>
-            <Link href="#rifas" className="text-sm font-medium hover:text-primary transition-colors">Rifas</Link>
             <Link href="/admin">
               <Button variant="outline" className="font-bold">Acessar Painel</Button>
             </Link>
@@ -66,9 +60,9 @@ export default function Home() {
                   Criar Minha Rifa <ArrowRight className="w-6 h-6" />
                 </Button>
               </Link>
-              <Link href="#rifas">
+              <Link href="/admin">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
-                  Ver Exemplos
+                  Começar Agora
                 </Button>
               </Link>
             </div>
@@ -120,7 +114,7 @@ export default function Home() {
                   desc: "Gere um link personalizado e envie para seus contatos e grupos de WhatsApp. O site é 100% otimizado para celular."
                 },
                 {
-                  icon: <Trophy className="h-10 w-10 text-primary-foreground" />,
+                  icon: <CheckCircle2 className="h-10 w-10 text-primary-foreground" />,
                   title: "3. Gerencie e Sorteie",
                   desc: "Acompanhe as reservas, confirme pagamentos PIX automaticamente e realize o sorteio de forma transparente."
                 }
@@ -191,67 +185,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Raffles */}
-        <section id="rifas" className="max-w-6xl mx-auto py-24 px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
-            <div className="space-y-2">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Rifas Ativas</h2>
-              <p className="text-lg text-muted-foreground">Participe agora e garanta sua chance de ganhar!</p>
-            </div>
-            <Link href="/rifas">
-              <Button variant="ghost" className="font-bold text-lg gap-2">Ver Todas <ArrowRight className="w-5 h-5" /></Button>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {MOCK_RAFFLES.map((raffle) => (
-              <Card key={raffle.id} className="overflow-hidden group hover:shadow-2xl transition-all duration-300 border-none shadow-xl rounded-[2rem]">
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image 
-                    src={raffle.imageUrl} 
-                    alt={raffle.title} 
-                    fill 
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    data-ai-hint="raffle prize"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-white/90 backdrop-blur-md text-foreground border-none font-bold px-3 py-1">
-                      Ativa
-                    </Badge>
-                  </div>
-                </div>
-                <CardHeader className="space-y-1">
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">{raffle.title}</CardTitle>
-                  </div>
-                  <CardDescription className="line-clamp-2 text-base">{raffle.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl">
-                    <div className="flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-primary-foreground/50" />
-                      <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Valor do Número</span>
-                    </div>
-                    <span className="text-xl font-bold text-foreground">
-                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber)}
-                    </span>
-                  </div>
-                </CardContent>
-                <CardFooter className="gap-3 p-6 pt-0">
-                  <Link href={`/rifa/${raffle.slug}`} className="flex-1">
-                    <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/20">
-                      Participar Agora
-                    </Button>
-                  </Link>
-                  <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-muted shrink-0">
-                    <Share2 className="w-5 h-5" />
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </section>
-
         {/* Final CTA Section */}
         <section className="py-24 px-6 bg-foreground text-background">
           <div className="container mx-auto text-center space-y-8">
@@ -292,7 +225,6 @@ export default function Home() {
             <ul className="space-y-3 text-muted-foreground text-sm font-medium">
               <li><Link href="#como-funciona" className="hover:text-primary transition-colors">Como Funciona</Link></li>
               <li><Link href="#beneficios" className="hover:text-primary transition-colors">Benefícios</Link></li>
-              <li><Link href="#rifas" className="hover:text-primary transition-colors">Rifas Ativas</Link></li>
               <li><Link href="/admin" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
             </ul>
           </div>
@@ -321,4 +253,3 @@ export default function Home() {
     </div>
   );
 }
-
