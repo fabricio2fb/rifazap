@@ -27,6 +27,26 @@ interface CheckoutModalProps {
   raffle: Raffle;
 }
 
+const PixQRCode = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full p-2" shapeRendering="crispEdges">
+    <rect width="100" height="100" fill="white" />
+    <path d="M10,10 h20 v20 h-20 z M15,15 h10 v10 h-10 z" fill="black" />
+    <path d="M70,10 h20 v20 h-20 z M75,15 h10 v10 h-10 z" fill="black" />
+    <path d="M10,70 h20 v20 h-20 z M15,75 h10 v10 h-10 z" fill="black" />
+    <rect x="40" y="10" width="10" height="10" fill="black" />
+    <rect x="10" y="40" width="10" height="10" fill="black" />
+    <rect x="40" y="40" width="20" height="20" fill="black" />
+    <rect x="70" y="40" width="10" height="10" fill="black" />
+    <rect x="40" y="70" width="10" height="10" fill="black" />
+    <rect x="70" y="70" width="10" height="10" fill="black" />
+    <rect x="80" y="80" width="10" height="10" fill="black" />
+    <rect x="55" y="15" width="5" height="5" fill="black" />
+    <rect x="15" y="55" width="5" height="5" fill="black" />
+    <rect x="80" y="55" width="5" height="5" fill="black" />
+    <rect x="55" y="80" width="5" height="5" fill="black" />
+  </svg>
+);
+
 export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: CheckoutModalProps) {
   const [step, setStep] = useState<'info' | 'payment'>('info');
   const [loading, setLoading] = useState(false);
@@ -83,8 +103,13 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
     });
   };
 
+  const handleModalClose = () => {
+    setStep('info');
+    onClose();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleModalClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
@@ -131,11 +156,9 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
           </form>
         ) : (
           <div className="flex flex-col items-center space-y-6 py-4 text-center">
-            <div className="bg-white p-4 rounded-xl border-2 border-primary">
-              <div className="w-48 h-48 bg-slate-100 flex flex-col items-center justify-center">
-                <Smartphone className="w-12 h-12 text-muted-foreground opacity-20 mb-2" />
-                <p className="text-[10px] text-muted-foreground uppercase font-bold">Escaneie o QR Code</p>
-                {/* QR Code would go here in production */}
+            <div className="bg-white p-4 rounded-xl border-2 border-primary overflow-hidden">
+              <div className="w-48 h-48 bg-white flex items-center justify-center">
+                <PixQRCode />
               </div>
             </div>
             
@@ -157,7 +180,7 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
               </div>
             </div>
 
-            <Button onClick={onClose} className="w-full h-12">
+            <Button onClick={handleModalClose} className="w-full h-12">
               Entendido
             </Button>
           </div>
