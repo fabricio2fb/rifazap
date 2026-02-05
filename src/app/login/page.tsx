@@ -1,18 +1,31 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, useUser } from "@/firebase";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword 
+} from "firebase/auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Zap, Loader2 } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Zap, Loader2, Mail, Lock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   const { user, loading } = useUser();
   const auth = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
 
   useEffect(() => {
     if (!loading && user) {
@@ -22,41 +35,177 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     if (!auth) return;
+    setAuthLoading(true);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Erro ao fazer login:", error);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao entrar",
+        description: error.message || "Não foi possível fazer login com o Google.",
+      });
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleEmailAuth = async (type: 'login' | 'register') => {
+    if (!auth || !email || !password) {
+      toast({
+        variant: "destructive",
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha o e-mail e a senha.",
+      });
+      return;
+    }
+    
+    setAuthLoading(true);
+    try {
+      if (type === 'login') {
+        await signInWithEmailAndPassword(auth, email, password);
+      } else {
+        await createUserWithEmailAndPassword(auth, email, password);
+        toast({
+          title: "Conta criada!",
+          description: "Sua conta foi criada com sucesso.",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: type === 'login' ? "Erro ao entrar" : "Erro ao cadastrar",
+        description: error.code === 'auth/email-already-in-use' 
+          ? "Este e-mail já está em uso." 
+          : error.code === 'auth/weak-password'
+          ? "A senha deve ter pelo menos 6 caracteres."
+          : "Verifique suas credenciais e tente novamente.",
+      });
+    } finally {
+      setAuthLoading(false);
     }
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        <Loader2 className="w-10 h-10 animate-spin text-primary-foreground" />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-md shadow-xl border-t-4 border-t-primary">
-        <CardHeader className="text-center space-y-4">
-          <div className="flex justify-center">
+      <Card className="w-full max-w-md shadow-xl border-t-4 border-t-primary overflow-hidden">
+        <CardHeader className="text-center space-y-2 pb-6">
+          <div className="flex justify-center mb-2">
             <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center shadow-lg">
               <Zap className="h-7 w-7 text-primary-foreground fill-current" />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold">Bem-vindo ao RifaZap</CardTitle>
+          <CardTitle className="text-3xl font-bold">RifaZap</CardTitle>
           <CardDescription>
-            Entre ou crie sua conta para começar a gerenciar suas rifas.
+            Gerencie suas rifas de forma profissional e rápida.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent>
+          <Tabs defaultValue="login" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="login">Entrar</TabsTrigger>
+              <TabsTrigger value="register">Criar Conta</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="login" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">E-mail</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="exemplo@email.com" 
+                    className="pl-10"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    id="password" 
+                    type="password" 
+                    placeholder="••••••" 
+                    className="pl-10"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+              <Button 
+                onClick={() => handleEmailAuth('login')} 
+                className="w-full h-11 font-bold" 
+                disabled={authLoading}
+              >
+                {authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Acessar Painel"}
+              </Button>
+            </TabsContent>
+
+            <TabsContent value="register" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="reg-email">E-mail</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    id="reg-email" 
+                    type="email" 
+                    placeholder="exemplo@email.com" 
+                    className="pl-10"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="reg-password">Crie uma Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    id="reg-password" 
+                    type="password" 
+                    placeholder="Mínimo 6 caracteres" 
+                    className="pl-10"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+              <Button 
+                onClick={() => handleEmailAuth('register')} 
+                className="w-full h-11 font-bold bg-primary hover:bg-primary/90 text-primary-foreground" 
+                disabled={authLoading}
+              >
+                {authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Cadastrar e Iniciar"}
+              </Button>
+            </TabsContent>
+          </Tabs>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Ou continue com</span>
+            </div>
+          </div>
+
           <Button 
             onClick={handleGoogleLogin} 
             variant="outline" 
-            className="w-full h-12 gap-3 text-lg font-semibold hover:bg-muted"
+            className="w-full h-11 gap-3 font-semibold hover:bg-muted"
+            disabled={authLoading}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -78,10 +227,12 @@ export default function LoginPage() {
             </svg>
             Entrar com Google
           </Button>
-          <p className="text-center text-xs text-muted-foreground pt-4">
-            Ao entrar, você concorda com nossos termos de serviço e política de privacidade.
-          </p>
         </CardContent>
+        <CardFooter className="flex flex-col space-y-2 pt-0">
+          <p className="text-center text-[10px] text-muted-foreground">
+            Ao acessar, você concorda com nossos termos e políticas.
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );
