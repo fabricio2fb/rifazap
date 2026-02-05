@@ -15,8 +15,9 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Zap, Loader2, Mail, Lock, Info } from "lucide-react";
+import { Zap, Loader2, Mail, Lock, Info, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function LoginPage() {
   const { user, loading } = useUser();
@@ -26,6 +27,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && user) {
@@ -36,22 +38,21 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     if (!auth) return;
     setAuthLoading(true);
+    setErrorMessage(null);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao entrar",
-        description: error.message || "Não foi possível fazer login com o Google.",
-      });
+      setErrorMessage(error.message || "Não foi possível fazer login com o Google.");
     } finally {
       setAuthLoading(false);
     }
   };
 
   const handleEmailAuth = async (type: 'login' | 'register') => {
-    if (!auth || !email || !password) {
+    if (!auth) return;
+    
+    if (!email || !password) {
       toast({
         variant: "destructive",
         title: "Campos obrigatórios",
@@ -61,6 +62,7 @@ export default function LoginPage() {
     }
     
     setAuthLoading(true);
+    setErrorMessage(null);
     try {
       if (type === 'login') {
         await signInWithEmailAndPassword(auth, email, password);
@@ -72,14 +74,23 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
+      let msg = "Ocorreu um erro na autenticação.";
+      
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        msg = "Usuário não encontrado ou senha incorreta. Se esta for sua primeira vez, use a aba 'Criar Conta'.";
+      } else if (error.code === 'auth/email-already-in-use') {
+        msg = "Este e-mail já está em uso. Tente fazer login.";
+      } else if (error.code === 'auth/weak-password') {
+        msg = "A senha deve ter pelo menos 6 caracteres.";
+      } else if (error.code === 'auth/invalid-email') {
+        msg = "O formato do e-mail é inválido.";
+      }
+      
+      setErrorMessage(msg);
       toast({
         variant: "destructive",
         title: type === 'login' ? "Erro ao entrar" : "Erro ao cadastrar",
-        description: error.code === 'auth/email-already-in-use' 
-          ? "Este e-mail já está em uso." 
-          : error.code === 'auth/weak-password'
-          ? "A senha deve ter pelo menos 6 caracteres."
-          : "Verifique suas credenciais e tente novamente.",
+        description: msg,
       });
     } finally {
       setAuthLoading(false);
@@ -89,9 +100,10 @@ export default function LoginPage() {
   const fillDemoAccount = () => {
     setEmail("demo@rifazap.com");
     setPassword("123456");
+    setErrorMessage(null);
     toast({
       title: "Dados preenchidos",
-      description: "Agora basta clicar em 'Acessar Painel'.",
+      description: "Se for seu primeiro acesso, use a aba 'Criar Conta' com estes dados.",
     });
   };
 
@@ -118,6 +130,14 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {errorMessage && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Atenção</AlertTitle>
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )}
+
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login">Entrar</TabsTrigger>
