@@ -1,24 +1,35 @@
 
 "use client";
 
-import { useState } from "react";
-import { useCollection, useFirestore } from "@/firebase";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useCollection, useFirestore, useUser, useAuth } from "@/firebase";
 import { collection, query, orderBy, doc, updateDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ExternalLink, Package, User, CheckCircle, Clock } from "lucide-react";
+import { Trophy, ExternalLink, Package, User, CheckCircle, LogOut, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
-import { Raffle, Participant } from "@/lib/types";
+import { Raffle } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminDashboard() {
+  const { user, loading: userLoading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("raffles");
   const db = useFirestore();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!userLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, userLoading, router]);
 
   const rafflesQuery = db ? query(collection(db, "raffles"), orderBy("createdAt", "desc")) : null;
   const { data: raffles, loading: rafflesLoading } = useCollection<Raffle>(rafflesQuery);
@@ -34,15 +45,38 @@ export default function AdminDashboard() {
     });
   };
 
+  const handleLogout = async () => {
+    if (auth) {
+      await signOut(auth);
+      router.push("/");
+    }
+  };
+
+  if (userLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-muted/30 p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Painel RifaZap</h1>
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-3xl font-bold text-foreground">Painel RifaZap</h1>
+              <Badge variant="outline" className="font-normal text-xs">{user.email}</Badge>
+            </div>
             <p className="text-muted-foreground">Gerencie suas rifas e participantes</p>
           </div>
-          <CreateRaffleDialog />
+          <div className="flex gap-2">
+            <CreateRaffleDialog />
+            <Button variant="ghost" size="icon" onClick={handleLogout} title="Sair">
+              <LogOut className="w-5 h-5 text-muted-foreground" />
+            </Button>
+          </div>
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -125,7 +159,6 @@ export default function AdminDashboard() {
                   {sales?.map((sale) => (
                     <div key={sale.id} className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-muted/10 transition-colors">
                       <div className="flex items-center gap-4">
-                        {/* MINIATURA DA RIFA AQUI */}
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden border shrink-0 bg-slate-100">
                           {sale.raffleImageUrl ? (
                             <Image 

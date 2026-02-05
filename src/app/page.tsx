@@ -1,9 +1,10 @@
+
 import { Button } from "@/components/ui/button";
 import { 
   ArrowRight, 
   Zap, 
-  Share2, 
   MessageCircle, 
+  Share2,
   CheckCircle2, 
   Smartphone, 
   Users, 
@@ -23,12 +24,12 @@ export default function Home() {
             <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
             <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
           </div>
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="/admin">
-              <Button variant="outline" className="font-bold">Entrar</Button>
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/login">
+              <Button variant="outline" className="font-bold border-2">Entrar</Button>
             </Link>
-            <Link href="/admin">
-              <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90">Registrar</Button>
+            <Link href="/login">
+              <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Registrar</Button>
             </Link>
           </div>
           <Button variant="ghost" size="icon" className="md:hidden">
@@ -53,12 +54,12 @@ export default function Home() {
               A maneira mais simples, rápida e profissional de organizar sorteios, gerenciar pagamentos via PIX e crescer sua audiência.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-              <Link href="/admin">
+              <Link href="/login">
                 <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
                   Criar Minha Rifa <ArrowRight className="w-6 h-6" />
                 </Button>
               </Link>
-              <Link href="/admin">
+              <Link href="/login">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
                   Começar Agora
                 </Button>
@@ -87,44 +88,6 @@ export default function Home() {
                 <p className="text-3xl font-bold">24/7</p>
                 <p className="text-sm text-muted-foreground uppercase font-semibold">Suporte WhatsApp</p>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Explaining Section: Como Funciona */}
-        <section id="como-funciona" className="py-24 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">Como o RifaZap Funciona?</h2>
-              <p className="text-lg text-muted-foreground">Tudo foi desenhado para ser intuitivo tanto para você quanto para seus participantes.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              {[
-                {
-                  icon: <Zap className="h-10 w-10 text-primary-foreground" />,
-                  title: "1. Crie sua Rifa",
-                  desc: "Defina o prêmio, o valor do número e a data do sorteio em poucos cliques no nosso painel intuitivo."
-                },
-                {
-                  icon: <Share2 className="h-10 w-10 text-primary-foreground" />,
-                  title: "2. Compartilhe o Link",
-                  desc: "Gere um link personalizado e envie para seus contatos e grupos de WhatsApp. O site é 100% otimizado para celular."
-                },
-                {
-                  icon: <CheckCircle2 className="h-10 w-10 text-primary-foreground" />,
-                  title: "3. Gerencie e Sorteie",
-                  desc: "Acompanhe as reservas, confirme pagamentos PIX automaticamente e realize o sorteio de forma transparente."
-                }
-              ].map((step, i) => (
-                <div key={i} className="flex flex-col items-center text-center space-y-4 group">
-                  <div className="h-20 w-20 rounded-3xl bg-primary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    {step.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold">{step.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{step.desc}</p>
-                </div>
-              ))}
             </div>
           </div>
         </section>
@@ -191,7 +154,7 @@ export default function Home() {
               Junte-se a milhares de organizadores que já arrecadaram mais de R$ 2 milhões com a nossa plataforma.
             </p>
             <div className="pt-4">
-              <Link href="/admin">
+              <Link href="/login">
                 <Button size="lg" className="h-16 px-12 text-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3">
                   Criar Rifa Agora <Zap className="w-6 h-6 fill-current" />
                 </Button>
@@ -221,7 +184,7 @@ export default function Home() {
           <div className="space-y-4">
             <h4 className="font-bold uppercase tracking-wider text-sm">Plataforma</h4>
             <ul className="space-y-3 text-muted-foreground text-sm font-medium">
-              <li><Link href="/admin" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
+              <li><Link href="/login" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
             </ul>
           </div>
 
