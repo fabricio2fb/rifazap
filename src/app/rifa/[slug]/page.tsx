@@ -1,35 +1,64 @@
 
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useMemo } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
-import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
 import { NumberGrid } from "@/components/raffle/NumberGrid";
 import { CheckoutModal } from "@/components/raffle/CheckoutModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Share2, MessageCircle, Calendar, Trophy, CheckCircle, Info } from "lucide-react";
+import { Share2, MessageCircle, Calendar, Trophy, CheckCircle, Info, Loader2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useCollection, useFirestore } from "@/firebase";
+import { collection, query, where, limit } from "firebase/firestore";
 
 export default function PublicRafflePage() {
   const { slug } = useParams();
-  const router = useRouter();
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const db = useFirestore();
 
-  const raffle = useMemo(() => MOCK_RAFFLES.find(r => r.slug === slug), [slug]);
-  const participants = useMemo(() => MOCK_PARTICIPANTS.filter(p => p.raffleId === raffle?.id), [raffle]);
+  // Buscar dados da rifa pelo slug
+  const raffleQuery = useMemo(() => 
+    db ? query(collection(db, "raffles"), where("slug", "==", slug), limit(1)) : null
+  , [db, slug]);
+  
+  const { data: raffleData, loading: raffleLoading } = useCollection<any>(raffleQuery);
+  const raffle = raffleData?.[0];
+
+  // Buscar participantes da rifa
+  const participantsQuery = useMemo(() => 
+    db && raffle ? query(collection(db, "participants"), where("raffleId", "==", raffle.id)) : null
+  , [db, raffle]);
+  
+  const { data: participants } = useCollection<any>(participantsQuery);
 
   const paidNumbers = useMemo(() => 
-    participants.filter(p => p.status === 'confirmed').flatMap(p => p.selectedNumbers), 
+    participants?.filter(p => p.status === 'confirmed').flatMap(p => p.selectedNumbers) || [], 
   [participants]);
 
   const reservedNumbers = useMemo(() => 
-    participants.filter(p => p.status === 'pending').flatMap(p => p.selectedNumbers), 
+    participants?.filter(p => p.status === 'pending').flatMap(p => p.selectedNumbers) || [], 
   [participants]);
 
-  if (!raffle) return <div className="p-8 text-center">Rifa não encontrada.</div>;
+  if (raffleLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-10 h-10 animate-spin text-primary-foreground" />
+      </div>
+    );
+  }
+
+  if (!raffle) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-background">
+        <h1 className="text-2xl font-bold mb-2">Rifa não encontrada</h1>
+        <p className="text-muted-foreground mb-6">Verifique se o link está correto ou se a rifa ainda está ativa.</p>
+        <Button onClick={() => window.location.href = '/'}>Voltar para Início</Button>
+      </div>
+    );
+  }
 
   const totalSold = paidNumbers.length + reservedNumbers.length;
   const progressPercent = (totalSold / raffle.totalNumbers) * 100;
@@ -40,8 +69,18 @@ export default function PublicRafflePage() {
     );
   };
 
+  const shareRaffle = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: raffle.title,
+        text: raffle.description,
+        url: window.location.href,
+      });
+    }
+  };
+
   return (
-    <div className="max-w-xl mx-auto pb-32">
+    <div className="max-w-xl mx-auto pb-32 bg-white min-h-screen">
       {/* Visual Header */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <Image 
@@ -50,7 +89,6 @@ export default function PublicRafflePage() {
           fill 
           className="object-cover"
           priority
-          data-ai-hint="raffle prize"
         />
         <div className="absolute top-4 left-4">
           <Badge className="bg-rifa-available text-white border-none px-3 py-1 text-sm font-bold uppercase tracking-wider">
@@ -68,7 +106,7 @@ export default function PublicRafflePage() {
 
         {/* Stats Card */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-xl border border-border shadow-sm flex items-center gap-3">
+          <div className="bg-muted/30 p-4 rounded-xl border border-border flex items-center gap-3">
             <div className="p-2 bg-primary/20 rounded-lg text-primary-foreground">
               <Trophy className="w-5 h-5" />
             </div>
@@ -79,13 +117,13 @@ export default function PublicRafflePage() {
               </p>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl border border-border shadow-sm flex items-center gap-3">
+          <div className="bg-muted/30 p-4 rounded-xl border border-border flex items-center gap-3">
             <div className="p-2 bg-green-100 rounded-lg text-green-700">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase font-semibold">Sorteio</p>
-              <p className="font-bold">{new Date(raffle.drawDate).toLocaleDateString('pt-BR')}</p>
+              <p className="font-bold text-sm">{new Date(raffle.drawDate).toLocaleDateString('pt-BR')}</p>
             </div>
           </div>
         </div>
@@ -101,11 +139,15 @@ export default function PublicRafflePage() {
 
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <Button variant="outline" className="flex-1 gap-2" onClick={() => {}}>
+          <Button variant="outline" className="flex-1 gap-2" onClick={shareRaffle}>
             <Share2 className="w-4 h-4" /> Compartilhar
           </Button>
           {raffle.whatsappGroupLink && (
-            <Button variant="outline" className="flex-1 gap-2 border-green-200 text-green-600 hover:bg-green-50">
+            <Button 
+              variant="outline" 
+              className="flex-1 gap-2 border-green-200 text-green-600 hover:bg-green-50"
+              onClick={() => window.open(raffle.whatsappGroupLink, '_blank')}
+            >
               <MessageCircle className="w-4 h-4" /> Grupo WhatsApp
             </Button>
           )}

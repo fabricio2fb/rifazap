@@ -13,8 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Raffle } from "@/lib/types";
-import { QRCodeSVG } from "qrcode.react"; // Note: Need to make sure this is available or use SVG manually
-import { CheckCircle2, Copy, Smartphone } from "lucide-react";
+import { CheckCircle2, Copy, Smartphone, Loader2 } from "lucide-react";
+import { useFirestore } from "@/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError, type SecurityRuleContext } from "@/firebase/errors";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -25,18 +29,58 @@ interface CheckoutModalProps {
 
 export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: CheckoutModalProps) {
   const [step, setStep] = useState<'info' | 'payment'>('info');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: '', whatsapp: '' });
+  const db = useFirestore();
+  const { toast } = useToast();
 
   const total = selectedNumbers.length * raffle.pricePerNumber;
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep('payment');
+    if (!db) return;
+
+    setLoading(true);
+    const participantData = {
+      raffleId: raffle.id,
+      raffleTitle: raffle.title,
+      raffleImageUrl: raffle.imageUrl,
+      name: formData.name,
+      whatsapp: formData.whatsapp,
+      selectedNumbers: selectedNumbers,
+      totalAmount: total,
+      status: 'pending',
+      createdAt: serverTimestamp(),
+    };
+
+    const participantsRef = collection(db, 'participants');
+
+    addDoc(participantsRef, participantData)
+      .then(() => {
+        setStep('payment');
+      })
+      .catch(async (serverError) => {
+        const permissionError = new FirestorePermissionError({
+          path: participantsRef.path,
+          operation: 'create',
+          requestResourceData: participantData,
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
+        toast({
+          variant: "destructive",
+          title: "Erro ao reservar",
+          description: "Não foi possível processar sua reserva agora.",
+        });
+      })
+      .finally(() => setLoading(false));
   };
 
   const copyPix = () => {
     navigator.clipboard.writeText(raffle.pixKey);
-    // In a real app, use a toast here
+    toast({
+      title: "Chave PIX copiada!",
+      description: "Agora basta colar no seu banco.",
+    });
   };
 
   return (
@@ -81,15 +125,16 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
               </span>
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 font-bold text-lg">
-              Confirmar Reserva
+            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 font-bold text-lg">
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirmar Reserva"}
             </Button>
           </form>
         ) : (
           <div className="flex flex-col items-center space-y-6 py-4 text-center">
             <div className="bg-white p-4 rounded-xl border-2 border-primary">
-              <div className="w-48 h-48 bg-slate-100 flex items-center justify-center">
-                <Smartphone className="w-24 h-24 text-muted-foreground opacity-20" />
+              <div className="w-48 h-48 bg-slate-100 flex flex-col items-center justify-center">
+                <Smartphone className="w-12 h-12 text-muted-foreground opacity-20 mb-2" />
+                <p className="text-[10px] text-muted-foreground uppercase font-bold">Escaneie o QR Code</p>
                 {/* QR Code would go here in production */}
               </div>
             </div>
