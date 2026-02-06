@@ -1,14 +1,14 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { NumberGrid } from "@/components/raffle/NumberGrid";
 import { CheckoutModal } from "@/components/raffle/CheckoutModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Share2, MessageCircle, Calendar, Trophy, CheckCircle, Info } from "lucide-react";
+import { MessageCircle, Calendar, Trophy, CheckCircle, Info } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
@@ -19,10 +19,18 @@ export default function PublicRafflePage() {
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-  // Buscar dados da rifa localmente para evitar dependência do banco agora
   const raffle = useMemo(() => 
     MOCK_RAFFLES.find(r => r.slug === slug) || MOCK_RAFFLES[0]
   , [slug]);
+
+  // Atualiza tags Open Graph dinamicamente (para preview em navegadores, embora WhatsApp exija SSR para o card completo)
+  useEffect(() => {
+    if (raffle) {
+      document.title = raffle.title;
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) metaDescription.setAttribute("content", raffle.description);
+    }
+  }, [raffle]);
 
   const paidNumbers = useMemo(() => 
     MOCK_PARTICIPANTS
@@ -55,31 +63,25 @@ export default function PublicRafflePage() {
     );
   };
 
-  const shareRaffle = () => {
-    const shareData = {
-      title: raffle.title,
-      text: raffle.description,
-      url: window.location.href,
-    };
+  const shareOnWhatsApp = () => {
+    const url = window.location.href;
+    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
+    const date = new Date(raffle.drawDate).toLocaleDateString('pt-BR');
+    
+    const text = `🎟️ *RIFA ATIVA*
 
-    if (navigator.share) {
-      navigator.share(shareData).catch(() => copyLinkFallback());
-    } else {
-      copyLinkFallback();
-    }
-  };
+*Prêmio:* ${raffle.title}
+*Valor por número:* ${price}
+*Sorteio:* ${date}
 
-  const copyLinkFallback = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Link Copiado!",
-      description: "O link da rifa foi copiado para você enviar no WhatsApp.",
-    });
+👉 *Garanta o seu número:* ${url}`;
+
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encodedText}`, '_blank');
   };
 
   return (
     <div className="max-w-xl mx-auto pb-32 bg-white min-h-screen">
-      {/* Visual Header */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         {raffle.imageUrl && (
           <Image 
@@ -98,13 +100,11 @@ export default function PublicRafflePage() {
       </div>
 
       <div className="p-6 space-y-6">
-        {/* Raffle Details */}
         <div className="space-y-2">
           <h1 className="text-2xl font-bold leading-tight">{raffle.title}</h1>
           <p className="text-muted-foreground">{raffle.description}</p>
         </div>
 
-        {/* Stats Card */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-muted/30 p-4 rounded-xl border border-border flex items-center gap-3">
             <div className="p-2 bg-primary/20 rounded-lg text-primary-foreground">
@@ -128,7 +128,6 @@ export default function PublicRafflePage() {
           </div>
         </div>
 
-        {/* Progress Bar */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm font-medium">
             <span>Progresso da Rifa</span>
@@ -137,15 +136,18 @@ export default function PublicRafflePage() {
           <Progress value={progressPercent} className="h-2" />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          <Button variant="outline" className="flex-1 gap-2 font-bold h-12" onClick={shareRaffle}>
-            <Share2 className="w-4 h-4" /> Compartilhar
+        <div className="flex flex-col gap-3">
+          <Button 
+            className="w-full gap-2 font-bold h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl shadow-md transition-all active:scale-95" 
+            onClick={shareOnWhatsApp}
+          >
+            <MessageCircle className="w-6 h-6 fill-current" /> Compartilhar no WhatsApp
           </Button>
+          
           {raffle.whatsappGroupLink && (
             <Button 
               variant="outline" 
-              className="flex-1 gap-2 border-green-200 text-green-600 hover:bg-green-50 font-bold h-12"
+              className="w-full gap-2 border-green-200 text-green-600 hover:bg-green-50 font-bold h-12 rounded-xl"
               onClick={() => window.open(raffle.whatsappGroupLink, '_blank')}
             >
               <MessageCircle className="w-4 h-4" /> Grupo WhatsApp
@@ -159,7 +161,6 @@ export default function PublicRafflePage() {
             Selecione seus números
           </h2>
           
-          {/* Status Legend */}
           <div className="flex flex-wrap gap-4 text-xs font-semibold uppercase">
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-rifa-available/20 border border-rifa-available/20" />
@@ -185,7 +186,6 @@ export default function PublicRafflePage() {
         </div>
       </div>
 
-      {/* Floating Action Bar */}
       {selectedNumbers.length > 0 && (
         <div className="fixed bottom-6 left-6 right-6 z-50 animate-in slide-in-from-bottom-4">
           <Button 

@@ -13,12 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Raffle } from "@/lib/types";
-import { CheckCircle2, Copy, Smartphone, Loader2 } from "lucide-react";
-import { useFirestore } from "@/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { CheckCircle2, Copy, MessageCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { errorEmitter } from "@/firebase/error-emitter";
-import { FirestorePermissionError, type SecurityRuleContext } from "@/firebase/errors";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -51,48 +47,19 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
   const [step, setStep] = useState<'info' | 'payment'>('info');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: '', whatsapp: '' });
-  const db = useFirestore();
   const { toast } = useToast();
 
   const total = selectedNumbers.length * raffle.pricePerNumber;
 
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!db) return;
-
     setLoading(true);
-    const participantData = {
-      raffleId: raffle.id,
-      raffleTitle: raffle.title,
-      raffleImageUrl: raffle.imageUrl,
-      name: formData.name,
-      whatsapp: formData.whatsapp,
-      selectedNumbers: selectedNumbers,
-      totalAmount: total,
-      status: 'pending',
-      createdAt: serverTimestamp(),
-    };
-
-    const participantsRef = collection(db, 'participants');
-
-    addDoc(participantsRef, participantData)
-      .then(() => {
-        setStep('payment');
-      })
-      .catch(async (serverError) => {
-        const permissionError = new FirestorePermissionError({
-          path: participantsRef.path,
-          operation: 'create',
-          requestResourceData: participantData,
-        } satisfies SecurityRuleContext);
-        errorEmitter.emit('permission-error', permissionError);
-        toast({
-          variant: "destructive",
-          title: "Erro ao reservar",
-          description: "Não foi possível processar sua reserva agora.",
-        });
-      })
-      .finally(() => setLoading(false));
+    
+    // Simulação de delay para feedback visual
+    setTimeout(() => {
+      setStep('payment');
+      setLoading(false);
+    }, 800);
   };
 
   const copyPix = () => {
@@ -103,14 +70,32 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
     });
   };
 
+  const shareOnWhatsAppAfterPurchase = () => {
+    const url = window.location.href;
+    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
+    
+    const text = `🎉 *Já estou participando dessa rifa!*
+
+*Prêmio:* ${raffle.title}
+*Cada número:* ${price}
+
+👉 *Garanta o seu também:* ${url}`;
+
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+  };
+
   const handleModalClose = () => {
-    setStep('info');
+    if (step === 'payment') {
+      setStep('info');
+      setFormData({ name: '', whatsapp: '' });
+    }
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md overflow-y-auto max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             {step === 'info' ? 'Finalizar Reserva' : 'Pagar Agora'}
@@ -132,6 +117,7 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
                 placeholder="Ex: João da Silva" 
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
+                className="h-12"
               />
             </div>
             <div className="space-y-2">
@@ -142,47 +128,57 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
                 placeholder="Ex: 11999999999" 
                 value={formData.whatsapp}
                 onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
+                className="h-12"
               />
             </div>
-            <div className="p-4 bg-muted rounded-lg flex justify-between items-center">
+            <div className="p-4 bg-muted rounded-xl flex justify-between items-center">
               <span className="font-medium">Total a pagar:</span>
               <span className="text-xl font-bold">
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
               </span>
             </div>
-            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 font-bold text-lg">
+            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-14 font-bold text-lg rounded-xl">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirmar Reserva"}
             </Button>
           </form>
         ) : (
           <div className="flex flex-col items-center space-y-6 py-4 text-center">
-            <div className="bg-white p-4 rounded-xl border-2 border-primary overflow-hidden">
+            <div className="bg-white p-4 rounded-2xl border-2 border-primary overflow-hidden shadow-sm">
               <div className="w-48 h-48 bg-white flex items-center justify-center">
                 <PixQRCode />
               </div>
             </div>
             
             <div className="w-full space-y-3">
-              <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Chave Pix</div>
-              <div className="flex items-center gap-2 bg-muted p-3 rounded-lg font-mono text-sm break-all">
+              <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Chave Pix Copia e Cola</div>
+              <div className="flex items-center gap-2 bg-muted p-4 rounded-xl font-mono text-sm break-all border group">
                 {raffle.pixKey}
-                <Button variant="ghost" size="icon" onClick={copyPix} className="shrink-0">
+                <Button variant="ghost" size="icon" onClick={copyPix} className="shrink-0 hover:bg-primary/20">
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
             </div>
 
-            <div className="bg-rifa-reserved/10 p-4 rounded-lg flex items-start gap-3 text-left">
+            <div className="bg-rifa-reserved/10 p-4 rounded-xl flex items-start gap-3 text-left border border-rifa-reserved/20">
               <CheckCircle2 className="w-5 h-5 text-rifa-reserved shrink-0 mt-0.5" />
               <div className="text-sm">
                 <p className="font-bold text-rifa-reserved">Pagamento em Análise</p>
-                <p className="text-muted-foreground">Seus números estão reservados. Envie o comprovante via WhatsApp para confirmar.</p>
+                <p className="text-muted-foreground leading-snug">Seus números estão reservados. Envie o comprovante via WhatsApp para confirmar.</p>
               </div>
             </div>
 
-            <Button onClick={handleModalClose} className="w-full h-12">
-              Entendido
-            </Button>
+            <div className="w-full space-y-3">
+              <Button 
+                onClick={shareOnWhatsAppAfterPurchase} 
+                className="w-full h-14 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-lg gap-2 rounded-xl shadow-md"
+              >
+                <MessageCircle className="w-6 h-6 fill-current" /> Compartilhar no WhatsApp
+              </Button>
+              
+              <Button variant="outline" onClick={handleModalClose} className="w-full h-12 rounded-xl">
+                Fechar e voltar à rifa
+              </Button>
+            </div>
           </div>
         )}
       </DialogContent>
