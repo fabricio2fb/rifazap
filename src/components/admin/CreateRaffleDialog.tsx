@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Image as ImageIcon, Link as LinkIcon, AlertCircle } from 'lucide-react';
+import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, X } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +17,7 @@ import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/e
 export function CreateRaffleDialog() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const db = useFirestore();
   const { toast } = useToast();
 
@@ -36,8 +37,8 @@ export function CreateRaffleDialog() {
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
 
-    // Se não houver URL, usa uma imagem placeholder bonita baseada em seed aleatória
-    const imageUrl = (formData.get('imageUrl') as string) || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000)}/600/400`;
+    // Se não houver URL, fica vazio (não escolhe mais automático)
+    const imageUrl = (formData.get('imageUrl') as string) || '';
 
     const data = {
       title: title,
@@ -62,6 +63,7 @@ export function CreateRaffleDialog() {
           description: "Sua campanha já está online e pronta para receber reservas.",
         });
         setOpen(false);
+        setSelectedFile(null);
       })
       .catch(async (serverError) => {
         const permissionError = new FirestorePermissionError({
@@ -73,6 +75,12 @@ export function CreateRaffleDialog() {
       })
       .finally(() => setLoading(false));
   }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -97,16 +105,51 @@ export function CreateRaffleDialog() {
             <Textarea id="description" name="description" placeholder="Descreva os detalhes do prêmio..." required className="min-h-[80px] text-base" />
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="imageUrl" className="flex items-center gap-2 font-semibold">
-              <ImageIcon className="w-4 h-4 text-muted-foreground" /> Link da Imagem Principal
-            </Label>
-            <Input id="imageUrl" name="imageUrl" placeholder="https://link-da-foto.com/imagem.jpg" className="h-12" />
-            <div className="flex items-start gap-2 bg-blue-50 p-2 rounded-md border border-blue-100">
-              <AlertCircle className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
-              <p className="text-[10px] text-blue-700 leading-tight">
-                Se deixar vazio, o sistema escolherá uma imagem de destaque automaticamente para você.
-              </p>
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              <Label className="font-semibold flex items-center gap-2">
+                <Upload className="w-4 h-4" /> Upload de Foto
+              </Label>
+              <div className="relative">
+                <Input 
+                  id="photo-upload" 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleFileChange}
+                  className="hidden" 
+                />
+                <Label 
+                  htmlFor="photo-upload"
+                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20"
+                >
+                  {selectedFile ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-xs font-bold text-primary-foreground">{selectedFile.name}</span>
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-7 text-[10px]" 
+                        onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
+                      >
+                        Remover
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                      <ImageIcon className="w-8 h-8 opacity-20" />
+                      <span className="text-xs font-medium">Clique para selecionar foto</span>
+                    </div>
+                  )}
+                </Label>
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="imageUrl" className="flex items-center gap-2 font-semibold text-muted-foreground">
+                <LinkIcon className="w-4 h-4" /> Ou Link da Imagem
+              </Label>
+              <Input id="imageUrl" name="imageUrl" placeholder="https://link-da-foto.com/imagem.jpg" className="h-12" />
             </div>
           </div>
 
