@@ -3,12 +3,12 @@
 
 import { useState } from "react";
 import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, orderBy, doc, updateDoc } from "firebase/firestore";
+import { collection, query, orderBy, doc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, MoreVertical, Search } from "lucide-react";
+import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, MoreVertical, Search, Zap } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("raffles");
+  const [isGenerating, setIsGenerating] = useState(false);
   const db = useFirestore();
   const { toast } = useToast();
 
@@ -34,9 +35,43 @@ export default function AdminDashboard() {
     });
   };
 
+  const createExampleRaffle = async () => {
+    if (!db) return;
+    setIsGenerating(true);
+    
+    const exampleData = {
+      title: "iPhone 15 Pro Max - Titanium 📱",
+      slug: "iphone-15-pro-max-titanium-" + Math.floor(Math.random() * 1000),
+      description: "Concorra ao smartphone mais potente da Apple. Edição Titanium de 256GB. Sorteio garantido pela RifaZap!",
+      imageUrl: "https://images.unsplash.com/photo-1522125670776-3c7abb882bc2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzbWFydHBob25lfGVufDB8fHx8MTc3MDE0MzE3NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      pricePerNumber: 1.00,
+      totalNumbers: 100,
+      drawDate: "2024-12-30",
+      status: "active",
+      pixKey: "pix@rifazap.com",
+      whatsappGroupLink: "https://chat.whatsapp.com/exemplo-rifa",
+      createdAt: serverTimestamp(),
+    };
+
+    try {
+      await addDoc(collection(db, "raffles"), exampleData);
+      toast({
+        title: "Exemplo Criado!",
+        description: "A rifa de iPhone foi adicionada com sucesso.",
+      });
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao criar exemplo",
+        description: "Não foi possível gerar a rifa fictícia.",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-muted/30 pb-20">
-      {/* Header Mobile Otimizado */}
       <header className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -77,8 +112,19 @@ export default function AdminDashboard() {
                   <Package className="w-8 h-8 text-muted-foreground opacity-30" />
                 </div>
                 <p className="text-muted-foreground font-semibold text-lg">Nenhuma rifa por aqui</p>
-                <p className="text-sm text-muted-foreground mb-6">Crie sua primeira rifa agora mesmo e comece a vender.</p>
-                <CreateRaffleDialog />
+                <p className="text-sm text-muted-foreground mb-6">Crie sua primeira rifa ou use o exemplo abaixo para testar.</p>
+                <div className="flex flex-col gap-3">
+                  <CreateRaffleDialog />
+                  <Button 
+                    variant="outline" 
+                    onClick={createExampleRaffle} 
+                    disabled={isGenerating}
+                    className="gap-2 border-2 border-primary/20 hover:bg-primary/5"
+                  >
+                    <Zap className="w-4 h-4 text-primary-foreground fill-primary" />
+                    {isGenerating ? "Gerando..." : "Gerar Rifa de Exemplo"}
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -113,15 +159,14 @@ export default function AdminDashboard() {
 
                       <div className="flex flex-wrap items-center justify-between mt-6 gap-3 pt-4 border-t border-dashed">
                         <div className="flex gap-2 w-full sm:w-auto">
-                          <Link href={`/rifa/${raffle.slug}`} target="_blank" className="flex-1 sm:flex-none">
+                          <Link href={`/rifa/${raffle.slug}`} className="flex-1 sm:flex-none">
                             <Button variant="outline" size="sm" className="w-full gap-2 text-xs font-bold rounded-lg border-2">
                               Ver Pública <ExternalLink className="w-3 h-3" />
                             </Button>
                           </Link>
-                          <Button variant="secondary" size="sm" className="flex-1 sm:flex-none text-xs font-bold rounded-lg">Editar</Button>
                         </div>
                         <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
-                          Criada em: {new Date(raffle.createdAt?.seconds * 1000).toLocaleDateString('pt-BR')}
+                          Criada em: {raffle.createdAt?.seconds ? new Date(raffle.createdAt.seconds * 1000).toLocaleDateString('pt-BR') : 'Agora'}
                         </div>
                       </div>
                     </div>
