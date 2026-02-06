@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -10,6 +9,7 @@ import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, Zap, Messa
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
+import { EditRaffleDialog } from "@/components/admin/EditRaffleDialog";
 import { useToast } from "@/hooks/use-toast";
 import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
 
@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("raffles");
   const [raffles, setRaffles] = useState<any[]>(MOCK_RAFFLES);
   const [sales, setSales] = useState<any[]>(MOCK_PARTICIPANTS);
+  const [editingRaffle, setEditingRaffle] = useState<any>(null);
   const { toast } = useToast();
 
   const confirmPayment = (saleId: string) => {
@@ -44,6 +45,14 @@ export default function AdminDashboard() {
 
     const encodedText = encodeURIComponent(text);
     window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+  };
+
+  const handleUpdateRaffle = (updatedRaffle: any) => {
+    setRaffles(prev => prev.map(r => r.id === updatedRaffle.id ? updatedRaffle : r));
+    toast({
+      title: "Rifa Atualizada!",
+      description: "As informações de texto foram alteradas com sucesso.",
+    });
   };
 
   const createExampleRaffle = () => {
@@ -169,6 +178,7 @@ export default function AdminDashboard() {
                             <Button 
                               variant="outline" 
                               size="sm" 
+                              onClick={() => setEditingRaffle(raffle)}
                               className="flex-1 sm:flex-none gap-2 text-[10px] font-bold rounded-lg border-2 h-9"
                             >
                               <Pencil className="w-3 h-3" /> Editar
@@ -259,6 +269,13 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <EditRaffleDialog 
+        raffle={editingRaffle} 
+        isOpen={!!editingRaffle} 
+        onClose={() => setEditingRaffle(null)} 
+        onUpdate={handleUpdateRaffle} 
+      />
     </div>
   );
 }
