@@ -3,25 +3,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth, useUser } from "@/firebase";
-import { 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
-} from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Zap, Loader2, Mail, Lock, Info, AlertCircle } from "lucide-react";
+import { Zap, Loader2, Mail, Lock, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function LoginPage() {
-  const { user, loading } = useUser();
-  const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
@@ -29,29 +20,8 @@ export default function LoginPage() {
   const [authLoading, setAuthLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.push("/admin");
-    }
-  }, [user, loading, router]);
-
-  const handleGoogleLogin = async () => {
-    if (!auth) return;
-    setAuthLoading(true);
-    setErrorMessage(null);
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error: any) {
-      setErrorMessage(error.message || "Não foi possível fazer login com o Google.");
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
+  // Simulação de login para evitar erros de banco de dados
   const handleEmailAuth = async (type: 'login' | 'register') => {
-    if (!auth) return;
-    
     if (!email || !password) {
       toast({
         variant: "destructive",
@@ -63,57 +33,25 @@ export default function LoginPage() {
     
     setAuthLoading(true);
     setErrorMessage(null);
-    try {
-      if (type === 'login') {
-        await signInWithEmailAndPassword(auth, email, password);
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-        toast({
-          title: "Conta criada!",
-          description: "Sua conta foi criada com sucesso.",
-        });
-      }
-    } catch (error: any) {
-      let msg = "Ocorreu um erro na autenticação.";
-      
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        msg = "Usuário não encontrado ou senha incorreta. Se esta for sua primeira vez, use a aba 'Criar Conta'.";
-      } else if (error.code === 'auth/email-already-in-use') {
-        msg = "Este e-mail já está em uso. Tente fazer login.";
-      } else if (error.code === 'auth/weak-password') {
-        msg = "A senha deve ter pelo menos 6 caracteres.";
-      } else if (error.code === 'auth/invalid-email') {
-        msg = "O formato do e-mail é inválido.";
-      }
-      
-      setErrorMessage(msg);
-      toast({
-        variant: "destructive",
-        title: type === 'login' ? "Erro ao entrar" : "Erro ao cadastrar",
-        description: msg,
-      });
-    } finally {
+
+    // Simula um atraso de rede
+    setTimeout(() => {
       setAuthLoading(false);
-    }
+      toast({
+        title: type === 'login' ? "Bem-vindo de volta!" : "Conta criada!",
+        description: "Acessando seu painel administrativo (Modo Simulação).",
+      });
+      router.push("/admin");
+    }, 1000);
   };
 
-  const fillDemoAccount = () => {
-    setEmail("demo@rifazap.com");
-    setPassword("123456");
-    setErrorMessage(null);
-    toast({
-      title: "Dados preenchidos",
-      description: "Se for seu primeiro acesso, use a aba 'Criar Conta' com estes dados.",
-    });
+  const handleGoogleLogin = () => {
+    setAuthLoading(true);
+    setTimeout(() => {
+      setAuthLoading(false);
+      router.push("/admin");
+    }, 1000);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
@@ -180,16 +118,6 @@ export default function LoginPage() {
               >
                 {authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Acessar Painel"}
               </Button>
-
-              <div className="pt-2">
-                <Button 
-                  variant="outline" 
-                  className="w-full h-10 border-dashed gap-2 text-xs font-medium"
-                  onClick={fillDemoAccount}
-                >
-                  <Info className="w-4 h-4" /> Preencher Conta Demo
-                </Button>
-              </div>
             </TabsContent>
 
             <TabsContent value="register" className="space-y-4">
@@ -267,9 +195,9 @@ export default function LoginPage() {
             Entrar com Google
           </Button>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-2 pt-0">
-          <p className="text-center text-[10px] text-muted-foreground">
-            Ao acessar, você concorda com nossos termos e políticas.
+        <CardFooter className="flex flex-col space-y-2 pt-0 text-center">
+          <p className="text-[10px] text-muted-foreground">
+            Acesso liberado: Qualquer e-mail e senha funcionam para teste.
           </p>
         </CardFooter>
       </Card>
