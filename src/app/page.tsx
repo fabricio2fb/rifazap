@@ -205,9 +205,6 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <div className="container mx-auto mt-16 pt-8 border-t text-center text-xs text-muted-foreground/60 font-medium">
-          © 2024 RifaZap. Desenvolvido com ❤️ para organizadores de todo o Brasil.
-        </div>
       </footer>
     </div>
   );
