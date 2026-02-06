@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, Zap } from "lucide-react";
+import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, Zap, MessageCircle, Pencil } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
@@ -27,6 +27,23 @@ export default function AdminDashboard() {
       title: "Pagamento confirmado!", 
       description: "O participante agora está com os números garantidos (Simulação)." 
     });
+  };
+
+  const handleShareWhatsApp = (raffle: any) => {
+    const url = `${window.location.origin}/rifa/${raffle.slug}`;
+    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
+    const date = new Date(raffle.drawDate).toLocaleDateString('pt-BR');
+    
+    const text = `🎟️ *RIFA ATIVA*
+
+*Prêmio:* ${raffle.title}
+*Valor por número:* ${price}
+*Sorteio:* ${date}
+
+👉 *Garanta o seu número:* ${url}`;
+
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encodedText}`, '_blank');
   };
 
   const createExampleRaffle = () => {
@@ -133,14 +150,31 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="flex flex-wrap items-center justify-between mt-6 gap-3 pt-4 border-t border-dashed">
-                          <div className="flex gap-2 w-full sm:w-auto">
+                          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                             <Link href={`/rifa/${raffle.slug}`} className="flex-1 sm:flex-none">
-                              <Button variant="outline" size="sm" className="w-full gap-2 text-xs font-bold rounded-lg border-2">
+                              <Button variant="outline" size="sm" className="w-full gap-2 text-[10px] font-bold rounded-lg border-2 h-9">
                                 Ver Pública <ExternalLink className="w-3 h-3" />
                               </Button>
                             </Link>
+
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => handleShareWhatsApp(raffle)}
+                              className="flex-1 sm:flex-none gap-2 text-[10px] font-bold rounded-lg border-2 border-green-200 text-green-600 hover:bg-green-50 h-9"
+                            >
+                              <MessageCircle className="w-3 h-3 fill-current" /> WhatsApp
+                            </Button>
+
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex-1 sm:flex-none gap-2 text-[10px] font-bold rounded-lg border-2 h-9"
+                            >
+                              <Pencil className="w-3 h-3" /> Editar
+                            </Button>
                           </div>
-                          <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
+                          <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest hidden sm:block">
                             Simulação Offline
                           </div>
                         </div>
