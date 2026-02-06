@@ -26,10 +26,10 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center gap-4">
             <Link href="/admin">
-              <Button variant="outline" className="font-bold border-2">Entrar</Button>
+              <Button variant="outline" className="font-bold border-2">Acessar Painel</Button>
             </Link>
             <Link href="/admin">
-              <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Registrar</Button>
+              <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Começar Agora</Button>
             </Link>
           </div>
           <Button variant="ghost" size="icon" className="md:hidden">
@@ -61,7 +61,7 @@ export default function Home() {
               </Link>
               <Link href="/admin">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
-                  Começar Agora
+                  Gerenciar Rifas
                 </Button>
               </Link>
             </div>
@@ -156,7 +156,7 @@ export default function Home() {
             <div className="pt-4">
               <Link href="/admin">
                 <Button size="lg" className="h-16 px-12 text-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3">
-                  Criar Rifa Agora <Zap className="w-6 h-6 fill-current" />
+                  Acessar Painel Agora <Zap className="w-6 h-6 fill-current" />
                 </Button>
               </Link>
             </div>
@@ -191,9 +191,9 @@ export default function Home() {
           <div className="space-y-4">
             <h4 className="font-bold uppercase tracking-wider text-sm">Legal</h4>
             <ul className="space-y-3 text-muted-foreground text-sm font-medium">
-              <li><Link href="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link></li>
-              <li><Link href="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link></li>
-              <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ / Ajuda</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Termos de Uso</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Privacidade</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">FAQ / Ajuda</Link></li>
             </ul>
           </div>
 

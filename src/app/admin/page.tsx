@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ExternalLink, Package, User, CheckCircle, LogOut } from "lucide-react";
+import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
@@ -41,15 +41,15 @@ export default function AdminDashboard() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-3xl font-bold text-foreground">Painel RifaZap</h1>
-              <Badge variant="outline" className="font-normal text-xs">Acesso Admin</Badge>
+              <Badge variant="secondary" className="font-normal text-xs">Modo Desenvolvedor</Badge>
             </div>
-            <p className="text-muted-foreground">Gerencie suas rifas e participantes</p>
+            <p className="text-muted-foreground">Gerencie suas rifas e participantes sem restrições</p>
           </div>
           <div className="flex gap-2">
             <CreateRaffleDialog />
             <Link href="/">
-              <Button variant="ghost" size="icon" title="Voltar ao Início">
-                <LogOut className="w-5 h-5 text-muted-foreground" />
+              <Button variant="ghost" size="icon" title="Sair do Painel">
+                <ArrowLeft className="w-5 h-5 text-muted-foreground" />
               </Button>
             </Link>
           </div>
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
           <TabsContent value="raffles" className="mt-6 space-y-4">
             {rafflesLoading && <div className="text-center py-12">Carregando rifas...</div>}
             
-            {!rafflesLoading && raffles?.length === 0 && (
+            {!rafflesLoading && (!raffles || raffles.length === 0) && (
               <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-muted flex flex-col items-center">
                 <Package className="w-12 h-12 text-muted-foreground mb-4 opacity-20" />
                 <p className="text-muted-foreground font-medium">Nenhuma rifa encontrada. Crie sua primeira rifa!</p>
