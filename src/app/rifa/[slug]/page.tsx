@@ -8,53 +8,37 @@ import { NumberGrid } from "@/components/raffle/NumberGrid";
 import { CheckoutModal } from "@/components/raffle/CheckoutModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Share2, MessageCircle, Calendar, Trophy, CheckCircle, Info, Loader2 } from "lucide-react";
+import { Share2, MessageCircle, Calendar, Trophy, CheckCircle, Info } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, where, limit } from "firebase/firestore";
+import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
 
 export default function PublicRafflePage() {
   const { slug } = useParams();
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const db = useFirestore();
 
-  // Buscar dados da rifa pelo slug
-  const raffleQuery = useMemo(() => 
-    db ? query(collection(db, "raffles"), where("slug", "==", slug), limit(1)) : null
-  , [db, slug]);
-  
-  const { data: raffleData, loading: raffleLoading } = useCollection<any>(raffleQuery);
-  const raffle = raffleData?.[0];
-
-  // Buscar participantes da rifa
-  const participantsQuery = useMemo(() => 
-    db && raffle ? query(collection(db, "participants"), where("raffleId", "==", raffle.id)) : null
-  , [db, raffle]);
-  
-  const { data: participants } = useCollection<any>(participantsQuery);
+  // Buscar dados da rifa localmente para evitar dependência do banco agora
+  const raffle = useMemo(() => 
+    MOCK_RAFFLES.find(r => r.slug === slug) || MOCK_RAFFLES[0]
+  , [slug]);
 
   const paidNumbers = useMemo(() => 
-    participants?.filter(p => p.status === 'confirmed').flatMap(p => p.selectedNumbers) || [], 
-  [participants]);
+    MOCK_PARTICIPANTS
+      .filter(p => p.raffleId === raffle.id && p.status === 'confirmed')
+      .flatMap(p => p.selectedNumbers) || [], 
+  [raffle]);
 
   const reservedNumbers = useMemo(() => 
-    participants?.filter(p => p.status === 'pending').flatMap(p => p.selectedNumbers) || [], 
-  [participants]);
-
-  if (raffleLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-10 h-10 animate-spin text-primary-foreground" />
-      </div>
-    );
-  }
+    MOCK_PARTICIPANTS
+      .filter(p => p.raffleId === raffle.id && p.status === 'pending')
+      .flatMap(p => p.selectedNumbers) || [], 
+  [raffle]);
 
   if (!raffle) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-background">
         <h1 className="text-2xl font-bold mb-2">Rifa não encontrada</h1>
-        <p className="text-muted-foreground mb-6">Verifique se o link está correto ou se a rifa ainda está ativa.</p>
+        <p className="text-muted-foreground mb-6">Verifique se o link está correto.</p>
         <Button onClick={() => window.location.href = '/'}>Voltar para Início</Button>
       </div>
     );
@@ -83,13 +67,15 @@ export default function PublicRafflePage() {
     <div className="max-w-xl mx-auto pb-32 bg-white min-h-screen">
       {/* Visual Header */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
-        <Image 
-          src={raffle.imageUrl} 
-          alt={raffle.title} 
-          fill 
-          className="object-cover"
-          priority
-        />
+        {raffle.imageUrl && (
+          <Image 
+            src={raffle.imageUrl} 
+            alt={raffle.title} 
+            fill 
+            className="object-cover"
+            priority
+          />
+        )}
         <div className="absolute top-4 left-4">
           <Badge className="bg-rifa-available text-white border-none px-3 py-1 text-sm font-bold uppercase tracking-wider">
             {raffle.status === 'active' ? 'Ativa' : raffle.status}
