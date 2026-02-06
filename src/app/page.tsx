@@ -9,7 +9,9 @@ import {
   Smartphone, 
   Users, 
   ShieldCheck,
-  Menu
+  Menu,
+  Trophy,
+  MousePointer2
 } from "lucide-react";
 import Link from "next/link";
 
@@ -24,10 +26,10 @@ export default function Home() {
             <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/admin">
+            <Link href="/login">
               <Button variant="outline" className="font-bold border-2">Acessar Painel</Button>
             </Link>
-            <Link href="/admin">
+            <Link href="/login">
               <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Começar Agora</Button>
             </Link>
           </div>
@@ -132,35 +134,70 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              <div className="relative aspect-square md:aspect-video lg:aspect-square bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white p-6 font-mono text-[10px] md:text-sm text-green-400">
-                <div className="space-y-2">
-                  <div className="flex gap-2 mb-6">
-                    <div className="h-3 w-3 rounded-full bg-red-500" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-500" />
-                    <div className="h-3 w-3 rounded-full bg-green-500" />
-                  </div>
-                  <p className="text-muted-foreground">// RifaZap Engine - Initializing...</p>
-                  <p className="text-blue-400">const <span className="text-white">Rifa</span> = {"{"}</p>
-                  <p className="pl-4">id: <span className="text-orange-300">"rifa_01"</span>,</p>
-                  <p className="pl-4">premio: <span className="text-orange-300">"iPhone 15 Pro Max"</span>,</p>
-                  <p className="pl-4">valor: <span className="text-orange-300">1.00</span>,</p>
-                  <p className="pl-4">status: <span className="text-orange-300">"ACTIVE"</span>,</p>
-                  <p className="pl-4">pagamento: <span className="text-orange-300">"PIX_AUTO"</span></p>
-                  <p className="text-blue-400">{"}"};</p>
-                  <p className="mt-4 text-muted-foreground">// Generating WhatsApp Link...</p>
-                  <p className="text-white">await share.whatsapp(Rifa.link);</p>
-                  <p className="mt-2 text-green-500 font-bold uppercase tracking-widest animate-pulse">{">"} SUCCESS: RIFA ONLINE</p>
-                  <div className="mt-12 bg-white/5 p-4 rounded-xl border border-white/10">
-                    <p className="text-[10px] text-muted-foreground mb-2">NETWORK ACTIVITY</p>
-                    <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-primary w-2/3" />
+              
+              {/* Visual Preview (No images, just UI components) */}
+              <div className="relative aspect-square lg:aspect-square bg-white rounded-[2.5rem] shadow-2xl border-[12px] border-slate-900 overflow-hidden flex flex-col group">
+                {/* Mobile App Header Mockup */}
+                <div className="bg-slate-900 h-6 w-32 mx-auto rounded-b-2xl absolute top-0 left-1/2 -translate-x-1/2 z-20" />
+                
+                <div className="p-6 pt-12 flex-1 space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <h3 className="font-bold text-xl">Rifa de Exemplo</h3>
+                      <p className="text-xs text-muted-foreground">Prêmio: iPhone 15 Pro Max</p>
                     </div>
-                    <div className="flex justify-between mt-2 text-[8px] text-muted-foreground">
-                      <span>RESERVAS: 74%</span>
-                      <span>TEMPO: 0.4s</span>
+                    <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary-foreground">
+                      <Trophy className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  {/* Number Grid Mockup (The "Codes") */}
+                  <div className="grid grid-cols-5 gap-2">
+                    {[...Array(20)].map((_, i) => {
+                      const num = i + 1;
+                      let status = "available";
+                      if ([3, 7, 12, 18].includes(num)) status = "paid";
+                      if ([5, 14].includes(num)) status = "reserved";
+                      if (num === 9) status = "selected";
+
+                      return (
+                        <div 
+                          key={i} 
+                          className={`
+                            aspect-square rounded-lg flex items-center justify-center text-[10px] font-bold border transition-all
+                            ${status === 'available' ? 'bg-rifa-available/5 text-rifa-available border-rifa-available/10' : ''}
+                            ${status === 'paid' ? 'bg-slate-200 text-slate-400 border-transparent' : ''}
+                            ${status === 'reserved' ? 'bg-rifa-reserved text-white border-transparent' : ''}
+                            ${status === 'selected' ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-110 ring-2 ring-white' : ''}
+                          `}
+                        >
+                          {num.toString().padStart(2, '0')}
+                          {num === 9 && <MousePointer2 className="absolute -bottom-2 -right-2 w-4 h-4 text-slate-900 fill-white" />}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="space-y-3 pt-4">
+                    <div className="flex justify-between text-[10px] font-bold uppercase text-muted-foreground">
+                      <span>Progresso</span>
+                      <span>65% Vendido</span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-rifa-available w-[65%]" />
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <div className="w-full h-12 rounded-xl bg-[#25D366] flex items-center justify-center gap-2 text-white font-bold text-sm shadow-lg">
+                      <MessageCircle className="w-5 h-5 fill-current" />
+                      Participar Agora
                     </div>
                   </div>
                 </div>
+
+                {/* Overlays to make it look active */}
+                <div className="absolute inset-0 pointer-events-none border-[1px] border-white/20 rounded-[2rem]" />
               </div>
             </div>
           </div>
