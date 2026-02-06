@@ -1,45 +1,39 @@
 
 "use client";
 
-import { useState } from "react";
-import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, orderBy, doc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, MoreVertical, Search, Zap } from "lucide-react";
+import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, Zap } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
-import { Raffle } from "@/lib/types";
+import { Raffle, Participant } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("raffles");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const db = useFirestore();
+  const [raffles, setRaffles] = useState<Raffle[]>(MOCK_RAFFLES);
+  const [sales, setSales] = useState<any[]>(MOCK_PARTICIPANTS);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const rafflesQuery = db ? query(collection(db, "raffles"), orderBy("createdAt", "desc")) : null;
-  const { data: raffles, loading: rafflesLoading } = useCollection<Raffle>(rafflesQuery);
-
-  const salesQuery = db ? query(collection(db, "participants"), orderBy("createdAt", "desc")) : null;
-  const { data: sales, loading: salesLoading } = useCollection<any>(salesQuery);
-
   const confirmPayment = (saleId: string) => {
-    if (!db) return;
-    const saleRef = doc(db, "participants", saleId);
-    updateDoc(saleRef, { status: 'confirmed' }).then(() => {
-      toast({ title: "Pagamento confirmado!", description: "O participante agora está com os números garantidos." });
+    setSales(prev => prev.map(sale => 
+      sale.id === saleId ? { ...sale, status: 'confirmed' } : sale
+    ));
+    toast({ 
+      title: "Pagamento confirmado!", 
+      description: "O participante agora está com os números garantidos." 
     });
   };
 
-  const createExampleRaffle = async () => {
-    if (!db) return;
-    setIsGenerating(true);
-    
-    const exampleData = {
+  const createExampleRaffle = () => {
+    const newRaffle: Raffle = {
+      id: Math.random().toString(36).substr(2, 9),
       title: "iPhone 15 Pro Max - Titanium 📱",
       slug: "iphone-15-pro-max-titanium-" + Math.floor(Math.random() * 1000),
       description: "Concorra ao smartphone mais potente da Apple. Edição Titanium de 256GB. Sorteio garantido pela RifaZap!",
@@ -50,24 +44,14 @@ export default function AdminDashboard() {
       status: "active",
       pixKey: "pix@rifazap.com",
       whatsappGroupLink: "https://chat.whatsapp.com/exemplo-rifa",
-      createdAt: serverTimestamp(),
+      createdAt: { seconds: Date.now() / 1000 },
     };
 
-    try {
-      await addDoc(collection(db, "raffles"), exampleData);
-      toast({
-        title: "Exemplo Criado!",
-        description: "A rifa de iPhone foi adicionada com sucesso.",
-      });
-    } catch (e) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao criar exemplo",
-        description: "Não foi possível gerar a rifa fictícia.",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
+    setRaffles(prev => [newRaffle, ...prev]);
+    toast({
+      title: "Exemplo Criado!",
+      description: "A rifa de iPhone foi adicionada com sucesso.",
+    });
   };
 
   return (
@@ -96,17 +80,10 @@ export default function AdminDashboard() {
           <TabsContent value="raffles" className="space-y-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Suas Campanhas</h2>
-              <span className="text-xs font-medium text-muted-foreground bg-white px-2 py-1 rounded-md border">{raffles?.length || 0} Ativas</span>
+              <span className="text-xs font-medium text-muted-foreground bg-white px-2 py-1 rounded-md border">{raffles.length} Ativas</span>
             </div>
 
-            {rafflesLoading && (
-              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                <p>Carregando rifas...</p>
-              </div>
-            )}
-            
-            {!rafflesLoading && (!raffles || raffles.length === 0) && (
+            {raffles.length === 0 ? (
               <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-muted flex flex-col items-center px-6">
                 <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
                   <Package className="w-8 h-8 text-muted-foreground opacity-30" />
@@ -118,145 +95,133 @@ export default function AdminDashboard() {
                   <Button 
                     variant="outline" 
                     onClick={createExampleRaffle} 
-                    disabled={isGenerating}
                     className="gap-2 border-2 border-primary/20 hover:bg-primary/5"
                   >
                     <Zap className="w-4 h-4 text-primary-foreground fill-primary" />
-                    {isGenerating ? "Gerando..." : "Gerar Rifa de Exemplo"}
+                    Gerar Rifa de Exemplo
                   </Button>
                 </div>
               </div>
+            ) : (
+              <div className="grid gap-4">
+                {raffles.map((raffle) => (
+                  <Card key={raffle.id} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-all">
+                    <div className="flex flex-col sm:flex-row">
+                      <div className="relative w-full sm:w-48 h-40 sm:h-auto bg-slate-100 shrink-0">
+                        {raffle.imageUrl && (
+                          <Image 
+                            src={raffle.imageUrl} 
+                            alt={raffle.title} 
+                            fill 
+                            className="object-cover"
+                          />
+                        )}
+                        <div className="absolute top-2 left-2">
+                          <Badge variant={raffle.status === 'active' ? 'default' : 'secondary'} className="shadow-sm">
+                            {raffle.status === 'active' ? 'Ativa' : 'Encerrada'}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="flex-1 p-5 flex flex-col justify-between">
+                        <div className="space-y-1">
+                          <CardTitle className="text-lg font-bold">{raffle.title}</CardTitle>
+                          <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
+                            <span className="flex items-center gap-1"><Trophy className="w-3 h-3" /> {raffle.totalNumbers} cotas</span>
+                            <span className="font-bold text-foreground">R$ {raffle.pricePerNumber.toFixed(2)} / cada</span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-between mt-6 gap-3 pt-4 border-t border-dashed">
+                          <div className="flex gap-2 w-full sm:w-auto">
+                            <Link href={`/rifa/${raffle.slug}`} className="flex-1 sm:flex-none">
+                              <Button variant="outline" size="sm" className="w-full gap-2 text-xs font-bold rounded-lg border-2">
+                                Ver Pública <ExternalLink className="w-3 h-3" />
+                              </Button>
+                            </Link>
+                          </div>
+                          <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
+                            Criada recentemente
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             )}
-
-            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1">
-              {raffles?.map((raffle) => (
-                <Card key={raffle.id} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-all">
-                  <div className="flex flex-col sm:flex-row">
-                    <div className="relative w-full sm:w-48 h-40 sm:h-auto bg-slate-100 shrink-0">
-                      {raffle.imageUrl && (
-                        <Image 
-                          src={raffle.imageUrl} 
-                          alt={raffle.title} 
-                          fill 
-                          className="object-cover"
-                        />
-                      )}
-                      <div className="absolute top-2 left-2">
-                        <Badge variant={raffle.status === 'active' ? 'default' : 'secondary'} className="shadow-sm">
-                          {raffle.status === 'active' ? 'Ativa' : 'Encerrada'}
-                        </Badge>
-                      </div>
-                    </div>
-                    
-                    <div className="flex-1 p-5 flex flex-col justify-between">
-                      <div className="space-y-1">
-                        <CardTitle className="text-lg font-bold">{raffle.title}</CardTitle>
-                        <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
-                          <span className="flex items-center gap-1"><Trophy className="w-3 h-3" /> {raffle.totalNumbers} cotas</span>
-                          <span className="font-bold text-foreground">R$ {raffle.pricePerNumber.toFixed(2)} / cada</span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center justify-between mt-6 gap-3 pt-4 border-t border-dashed">
-                        <div className="flex gap-2 w-full sm:w-auto">
-                          <Link href={`/rifa/${raffle.slug}`} className="flex-1 sm:flex-none">
-                            <Button variant="outline" size="sm" className="w-full gap-2 text-xs font-bold rounded-lg border-2">
-                              Ver Pública <ExternalLink className="w-3 h-3" />
-                            </Button>
-                          </Link>
-                        </div>
-                        <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
-                          Criada em: {raffle.createdAt?.seconds ? new Date(raffle.createdAt.seconds * 1000).toLocaleDateString('pt-BR') : 'Agora'}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
           </TabsContent>
 
           <TabsContent value="participants" className="space-y-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Fluxo de Caixa</h2>
-              <Badge variant="outline" className="bg-white">{sales?.length || 0} Reservas</Badge>
+              <Badge variant="outline" className="bg-white">{sales.length} Reservas</Badge>
             </div>
 
-            {salesLoading && (
-              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                <p>Carregando vendas...</p>
-              </div>
-            )}
-            
-            {!salesLoading && (!sales || sales.length === 0) && (
+            {sales.length === 0 ? (
               <div className="py-24 text-center bg-white rounded-2xl border-2 border-dashed flex flex-col items-center px-6">
                 <User className="w-12 h-12 opacity-10 mb-4" />
                 <p className="font-semibold text-muted-foreground">Aguardando a primeira venda</p>
                 <p className="text-sm text-muted-foreground">As reservas aparecerão aqui assim que seus clientes escolherem os números.</p>
               </div>
-            )}
+            ) : (
+              <div className="grid gap-3">
+                {sales.map((sale) => (
+                  <Card key={sale.id} className="border-none shadow-sm p-4 overflow-hidden relative group">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex items-start gap-3">
+                        <div className="relative w-14 h-14 rounded-xl overflow-hidden border bg-muted shrink-0 shadow-sm">
+                          {sale.raffleImageUrl ? (
+                            <Image 
+                              src={sale.raffleImageUrl} 
+                              alt={sale.raffleTitle || "Rifa"} 
+                              fill 
+                              className="object-cover"
+                            />
+                          ) : (
+                            <Package className="w-full h-full p-3 opacity-20" />
+                          )}
+                        </div>
+                        
+                        <div className="space-y-1">
+                          <p className="font-bold text-base leading-none">{sale.name}</p>
+                          <p className="text-xs text-muted-foreground font-medium">{sale.whatsapp}</p>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {sale.selectedNumbers?.map((n: number) => (
+                              <Badge key={n} variant="secondary" className="text-[9px] px-1.5 h-4 font-bold bg-muted/80">
+                                {n.toString().padStart(2, '0')}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
 
-            <div className="grid gap-3">
-              {sales?.map((sale) => (
-                <Card key={sale.id} className="border-none shadow-sm p-4 overflow-hidden relative group">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <div className="relative w-14 h-14 rounded-xl overflow-hidden border bg-muted shrink-0 shadow-sm">
-                        {sale.raffleImageUrl ? (
-                          <Image 
-                            src={sale.raffleImageUrl} 
-                            alt={sale.raffleTitle || "Rifa"} 
-                            fill 
-                            className="object-cover"
-                          />
-                        ) : (
-                          <Package className="w-full h-full p-3 opacity-20" />
+                      <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-none pt-3 md:pt-0">
+                        <div className="text-left md:text-right">
+                          <p className="text-lg font-black text-foreground">R$ {sale.totalAmount?.toFixed(2)}</p>
+                          <Badge 
+                            variant={sale.status === 'confirmed' ? 'default' : 'outline'}
+                            className={sale.status === 'pending' ? 'bg-rifa-reserved/10 text-rifa-reserved border-rifa-reserved/20' : 'bg-green-500 hover:bg-green-600 border-none text-white'}
+                          >
+                            {sale.status === 'confirmed' ? 'Pago ✓' : 'Pendente'}
+                          </Badge>
+                        </div>
+                        
+                        {sale.status === 'pending' && (
+                          <Button 
+                            size="sm" 
+                            onClick={() => confirmPayment(sale.id)} 
+                            className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold h-10 shadow-sm"
+                          >
+                            <CheckCircle className="w-4 h-4" /> Confirmar
+                          </Button>
                         )}
                       </div>
-                      
-                      <div className="space-y-1">
-                        <p className="font-bold text-base leading-none">{sale.name}</p>
-                        <p className="text-xs text-muted-foreground font-medium">{sale.whatsapp}</p>
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {sale.selectedNumbers?.map((n: number) => (
-                            <Badge key={n} variant="secondary" className="text-[9px] px-1.5 h-4 font-bold bg-muted/80">
-                              {n.toString().padStart(2, '0')}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
                     </div>
-
-                    <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-none pt-3 md:pt-0">
-                      <div className="text-left md:text-right">
-                        <p className="text-lg font-black text-primary-foreground/90">R$ {sale.totalAmount?.toFixed(2)}</p>
-                        <Badge 
-                          variant={sale.status === 'confirmed' ? 'default' : 'outline'}
-                          className={sale.status === 'pending' ? 'bg-rifa-reserved/10 text-rifa-reserved border-rifa-reserved/20' : 'bg-green-500 hover:bg-green-600 border-none'}
-                        >
-                          {sale.status === 'confirmed' ? 'Pago ✓' : 'Pendente'}
-                        </Badge>
-                      </div>
-                      
-                      {sale.status === 'pending' ? (
-                        <Button 
-                          size="sm" 
-                          onClick={() => confirmPayment(sale.id)} 
-                          className="gap-2 bg-green-500 hover:bg-green-600 text-white font-bold h-10 shadow-sm"
-                        >
-                          <CheckCircle className="w-4 h-4" /> Confirmar
-                        </Button>
-                      ) : (
-                        <div className="h-10 w-10 bg-green-50 text-green-600 rounded-full flex items-center justify-center">
-                          <CheckCircle className="w-5 h-5" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
