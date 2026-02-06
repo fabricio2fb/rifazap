@@ -12,7 +12,6 @@ import {
   Menu
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Home() {
   return (
@@ -133,14 +132,35 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              <div className="relative aspect-square md:aspect-video lg:aspect-square bg-primary/20 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white">
-                <Image 
-                  src="https://images.unsplash.com/photo-1556742049-139b12cc20c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWFydHBob25lJTIwcGF5bWVudHxlbnwwfHx8fDE3NzAyNTUxNDF8MA&ixlib=rb-4.1.0&q=80&w=1080" 
-                  alt="Gestão de Rifa no Celular" 
-                  fill 
-                  className="object-cover"
-                  data-ai-hint="smartphone payment"
-                />
+              <div className="relative aspect-square md:aspect-video lg:aspect-square bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white p-6 font-mono text-[10px] md:text-sm text-green-400">
+                <div className="space-y-2">
+                  <div className="flex gap-2 mb-6">
+                    <div className="h-3 w-3 rounded-full bg-red-500" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-500" />
+                    <div className="h-3 w-3 rounded-full bg-green-500" />
+                  </div>
+                  <p className="text-muted-foreground">// RifaZap Engine - Initializing...</p>
+                  <p className="text-blue-400">const <span className="text-white">Rifa</span> = {"{"}</p>
+                  <p className="pl-4">id: <span className="text-orange-300">"rifa_01"</span>,</p>
+                  <p className="pl-4">premio: <span className="text-orange-300">"iPhone 15 Pro Max"</span>,</p>
+                  <p className="pl-4">valor: <span className="text-orange-300">1.00</span>,</p>
+                  <p className="pl-4">status: <span className="text-orange-300">"ACTIVE"</span>,</p>
+                  <p className="pl-4">pagamento: <span className="text-orange-300">"PIX_AUTO"</span></p>
+                  <p className="text-blue-400">{"}"};</p>
+                  <p className="mt-4 text-muted-foreground">// Generating WhatsApp Link...</p>
+                  <p className="text-white">await share.whatsapp(Rifa.link);</p>
+                  <p className="mt-2 text-green-500 font-bold uppercase tracking-widest animate-pulse">{">"} SUCCESS: RIFA ONLINE</p>
+                  <div className="mt-12 bg-white/5 p-4 rounded-xl border border-white/10">
+                    <p className="text-[10px] text-muted-foreground mb-2">NETWORK ACTIVITY</p>
+                    <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-primary w-2/3" />
+                    </div>
+                    <div className="flex justify-between mt-2 text-[8px] text-muted-foreground">
+                      <span>RESERVAS: 74%</span>
+                      <span>TEMPO: 0.4s</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
