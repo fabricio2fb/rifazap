@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -51,7 +52,15 @@ export default function AdminDashboard() {
     setRaffles(prev => prev.map(r => r.id === updatedRaffle.id ? updatedRaffle : r));
     toast({
       title: "Rifa Atualizada!",
-      description: "As informações de texto foram alteradas com sucesso.",
+      description: "As informações foram alteradas com sucesso.",
+    });
+  };
+
+  const handleCreateRaffle = (newRaffle: any) => {
+    setRaffles([newRaffle, ...raffles]);
+    toast({
+      title: "Rifa Criada!",
+      description: "Sua nova rifa foi adicionada à lista.",
     });
   };
 
@@ -67,6 +76,7 @@ export default function AdminDashboard() {
       drawDate: "2024-12-30",
       status: "active",
       pixKey: "pix@rifazap.com",
+      whatsappContact: "5511999999999",
       whatsappGroupLink: "https://chat.whatsapp.com/exemplo-rifa",
       createdAt: new Date().toISOString(),
     };
@@ -90,12 +100,12 @@ export default function AdminDashboard() {
             </Link>
             <h1 className="font-bold text-lg sm:text-xl">Painel RifaZap</h1>
           </div>
-          <CreateRaffleDialog />
+          <CreateRaffleDialog onCreate={handleCreateRaffle} />
         </div>
       </header>
 
       <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs defaultValue="raffles" onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-white p-1 h-12 rounded-xl shadow-sm border mb-6">
             <TabsTrigger value="raffles" className="rounded-lg font-semibold">Minhas Rifas</TabsTrigger>
             <TabsTrigger value="participants" className="rounded-lg font-semibold">Vendas</TabsTrigger>
@@ -117,7 +127,7 @@ export default function AdminDashboard() {
                 <p className="text-muted-foreground font-semibold text-lg">Nenhuma rifa por aqui</p>
                 <p className="text-sm text-muted-foreground mb-6">Crie sua primeira rifa ou use o exemplo abaixo para testar.</p>
                 <div className="flex flex-col gap-3">
-                  <CreateRaffleDialog />
+                  <CreateRaffleDialog onCreate={handleCreateRaffle} />
                   <Button 
                     variant="outline" 
                     onClick={createExampleRaffle} 
@@ -185,7 +195,7 @@ export default function AdminDashboard() {
                             </Button>
                           </div>
                           <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest hidden sm:block">
-                            Simulação Offline
+                            Simulação Local
                           </div>
                         </div>
                       </div>

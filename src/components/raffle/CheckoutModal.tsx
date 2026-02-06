@@ -55,7 +55,6 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
     e.preventDefault();
     setLoading(true);
     
-    // Simulação de delay para feedback visual
     setTimeout(() => {
       setStep('payment');
       setLoading(false);
@@ -68,6 +67,18 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
       title: "Chave PIX copiada!",
       description: "Agora basta colar no seu banco.",
     });
+  };
+
+  const sendProofToOrganizer = () => {
+    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+    const text = `Olá! Acabei de reservar os números: *${selectedNumbers.join(', ')}* na rifa *${raffle.title}*. 
+    
+Segue o comprovante do PIX no valor de *${price}*.
+Nome: ${formData.name}`;
+
+    const encodedText = encodeURIComponent(text);
+    const whatsappNumber = raffle.whatsappContact.replace(/\D/g, '');
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodedText}`, '_blank');
   };
 
   const shareOnWhatsAppAfterPurchase = () => {
@@ -163,20 +174,28 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
               <CheckCircle2 className="w-5 h-5 text-rifa-reserved shrink-0 mt-0.5" />
               <div className="text-sm">
                 <p className="font-bold text-rifa-reserved">Pagamento em Análise</p>
-                <p className="text-muted-foreground leading-snug">Seus números estão reservados. Envie o comprovante via WhatsApp para confirmar.</p>
+                <p className="text-muted-foreground leading-snug">Seus números estão reservados. Clique abaixo para enviar o comprovante agora.</p>
               </div>
             </div>
 
             <div className="w-full space-y-3">
               <Button 
-                onClick={shareOnWhatsAppAfterPurchase} 
-                className="w-full h-14 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-lg gap-2 rounded-xl shadow-md"
+                onClick={sendProofToOrganizer} 
+                className="w-full h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-lg gap-2 rounded-xl shadow-md"
               >
-                <MessageCircle className="w-6 h-6 fill-current" /> Compartilhar no WhatsApp
+                <MessageCircle className="w-6 h-6 fill-current" /> Enviar Comprovante
+              </Button>
+
+              <Button 
+                variant="outline"
+                onClick={shareOnWhatsAppAfterPurchase} 
+                className="w-full h-12 border-green-200 text-green-600 hover:bg-green-50 font-bold gap-2 rounded-xl"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" /> Divulgar no WhatsApp
               </Button>
               
-              <Button variant="outline" onClick={handleModalClose} className="w-full h-12 rounded-xl">
-                Fechar e voltar à rifa
+              <Button variant="ghost" onClick={handleModalClose} className="w-full h-10">
+                Fechar
               </Button>
             </div>
           </div>

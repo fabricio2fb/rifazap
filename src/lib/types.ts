@@ -13,6 +13,7 @@ export interface Raffle {
   drawDate: string;
   status: RaffleStatus;
   whatsappGroupLink?: string;
+  whatsappContact: string; // WhatsApp para receber comprovantes
   pixKey: string;
   createdAt?: any;
 }

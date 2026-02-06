@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Pencil, Image as ImageIcon, Link as LinkIcon, Lock } from 'lucide-react';
+import { Pencil, Image as ImageIcon, Link as LinkIcon, Lock, Phone } from 'lucide-react';
 
 interface EditRaffleDialogProps {
   raffle: any;
@@ -21,6 +22,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
     title: '',
     description: '',
     imageUrl: '',
+    whatsappContact: '',
     whatsappGroupLink: '',
     drawDate: '',
   });
@@ -31,6 +33,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
         title: raffle.title || '',
         description: raffle.description || '',
         imageUrl: raffle.imageUrl || '',
+        whatsappContact: raffle.whatsappContact || '',
         whatsappGroupLink: raffle.whatsappGroupLink || '',
         drawDate: raffle.drawDate || '',
       });
@@ -53,7 +56,6 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
         .replace(/^-+|-+$/g, '')
     };
 
-    // Simulação de delay para feedback visual
     setTimeout(() => {
       onUpdate(updatedData);
       setLoading(false);
@@ -138,6 +140,20 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
               onChange={(e) => setFormData({...formData, drawDate: e.target.value})}
               required 
               className="h-12 text-base" 
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="edit-whatsappContact" className="flex items-center gap-2 font-semibold text-green-700">
+              <Phone className="w-4 h-4" /> WhatsApp para Comprovantes
+            </Label>
+            <Input 
+              id="edit-whatsappContact" 
+              value={formData.whatsappContact} 
+              onChange={(e) => setFormData({...formData, whatsappContact: e.target.value})}
+              placeholder="5511999999999" 
+              required 
+              className="h-12 border-green-100" 
             />
           </div>
 

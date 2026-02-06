@@ -7,73 +7,56 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, X } from 'lucide-react';
-import { useFirestore } from '@/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
-export function CreateRaffleDialog() {
+interface CreateRaffleDialogProps {
+  onCreate?: (raffle: any) => void;
+}
+
+export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const db = useFirestore();
   const { toast } = useToast();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!db) return;
-
     setLoading(true);
+
     const formData = new FormData(e.currentTarget);
-    
     const title = formData.get('title') as string;
     const slug = title.toLowerCase()
       .trim()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+      .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
 
-    // Se não houver URL, fica vazio (não escolhe mais automático)
-    const imageUrl = (formData.get('imageUrl') as string) || '';
-
     const data = {
+      id: Math.random().toString(36).substr(2, 9),
       title: title,
       slug: slug,
       description: formData.get('description') as string,
-      imageUrl: imageUrl,
+      imageUrl: (formData.get('imageUrl') as string) || '',
+      whatsappContact: formData.get('whatsappContact') as string,
       whatsappGroupLink: formData.get('whatsappGroupLink') as string || '',
       pricePerNumber: Number(formData.get('price')),
       totalNumbers: Number(formData.get('total')),
       drawDate: formData.get('date') as string,
       status: 'active',
       pixKey: formData.get('pix') as string,
-      createdAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
     };
 
-    const rafflesRef = collection(db, 'raffles');
-    
-    addDoc(rafflesRef, data)
-      .then(() => {
-        toast({
-          title: "Rifa Publicada!",
-          description: "Sua campanha já está online e pronta para receber reservas.",
-        });
-        setOpen(false);
-        setSelectedFile(null);
-      })
-      .catch(async (serverError) => {
-        const permissionError = new FirestorePermissionError({
-          path: rafflesRef.path,
-          operation: 'create',
-          requestResourceData: data,
-        } satisfies SecurityRuleContext);
-        errorEmitter.emit('permission-error', permissionError);
-      })
-      .finally(() => setLoading(false));
+    // Simulação de criação
+    setTimeout(() => {
+      if (onCreate) onCreate(data);
+      setOpen(false);
+      setLoading(false);
+      setSelectedFile(null);
+    }, 500);
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,6 +153,13 @@ export function CreateRaffleDialog() {
           <div className="grid gap-2">
             <Label htmlFor="date" className="font-semibold">Data Prevista do Sorteio</Label>
             <Input id="date" name="date" type="date" required className="h-12 text-base" />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="whatsappContact" className="flex items-center gap-2 font-semibold text-green-700">
+              <Phone className="w-4 h-4" /> WhatsApp para Comprovantes
+            </Label>
+            <Input id="whatsappContact" name="whatsappContact" placeholder="5511999999999" required className="h-12 border-green-100" />
           </div>
 
           <div className="grid gap-2">

@@ -13,6 +13,7 @@ export const MOCK_RAFFLES: Raffle[] = [
     drawDate: '2024-12-30',
     status: 'active',
     whatsappGroupLink: 'https://chat.whatsapp.com/exemplo-rifa',
+    whatsappContact: '5511999999999',
     pixKey: 'pix@rifazap.com',
   },
   {
@@ -26,6 +27,7 @@ export const MOCK_RAFFLES: Raffle[] = [
     drawDate: '2024-11-20',
     status: 'active',
     whatsappGroupLink: 'https://chat.whatsapp.com/exemplo-cafe',
+    whatsappContact: '5511999999999',
     pixKey: 'contato@rifazap.com',
   }
 ];
