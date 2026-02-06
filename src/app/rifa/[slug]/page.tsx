@@ -11,9 +11,11 @@ import { Badge } from "@/components/ui/badge";
 import { Share2, MessageCircle, Calendar, Trophy, CheckCircle, Info } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
+import { useToast } from "@/hooks/use-toast";
 
 export default function PublicRafflePage() {
   const { slug } = useParams();
+  const { toast } = useToast();
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
@@ -54,13 +56,25 @@ export default function PublicRafflePage() {
   };
 
   const shareRaffle = () => {
+    const shareData = {
+      title: raffle.title,
+      text: raffle.description,
+      url: window.location.href,
+    };
+
     if (navigator.share) {
-      navigator.share({
-        title: raffle.title,
-        text: raffle.description,
-        url: window.location.href,
-      });
+      navigator.share(shareData).catch(() => copyLinkFallback());
+    } else {
+      copyLinkFallback();
     }
+  };
+
+  const copyLinkFallback = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link Copiado!",
+      description: "O link da rifa foi copiado para você enviar no WhatsApp.",
+    });
   };
 
   return (
@@ -125,13 +139,13 @@ export default function PublicRafflePage() {
 
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <Button variant="outline" className="flex-1 gap-2" onClick={shareRaffle}>
+          <Button variant="outline" className="flex-1 gap-2 font-bold h-12" onClick={shareRaffle}>
             <Share2 className="w-4 h-4" /> Compartilhar
           </Button>
           {raffle.whatsappGroupLink && (
             <Button 
               variant="outline" 
-              className="flex-1 gap-2 border-green-200 text-green-600 hover:bg-green-50"
+              className="flex-1 gap-2 border-green-200 text-green-600 hover:bg-green-50 font-bold h-12"
               onClick={() => window.open(raffle.whatsappGroupLink, '_blank')}
             >
               <MessageCircle className="w-4 h-4" /> Grupo WhatsApp
