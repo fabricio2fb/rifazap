@@ -20,9 +20,12 @@ export interface Raffle {
 export interface Participant {
   id: string;
   raffleId: string;
+  raffleTitle?: string;
+  raffleImageUrl?: string;
   name: string;
   whatsapp: string;
   selectedNumbers: number[];
+  totalAmount?: number;
   status: 'pending' | 'confirmed';
-  createdAt: string;
+  createdAt: any;
 }

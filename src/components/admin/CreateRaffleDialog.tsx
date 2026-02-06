@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
+import { Plus, Image as ImageIcon, Link as LinkIcon, AlertCircle } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
@@ -30,10 +30,13 @@ export function CreateRaffleDialog() {
     const title = formData.get('title') as string;
     const slug = title.toLowerCase()
       .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
 
+    // Se não houver URL, usa uma imagem placeholder bonita baseada em seed aleatória
     const imageUrl = (formData.get('imageUrl') as string) || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000)}/600/400`;
 
     const data = {
@@ -55,8 +58,8 @@ export function CreateRaffleDialog() {
     addDoc(rafflesRef, data)
       .then(() => {
         toast({
-          title: "Sucesso!",
-          description: "Sua rifa foi criada com sucesso.",
+          title: "Rifa Publicada!",
+          description: "Sua campanha já está online e pronta para receber reservas.",
         });
         setOpen(false);
       })
@@ -74,67 +77,73 @@ export function CreateRaffleDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 gap-2">
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 gap-2 shadow-lg">
           <Plus className="w-5 h-5" /> Criar Nova Rifa
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Configurar Nova Rifa</DialogTitle>
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-0 gap-0">
+        <DialogHeader className="p-6 pb-2">
+          <DialogTitle className="text-2xl font-bold">Configurar Campanha</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+        
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div className="grid gap-2">
-            <Label htmlFor="title">Título do Prêmio</Label>
-            <Input id="title" name="title" placeholder="Ex: iPhone 15 Pro Max" required className="h-11" />
+            <Label htmlFor="title" className="font-semibold">Título do Prêmio</Label>
+            <Input id="title" name="title" placeholder="Ex: iPhone 15 Pro Max" required className="h-12 text-base" />
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="description">Descrição</Label>
-            <Textarea id="description" name="description" placeholder="Descreva os detalhes do prêmio e as regras..." required className="min-h-[100px]" />
+            <Label htmlFor="description" className="font-semibold">Descrição e Regras</Label>
+            <Textarea id="description" name="description" placeholder="Descreva os detalhes do prêmio..." required className="min-h-[80px] text-base" />
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="imageUrl" className="flex items-center gap-2">
-              <ImageIcon className="w-4 h-4" /> Link da Imagem (Opcional)
+            <Label htmlFor="imageUrl" className="flex items-center gap-2 font-semibold">
+              <ImageIcon className="w-4 h-4 text-muted-foreground" /> Link da Imagem Principal
             </Label>
-            <Input id="imageUrl" name="imageUrl" placeholder="https://exemplo.com/foto.jpg" className="h-11" />
-            <p className="text-[10px] text-muted-foreground">Se deixar vazio, usaremos uma foto automática.</p>
+            <Input id="imageUrl" name="imageUrl" placeholder="https://link-da-foto.com/imagem.jpg" className="h-12" />
+            <div className="flex items-start gap-2 bg-blue-50 p-2 rounded-md border border-blue-100">
+              <AlertCircle className="w-3 h-3 text-blue-500 mt-0.5 shrink-0" />
+              <p className="text-[10px] text-blue-700 leading-tight">
+                Se deixar vazio, o sistema escolherá uma imagem de destaque automaticamente para você.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="price">Preço por Número</Label>
+              <Label htmlFor="price" className="font-semibold">Valor da Cota</Label>
               <div className="relative">
-                <span className="absolute left-3 top-3 text-sm text-muted-foreground">R$</span>
-                <Input id="price" name="price" type="number" step="0.01" placeholder="10,00" required className="pl-9 h-11" />
+                <span className="absolute left-3 top-3.5 text-sm font-bold text-muted-foreground">R$</span>
+                <Input id="price" name="price" type="number" step="0.01" placeholder="10,00" required className="pl-10 h-12 text-base" />
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="total">Total Números</Label>
-              <Input id="total" name="total" type="number" placeholder="100" required className="h-11" />
+              <Label htmlFor="total" className="font-semibold">Qtd. Números</Label>
+              <Input id="total" name="total" type="number" placeholder="100" required className="h-12 text-base" />
             </div>
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="date">Data Prevista do Sorteio</Label>
-            <Input id="date" name="date" type="date" required className="h-11" />
+            <Label htmlFor="date" className="font-semibold">Data Prevista do Sorteio</Label>
+            <Input id="date" name="date" type="date" required className="h-12 text-base" />
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="pix">Chave PIX para Recebimento</Label>
-            <Input id="pix" name="pix" placeholder="E-mail, CPF ou Celular" required className="h-11" />
+            <Label htmlFor="pix" className="font-semibold text-green-700">Chave PIX (Recebimento)</Label>
+            <Input id="pix" name="pix" placeholder="E-mail, CPF ou Celular" required className="h-12 border-green-200 focus:ring-green-500 text-base" />
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="whatsappGroupLink" className="flex items-center gap-2">
-              <LinkIcon className="w-4 h-4" /> Link do Grupo WhatsApp (Opcional)
+            <Label htmlFor="whatsappGroupLink" className="flex items-center gap-2 font-semibold text-green-700">
+              <LinkIcon className="w-4 h-4" /> Link do Grupo (WhatsApp)
             </Label>
-            <Input id="whatsappGroupLink" name="whatsappGroupLink" placeholder="https://chat.whatsapp.com/..." className="h-11" />
+            <Input id="whatsappGroupLink" name="whatsappGroupLink" placeholder="https://chat.whatsapp.com/..." className="h-12 border-green-100" />
           </div>
 
-          <div className="pt-4">
-            <Button type="submit" className="w-full h-14 font-bold text-lg shadow-lg" disabled={loading}>
-              {loading ? "Publicando..." : "Publicar Rifa Agora"}
+          <div className="pt-4 sticky bottom-0 bg-white pb-2">
+            <Button type="submit" className="w-full h-14 font-bold text-lg shadow-xl" disabled={loading}>
+              {loading ? "Processando..." : "Publicar Rifa Agora"}
             </Button>
           </div>
         </form>
