@@ -1,39 +1,58 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, Zap } from "lucide-react";
+import { Trophy, ExternalLink, Package, User, CheckCircle, ArrowLeft, Zap, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
-import { Raffle, Participant } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
-import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
+import { useCollection, useFirestore } from "@/firebase";
+import { collection, addDoc, serverTimestamp, doc, updateDoc, query, orderBy } from "firebase/firestore";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("raffles");
-  const [raffles, setRaffles] = useState<Raffle[]>(MOCK_RAFFLES);
-  const [sales, setSales] = useState<any[]>(MOCK_PARTICIPANTS);
-  const [loading, setLoading] = useState(false);
+  const db = useFirestore();
   const { toast } = useToast();
 
+  // Buscar rifas reais do Firestore
+  const rafflesQuery = useMemo(() => 
+    db ? query(collection(db, "raffles"), orderBy("createdAt", "desc")) : null
+  , [db]);
+  const { data: raffles, loading: rafflesLoading } = useCollection<any>(rafflesQuery);
+
+  // Buscar vendas reais do Firestore
+  const salesQuery = useMemo(() => 
+    db ? query(collection(db, "participants"), orderBy("createdAt", "desc")) : null
+  , [db]);
+  const { data: sales, loading: salesLoading } = useCollection<any>(salesQuery);
+
   const confirmPayment = (saleId: string) => {
-    setSales(prev => prev.map(sale => 
-      sale.id === saleId ? { ...sale, status: 'confirmed' } : sale
-    ));
-    toast({ 
-      title: "Pagamento confirmado!", 
-      description: "O participante agora está com os números garantidos." 
-    });
+    if (!db) return;
+    const saleRef = doc(db, "participants", saleId);
+    
+    updateDoc(saleRef, { status: 'confirmed' })
+      .then(() => {
+        toast({ 
+          title: "Pagamento confirmado!", 
+          description: "O participante agora está com os números garantidos." 
+        });
+      })
+      .catch((error) => {
+        console.error("Erro ao confirmar:", error);
+      });
   };
 
   const createExampleRaffle = () => {
-    const newRaffle: Raffle = {
-      id: Math.random().toString(36).substr(2, 9),
+    if (!db) return;
+
+    const data = {
       title: "iPhone 15 Pro Max - Titanium 📱",
       slug: "iphone-15-pro-max-titanium-" + Math.floor(Math.random() * 1000),
       description: "Concorra ao smartphone mais potente da Apple. Edição Titanium de 256GB. Sorteio garantido pela RifaZap!",
@@ -44,15 +63,28 @@ export default function AdminDashboard() {
       status: "active",
       pixKey: "pix@rifazap.com",
       whatsappGroupLink: "https://chat.whatsapp.com/exemplo-rifa",
-      createdAt: { seconds: Date.now() / 1000 },
+      createdAt: serverTimestamp(),
     };
 
-    setRaffles(prev => [newRaffle, ...prev]);
-    toast({
-      title: "Exemplo Criado!",
-      description: "A rifa de iPhone foi adicionada com sucesso.",
-    });
+    const rafflesRef = collection(db, 'raffles');
+    addDoc(rafflesRef, data)
+      .then(() => {
+        toast({
+          title: "Exemplo Criado no Banco!",
+          description: "A rifa agora é real e pode ser acessada publicamente.",
+        });
+      })
+      .catch(async (serverError) => {
+        const permissionError = new FirestorePermissionError({
+          path: rafflesRef.path,
+          operation: 'create',
+          requestResourceData: data,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      });
   };
+
+  const isLoading = rafflesLoading || salesLoading;
 
   return (
     <div className="min-h-screen bg-muted/30 pb-20">
@@ -80,10 +112,19 @@ export default function AdminDashboard() {
           <TabsContent value="raffles" className="space-y-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Suas Campanhas</h2>
-              <span className="text-xs font-medium text-muted-foreground bg-white px-2 py-1 rounded-md border">{raffles.length} Ativas</span>
+              {!isLoading && (
+                <span className="text-xs font-medium text-muted-foreground bg-white px-2 py-1 rounded-md border">
+                  {raffles?.length || 0} Ativas
+                </span>
+              )}
             </div>
 
-            {raffles.length === 0 ? (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="w-10 h-10 animate-spin text-primary-foreground" />
+                <p className="text-muted-foreground font-medium">Sincronizando com o banco...</p>
+              </div>
+            ) : raffles?.length === 0 ? (
               <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-muted flex flex-col items-center px-6">
                 <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
                   <Package className="w-8 h-8 text-muted-foreground opacity-30" />
@@ -104,7 +145,7 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="grid gap-4">
-                {raffles.map((raffle) => (
+                {raffles?.map((raffle: any) => (
                   <Card key={raffle.id} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-all">
                     <div className="flex flex-col sm:flex-row">
                       <div className="relative w-full sm:w-48 h-40 sm:h-auto bg-slate-100 shrink-0">
@@ -128,7 +169,7 @@ export default function AdminDashboard() {
                           <CardTitle className="text-lg font-bold">{raffle.title}</CardTitle>
                           <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
                             <span className="flex items-center gap-1"><Trophy className="w-3 h-3" /> {raffle.totalNumbers} cotas</span>
-                            <span className="font-bold text-foreground">R$ {raffle.pricePerNumber.toFixed(2)} / cada</span>
+                            <span className="font-bold text-foreground">R$ {raffle.pricePerNumber?.toFixed(2)} / cada</span>
                           </div>
                         </div>
 
@@ -141,7 +182,7 @@ export default function AdminDashboard() {
                             </Link>
                           </div>
                           <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
-                            Criada recentemente
+                            {raffle.createdAt ? "Publicada" : "Sincronizando..."}
                           </div>
                         </div>
                       </div>
@@ -155,10 +196,14 @@ export default function AdminDashboard() {
           <TabsContent value="participants" className="space-y-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Fluxo de Caixa</h2>
-              <Badge variant="outline" className="bg-white">{sales.length} Reservas</Badge>
+              <Badge variant="outline" className="bg-white">{sales?.length || 0} Reservas</Badge>
             </div>
 
-            {sales.length === 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : sales?.length === 0 ? (
               <div className="py-24 text-center bg-white rounded-2xl border-2 border-dashed flex flex-col items-center px-6">
                 <User className="w-12 h-12 opacity-10 mb-4" />
                 <p className="font-semibold text-muted-foreground">Aguardando a primeira venda</p>
@@ -166,7 +211,7 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="grid gap-3">
-                {sales.map((sale) => (
+                {sales?.map((sale: any) => (
                   <Card key={sale.id} className="border-none shadow-sm p-4 overflow-hidden relative group">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-start gap-3">
