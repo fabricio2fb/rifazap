@@ -63,7 +63,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
       title: title,
       slug: slug,
       description: formData.get('description') as string,
-      imageUrl: (formData.get('imageUrl') as string) || '',
+      imageUrl: 'https://picsum.photos/seed/' + Math.floor(Math.random() * 1000) + '/800/600',
       whatsappContact: formData.get('whatsappContact') as string,
       whatsappGroupLink: formData.get('whatsappGroupLink') as string || '',
       pricePerNumber: Number(formData.get('price')),
@@ -151,7 +151,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label className="font-semibold flex items-center gap-2">
-                  <Upload className="w-4 h-4" /> Upload de Foto
+                  <Upload className="w-4 h-4" /> Upload de Foto do Prêmio
                 </Label>
                 <div className="relative">
                   <Input 
@@ -163,7 +163,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
                   />
                   <Label 
                     htmlFor="photo-upload"
-                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20"
+                    className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20"
                   >
                     {selectedFile ? (
                       <div className="flex flex-col items-center gap-2">
@@ -175,24 +175,17 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
                           className="h-7 text-[10px]" 
                           onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
                         >
-                          Remover
+                          Remover e trocar
                         </Button>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-1 text-muted-foreground">
-                        <ImageIcon className="w-8 h-8 opacity-20" />
+                        <ImageIcon className="w-10 h-10 opacity-20" />
                         <span className="text-xs font-medium">Clique para selecionar foto</span>
                       </div>
                     )}
                   </Label>
                 </div>
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="imageUrl" className="flex items-center gap-2 font-semibold text-muted-foreground">
-                  <LinkIcon className="w-4 h-4" /> Ou Link da Imagem
-                </Label>
-                <Input id="imageUrl" name="imageUrl" placeholder="https://link-da-foto.com/imagem.jpg" className="h-12" />
               </div>
             </div>
 

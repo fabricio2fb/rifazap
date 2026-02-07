@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Pencil, Image as ImageIcon, Link as LinkIcon, Lock, Phone } from 'lucide-react';
+import { Pencil, Image as ImageIcon, Link as LinkIcon, Lock, Phone, Upload } from 'lucide-react';
 
 interface EditRaffleDialogProps {
   raffle: any;
@@ -18,6 +18,7 @@ interface EditRaffleDialogProps {
 
 export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaffleDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<any>({
     title: '',
     description: '',
@@ -63,6 +64,12 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
     }, 500);
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
   if (!raffle) return null;
 
   return (
@@ -101,16 +108,42 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="edit-imageUrl" className="flex items-center gap-2 font-semibold">
-              <ImageIcon className="w-4 h-4" /> Link da Imagem
+            <Label className="font-semibold flex items-center gap-2">
+              <Upload className="w-4 h-4" /> Atualizar Foto do Prêmio
             </Label>
-            <Input 
-              id="edit-imageUrl" 
-              value={formData.imageUrl} 
-              onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-              placeholder="https://link-da-foto.com/imagem.jpg" 
-              className="h-12" 
-            />
+            <div className="relative">
+              <Input 
+                id="edit-photo-upload" 
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileChange}
+                className="hidden" 
+              />
+              <Label 
+                htmlFor="edit-photo-upload"
+                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20"
+              >
+                {selectedFile ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-xs font-bold text-primary-foreground">{selectedFile.name}</span>
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-7 text-[10px]" 
+                      onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
+                    >
+                      Remover e trocar
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                    <ImageIcon className="w-8 h-8 opacity-20" />
+                    <span className="text-xs font-medium">Trocar imagem atual</span>
+                  </div>
+                )}
+              </Label>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
