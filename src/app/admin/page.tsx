@@ -54,8 +54,9 @@ export default function AdminDashboard() {
   const [winner, setWinner] = useState<any>(null);
   const [currentSpinNumber, setCurrentSpinNumber] = useState(0);
 
-  // States for Summary
+  // States for Summary and Winner Details
   const [summaryRaffle, setSummaryRaffle] = useState<any>(null);
+  const [viewingWinner, setViewingWinner] = useState<any>(null);
 
   const { toast } = useToast();
 
@@ -229,7 +230,7 @@ export default function AdminDashboard() {
                     </div>
 
                     {raffle.status === 'drawn' && (
-                      <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex items-center justify-between">
+                      <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <Trophy className="w-8 h-8 text-green-600" />
                           <div>
@@ -237,9 +238,22 @@ export default function AdminDashboard() {
                             <p className="font-black text-green-800 text-lg">{raffle.winner}</p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-[10px] font-bold text-green-700 uppercase">Número</p>
-                          <p className="font-black text-2xl text-green-800">{raffle.winningNumber}</p>
+                        <div className="flex items-center gap-6">
+                          <div className="text-right">
+                            <p className="text-[10px] font-bold text-green-700 uppercase">Número</p>
+                            <p className="font-black text-2xl text-green-800">{raffle.winningNumber}</p>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => {
+                              const p = sales.find(s => s.name === raffle.winner && s.raffleId === raffle.id);
+                              if (p) setViewingWinner({ ...p, winningNumber: raffle.winningNumber });
+                            }}
+                            className="border-green-200 text-green-700 hover:bg-green-100 font-bold h-10 px-4"
+                          >
+                            DETALHES
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -294,6 +308,58 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Ganhador Detalhado Dialog */}
+      <Dialog open={!!viewingWinner} onOpenChange={(open) => !open && setViewingWinner(null)}>
+        <DialogContent className="sm:max-w-md rounded-3xl p-0 overflow-hidden">
+          <div className="bg-green-500 p-6 text-white text-center">
+            <Trophy className="w-12 h-12 mx-auto mb-2" />
+            <DialogTitle className="text-2xl font-black text-white">DADOS DO GANHADOR</DialogTitle>
+          </div>
+          <div className="p-6 space-y-4">
+            <div className="space-y-4">
+              <div className="bg-muted/30 p-4 rounded-2xl border">
+                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">Nome do Participante</p>
+                <p className="text-lg font-black">{viewingWinner?.name}</p>
+              </div>
+              <div className="bg-muted/30 p-4 rounded-2xl border">
+                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">WhatsApp de Contato</p>
+                <p className="text-lg font-black">{viewingWinner?.whatsapp}</p>
+              </div>
+              <div className="bg-muted/30 p-4 rounded-2xl border">
+                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">Cotas Adquiridas</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {viewingWinner?.selectedNumbers.map((n: number) => (
+                    <Badge 
+                      key={n} 
+                      variant={n === viewingWinner?.winningNumber ? "default" : "outline"} 
+                      className={n === viewingWinner?.winningNumber ? "bg-green-500 text-white border-none h-8 w-10 flex items-center justify-center font-black" : "h-8 w-10 flex items-center justify-center font-bold opacity-60"}
+                    >
+                      {n.toString().padStart(2, '0')}
+                    </Badge>
+                  ))}
+                </div>
+                {viewingWinner?.winningNumber && (
+                  <p className="mt-2 text-[10px] font-bold text-green-600 uppercase">⭐ Número {viewingWinner.winningNumber} foi o sorteado</p>
+                )}
+              </div>
+              <div className="bg-muted/30 p-4 rounded-2xl border">
+                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">Data do Registro</p>
+                <p className="text-sm font-bold">{viewingWinner?.createdAt && new Date(viewingWinner.createdAt).toLocaleString('pt-BR')}</p>
+              </div>
+            </div>
+            <Button 
+              className="w-full h-14 bg-green-500 hover:bg-green-600 text-white font-black text-lg gap-3 rounded-2xl shadow-lg mt-4"
+              onClick={() => {
+                const text = `🏆 *PARABÉNS!* Você foi o ganhador! Estou entrando em contato para combinarmos a entrega do prêmio.`;
+                window.open(`https://wa.me/${viewingWinner.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
+              }}
+            >
+              <MessageCircle className="w-6 h-6 fill-current" /> CONTATAR GANHADOR
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Sorteio Dialog */}
       <Dialog open={!!drawingRaffle} onOpenChange={(open) => !open && setDrawingRaffle(null)}>
