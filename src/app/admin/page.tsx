@@ -438,11 +438,6 @@ export default function AdminDashboard() {
                 <div className="space-y-2">
                   <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">GANHADOR(A)</p>
                   <h3 className="text-4xl font-black text-foreground">{winner.buyer.name}</h3>
-                  <div className="flex flex-col items-center gap-1">
-                    <Badge variant="outline" className="text-lg px-4 py-1 border-2 font-bold bg-white">
-                      {winner.buyer.whatsapp}
-                    </Badge>
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 px-6">
@@ -481,23 +476,23 @@ export default function AdminDashboard() {
             
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
               <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black/70">Total Vendas</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Total Vendas</p>
                 <p className="text-2xl font-black text-black">{getRaffleSummary(summaryRaffle?.id).length}</p>
               </div>
               <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black/70">Confirmadas</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Confirmadas</p>
                 <p className="text-2xl font-black text-black">
                   {getRaffleSummary(summaryRaffle?.id).filter(s => s.status === 'confirmed').length}
                 </p>
               </div>
               <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black/70">Pendentes</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Pendentes</p>
                 <p className="text-2xl font-black text-black">
                   {getRaffleSummary(summaryRaffle?.id).filter(s => s.status === 'pending').length}
                 </p>
               </div>
               <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black/70">Arrecadado</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Arrecadado</p>
                 <p className="text-2xl font-black text-black">
                   R$ {getRaffleSummary(summaryRaffle?.id)
                     .filter(s => s.status === 'confirmed')
