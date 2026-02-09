@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone, Copy, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
+import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone, Copy, CheckCircle2, Loader2, ArrowRight, Zap, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface CreateRaffleDialogProps {
@@ -45,108 +45,70 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
 
   const supabase = createClient();
 
-  async function handleShowPayment(e: React.FormEvent<HTMLFormElement>) {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  async function handleCreateAndShowPayment(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
-
-    const formData = new FormData(e.currentTarget);
-    const title = formData.get('title') as string;
-
-    // Generate base slug
-    const baseSlug = title.toLowerCase()
-      .trim()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-
-    // Append random suffix for uniqueness
-    const uniqueSuffix = Math.random().toString(36).substring(2, 6);
-    const slug = `${baseSlug}-${uniqueSuffix}`;
-
-    const data = {
-      title: title,
-      slug: slug,
-      description: formData.get('description') as string,
-      // Use the logic for image later or keep mock for now if no storage bucket
-      image_url: 'https://picsum.photos/seed/' + Math.floor(Math.random() * 1000) + '/800/600',
-      ticket_price: Number(formData.get('price')),
-      total_numbers: Number(formData.get('total')),
-      draw_date: formData.get('date') as string,
-      pix_key: formData.get('pix') as string,
-      pix_key_type: 'random', // Defaulting to random/mixed for simplicity
-      whatsapp_contact: formData.get('whatsappContact') as string,
-      whatsapp_group_link: formData.get('whatsappGroupLink') as string || '',
-    };
-
-    // Store draft data to save after "payment"
-    setTimeout(() => {
-      setPendingRaffle(data);
-      setStep('payment');
-      setLoading(false);
-    }, 600);
-  }
-
-  const handleFinalize = async () => {
     setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
-      // Insert into DB
-      const { data, error } = await supabase.from('raffles').insert({
-        organizer_id: user.id,
-        title: pendingRaffle.title,
-        slug: pendingRaffle.slug,
-        description: pendingRaffle.description,
-        prize_description: pendingRaffle.description, // Mapping description to prize_description as it is required in schema
-        image_url: pendingRaffle.image_url,
-        ticket_price: pendingRaffle.ticket_price,
-        total_numbers: pendingRaffle.total_numbers,
-        draw_date: pendingRaffle.draw_date,
-        pix_key: pendingRaffle.pix_key,
-        pix_key_type: pendingRaffle.pix_key_type,
-        status: 'pending_payment'
-        // whatsapp contact and group link are not in schema? let's check schema.
-        // checking schema: id, slug, organizer_id, title, description, image_url, prize_description (missing in dialog?), ticket_price, total_numbers, draw_date, pix_key, pix_key_type, status...
-        // START CORRECTION: detailed mapping below
-      }).select().single();
+      const formData = new FormData(e.currentTarget);
+      const title = formData.get('title') as string;
 
-      if (error) {
-        console.error(error);
-        throw error;
-      }
+      // Generate base slug
+      const baseSlug = title.toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      const uniqueSuffix = Math.random().toString(36).substring(2, 6);
+      const slug = `${baseSlug}-${uniqueSuffix}`;
+
+      const raffleData = {
+        organizer_id: user.id,
+        title: title,
+        slug: slug,
+        description: formData.get('description') as string,
+        prize_description: formData.get('description') as string,
+        image_url: 'https://picsum.photos/seed/' + Math.floor(Math.random() * 1000) + '/800/600',
+        ticket_price: Number(formData.get('price')),
+        total_numbers: Number(formData.get('total')),
+        draw_date: formData.get('date') as string,
+        pix_key: formData.get('pix') as string,
+        pix_key_type: 'random',
+        status: 'pending_payment'
+      };
+
+      // Insert into DB to get the ID
+      const { data, error } = await supabase.from('raffles').insert(raffleData).select().single();
+
+      if (error) throw error;
+
+      setPendingRaffle(data);
+      setStep('payment');
 
       if (onCreate) onCreate(data);
-
-      setOpen(false);
-      setStep('form');
-      setPendingRaffle(null);
-      setSelectedFile(null);
-
-      toast({
-        title: "Rifa Publicada!",
-        description: "Sua campanha já está ativa e salva no banco de dados.",
-      });
 
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao publicar",
+        title: "Erro ao criar",
         description: error.message || "Tente novamente."
       });
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={(val) => {
@@ -168,13 +130,13 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
           </DialogTitle>
           {step === 'payment' && (
             <DialogDescription className="text-base font-medium text-foreground/80 mt-2">
-              Sua rifa está pronta! Para ativá-la, realize o pagamento da taxa única de publicação.
+              Sua rifa foi salva como rascunho! Para ativá-la e torná-la pública, realize o pagamento da taxa de publicação.
             </DialogDescription>
           )}
         </DialogHeader>
 
         {step === 'form' ? (
-          <form onSubmit={handleShowPayment} className="p-6 space-y-5">
+          <form onSubmit={handleCreateAndShowPayment} className="p-6 space-y-5">
             <div className="grid gap-2">
               <Label htmlFor="title" className="font-semibold">Título do Prêmio</Label>
               <Input id="title" name="title" placeholder="Ex: iPhone 15 Pro Max" required className="h-12 text-base" />
@@ -266,7 +228,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
 
             <div className="pt-4 sticky bottom-0 bg-white pb-2">
               <Button type="submit" className="w-full h-14 font-bold text-lg shadow-xl gap-2" disabled={loading}>
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Próximo Passo <ArrowRight className="w-5 h-5" /></>}
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Publicar e Ir para Pagamento <ArrowRight className="w-5 h-5" /></>}
               </Button>
             </div>
           </form>
@@ -277,43 +239,37 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
               <p className="text-4xl font-black text-primary-foreground">R$ 9,90</p>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border-2 border-primary overflow-hidden shadow-sm">
-              <div className="w-48 h-48 bg-white flex items-center justify-center">
-                <PixQRCode />
+            <div className="w-full py-4 space-y-4">
+              <div className="text-sm text-muted-foreground font-medium">
+                Clique no botão abaixo para pagar a taxa de ativação via GGCheckout.
+                A ativação será automática após a confirmação.
               </div>
+
+              <Button
+                className="w-full h-16 bg-[#0052FF] hover:bg-[#0041CC] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
+                onClick={() => {
+                  const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${pendingRaffle?.id}`;
+                  window.open(paymentUrl, '_blank');
+                }}
+              >
+                <Zap className="w-7 h-7 fill-current" /> PAGAR COM GGCHECKOUT
+              </Button>
             </div>
 
-            <div className="w-full space-y-2">
-              <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Chave PIX da Plataforma</Label>
-              <div className="flex items-center gap-2 bg-muted p-4 rounded-xl font-mono text-sm break-all border group">
-                pagamentos@rifazap.com
-                <Button variant="ghost" size="icon" onClick={() => {
-                  navigator.clipboard.writeText("pagamentos@rifazap.com");
-                  toast({ title: "Chave PIX copiada!", description: "Agora basta pagar os R$ 9,90." });
-                }} className="shrink-0 hover:bg-primary/20">
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="bg-green-50 p-4 rounded-xl flex items-start gap-3 text-left border border-green-100">
-              <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
-              <p className="text-sm text-green-800 leading-tight">
-                Após o pagamento, sua rifa será publicada instantaneamente no painel.
+            <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 text-left border border-blue-100">
+              <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+              <p className="text-sm text-blue-800 leading-tight">
+                O pagamento é processado com segurança pelo GGCheckout. Após concluir, sua rifa aparecerá como Ativa no painel em instantes.
               </p>
             </div>
 
-            <div className="w-full space-y-3 pt-2">
+            <div className="w-full pt-4">
               <Button
-                onClick={handleFinalize}
-                className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg gap-2 rounded-xl shadow-md"
-                disabled={loading}
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="w-full h-12 text-muted-foreground font-bold border-2"
               >
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Já paguei, publicar agora!"}
-              </Button>
-
-              <Button variant="ghost" onClick={() => setStep('form')} className="w-full h-10 text-muted-foreground font-medium">
-                Voltar e revisar dados
+                Concluir e pagar depois
               </Button>
             </div>
           </div>
