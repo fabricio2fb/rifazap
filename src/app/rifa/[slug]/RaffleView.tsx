@@ -6,14 +6,17 @@ import { NumberGrid } from "@/components/raffle/NumberGrid";
 import { CheckoutModal } from "@/components/raffle/CheckoutModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Calendar, Trophy, CheckCircle, Info } from "lucide-react";
+import { MessageCircle, Calendar, Trophy, CheckCircle, Info, Ticket } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/lib/supabase/client";
 
+import { MyNumbersModal } from "@/components/raffle/MyNumbersModal";
+
 export default function RaffleView({ initialRaffle, initialParticipants }: { initialRaffle: any, initialParticipants: any[] }) {
     const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [isMyNumbersOpen, setIsMyNumbersOpen] = useState(false);
     const [participants, setParticipants] = useState<any[]>(initialParticipants);
     const supabase = createClient();
 
@@ -132,6 +135,14 @@ ${url}`;
                             <MessageCircle className="w-4 h-4" /> Grupo WhatsApp
                         </Button>
                     )}
+
+                    <Button
+                        variant="outline"
+                        className="w-full gap-2 border-blue-200 text-blue-600 hover:bg-blue-50 font-bold h-12 rounded-xl"
+                        onClick={() => setIsMyNumbersOpen(true)}
+                    >
+                        <Ticket className="w-4 h-4" /> Meus Números
+                    </Button>
                 </div>
 
                 <div className="pt-4 space-y-4">
@@ -188,6 +199,14 @@ ${url}`;
                     onClose={() => setIsCheckoutOpen(false)}
                     selectedNumbers={selectedNumbers}
                     raffle={initialRaffle}
+                />
+            )}
+
+            {initialRaffle && (
+                <MyNumbersModal
+                    isOpen={isMyNumbersOpen}
+                    onClose={() => setIsMyNumbersOpen(false)}
+                    raffleId={initialRaffle.id}
                 />
             )}
         </div>
