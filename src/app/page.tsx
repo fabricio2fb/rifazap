@@ -3,14 +3,14 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { 
-  ArrowRight, 
-  Zap, 
-  MessageCircle, 
+import {
+  ArrowRight,
+  Zap,
+  MessageCircle,
   Share2,
-  CheckCircle2, 
-  Smartphone, 
-  Users, 
+  CheckCircle2,
+  Smartphone,
+  Users,
   ShieldCheck,
   Menu,
   Trophy,
@@ -40,8 +40,8 @@ export default function Home() {
             <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="outline" className="font-bold border-2">Acessar Painel</Button>
+            <Link href="/customer/login">
+              <Button variant="outline" className="font-bold border-2">Meus Números</Button>
             </Link>
             <Link href="/login">
               <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Começar Agora</Button>
@@ -72,11 +72,6 @@ export default function Home() {
               <Link href="/login">
                 <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
                   Criar Minha Rifa <ArrowRight className="w-6 h-6" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
-                  Gerenciar Rifas
                 </Button>
               </Link>
             </div>
@@ -116,7 +111,7 @@ export default function Home() {
                   <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">Como funciona para seu cliente?</h2>
                   <p className="text-lg text-muted-foreground font-medium">Simples, intuitivo e feito para converter mais vendas pelo celular.</p>
                 </div>
-                
+
                 <div className="space-y-6">
                   {[
                     {
@@ -156,12 +151,12 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              
+
               {/* Visual Preview (Animated Flow) */}
               <div className="relative aspect-square bg-white rounded-[3rem] shadow-2xl border-[12px] border-slate-900 overflow-hidden flex flex-col">
                 {/* Mobile App Header Mockup */}
                 <div className="bg-slate-900 h-6 w-32 mx-auto rounded-b-2xl absolute top-0 left-1/2 -translate-x-1/2 z-20" />
-                
+
                 <div className="p-8 pt-12 flex-1 flex flex-col">
                   {/* Step 0: Grid Selection */}
                   {animationStep === 0 && (
@@ -178,8 +173,8 @@ export default function Home() {
 
                       <div className="grid grid-cols-5 gap-3 relative">
                         {[...Array(20)].map((_, i) => (
-                          <div 
-                            key={i} 
+                          <div
+                            key={i}
                             className={`
                               aspect-square rounded-xl flex items-center justify-center text-xs font-bold border transition-all duration-300
                               ${i === 8 ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-110' : 'bg-muted/30 text-muted-foreground border-border'}
@@ -262,7 +257,7 @@ export default function Home() {
                       <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center shadow-2xl animate-bounce">
                         <CheckCircle2 className="w-14 h-14 text-white" />
                       </div>
-                      
+
                       <div className="space-y-2">
                         <h3 className="font-black text-3xl text-slate-900">SUCESSO!</h3>
                         <p className="text-muted-foreground font-medium px-4">Sua reserva do número 09 foi confirmada. Boa sorte!</p>
@@ -319,7 +314,7 @@ export default function Home() {
               <Button variant="ghost" size="icon" className="rounded-full bg-white shadow-sm"><MessageCircle className="h-4 w-4" /></Button>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             <h4 className="font-bold uppercase tracking-wider text-sm">Plataforma</h4>
             <ul className="space-y-3 text-muted-foreground text-sm font-medium">

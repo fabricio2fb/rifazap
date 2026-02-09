@@ -1,20 +1,21 @@
-
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Trophy, 
-  ExternalLink, 
-  Package, 
-  User, 
-  CheckCircle, 
-  ArrowLeft, 
-  Zap, 
-  MessageCircle, 
+import {
+  Trophy,
+  ExternalLink,
+  Package,
+  User,
+  CheckCircle,
+  ArrowLeft,
+  Zap,
+  MessageCircle,
   Pencil,
   Dices,
   Users,
@@ -23,30 +24,125 @@ import {
   Search,
   Timer,
   Info,
-  Calendar
+  Calendar,
+  XCircle,
+  AlertTriangle,
+  Bell,
+  Settings
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
 import { EditRaffleDialog } from "@/components/admin/EditRaffleDialog";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import { NotificationSettingsDialog } from "@/components/admin/NotificationSettingsDialog";
+import { RaffleSummaryDialog } from "@/components/admin/RaffleSummaryDialog";
+import { DrawRaffleDialog } from "@/components/admin/DrawRaffleDialog";
+import { WinnerDetailsDialog } from "@/components/admin/WinnerDetailsDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { MOCK_RAFFLES, MOCK_PARTICIPANTS } from "@/lib/mock-data";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfirm: (id: string, isLate?: boolean) => void, onCancel: (id: string) => void }) => {
+  const [timeLeft, setTimeLeft] = useState("");
+  const [isExpired, setIsExpired] = useState(false);
+
+  useEffect(() => {
+    const calculateTime = () => {
+      const created = new Date(sale.createdAt).getTime();
+      const expireTime = created + 10 * 60 * 1000; // 10 minutes limit
+      const now = new Date().getTime();
+      const diff = expireTime - now;
+
+      if (diff <= 0) {
+        setIsExpired(true);
+        setTimeLeft("00:00");
+        return;
+      }
+
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+      setIsExpired(false);
+    };
+
+    calculateTime();
+    const interval = setInterval(calculateTime, 1000);
+    return () => clearInterval(interval);
+  }, [sale.createdAt]);
+
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex flex-col items-center gap-1 mb-2">
+        <Badge variant="outline" className={`gap-1 w-full justify-center ${isExpired ? 'text-orange-600 border-orange-500' : 'text-yellow-600 border-yellow-500'}`}>
+          <Timer className="w-3 h-3" />
+          {isExpired ? "EXPIRADO" : "PENDENTE"}
+        </Badge>
+        {!isExpired && (
+          <div className="flex items-center gap-1 font-mono text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100">
+            Tempo restante: {timeLeft}
+          </div>
+        )}
+        <span className="text-[10px] text-muted-foreground font-medium">
+          Gerado às {new Date(sale.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-1 w-full">
+        {!isExpired ? (
+          <Button
+            size="sm"
+            onClick={() => onConfirm(sale.id, false)}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold h-7 w-full text-[10px]"
+          >
+            <CheckCircle className="w-3 h-3 mr-1" /> Confirmar
+          </Button>
+        ) : (
+          <Button
+            size="sm"
+            onClick={() => onConfirm(sale.id, true)}
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold h-7 w-full text-[10px]"
+          >
+            <AlertTriangle className="w-3 h-3 mr-1" /> Pago c/ Atraso
+          </Button>
+        )}
+        <Button
+          size="sm"
+          variant="destructive"
+          onClick={() => onCancel(sale.id)}
+          className="font-bold h-7 w-full text-[10px]"
+        >
+          <XCircle className="w-3 h-3 mr-1" /> Cancelar
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("raffles");
-  const [raffles, setRaffles] = useState<any[]>(MOCK_RAFFLES);
-  const [sales, setSales] = useState<any[]>(MOCK_PARTICIPANTS);
+  const [raffles, setRaffles] = useState<any[]>([]);
+  const [sales, setSales] = useState<any[]>([]);
   const [editingRaffle, setEditingRaffle] = useState<any>(null);
-  
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Notifications
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Custom Loading State
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const supabase = createClient();
+
   // States for Draw
   const [drawingRaffle, setDrawingRaffle] = useState<any>(null);
   const [drawStep, setDrawStep] = useState<'idle' | 'counting' | 'finished'>('idle');
@@ -60,14 +156,176 @@ export default function AdminDashboard() {
 
   const { toast } = useToast();
 
-  const confirmPayment = (saleId: string) => {
-    setSales(prev => prev.map(sale => 
-      sale.id === saleId ? { ...sale, status: 'confirmed' } : sale
-    ));
-    toast({ 
-      title: "Pagamento confirmado!", 
-      description: "O participante agora está com os números garantidos." 
+  useEffect(() => {
+    const loadData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/login');
+        return;
+      }
+
+      // Fetch raffles
+      const { data: rafflesData } = await supabase
+        .from('raffles')
+        .select('*')
+        .eq('organizer_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (rafflesData) {
+        const mappedRaffles = rafflesData.map(r => ({
+          id: r.id,
+          title: r.title,
+          slug: r.slug,
+          description: r.description,
+          imageUrl: r.image_url,
+          pricePerNumber: r.ticket_price,
+          totalNumbers: r.total_numbers,
+          drawDate: r.draw_date,
+          status: r.status,
+          winningNumber: r.winner_number,
+          winner: r.winner_name || 'Ganhador',
+          pixKey: r.pix_key,
+          createdAt: r.created_at
+        }));
+        setRaffles(mappedRaffles);
+      }
+
+      // Load Sales
+      const { data: allSales } = await supabase
+        .from('purchases')
+        .select('*, customers(*)')
+        .order('created_at', { ascending: false });
+
+      if (allSales) {
+        mapSales(allSales);
+      }
+
+      // Load Notifications
+      fetchNotifications(user.id);
+
+      // Subscribe to Realtime Purchases
+      const channel = supabase
+        .channel('admin-dashboard')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'purchases' },
+          (payload) => {
+            // New sale!
+            toast({
+              title: "Nova Venda!",
+              description: `Venda iniciada. Valor: R$ ${payload.new.total_amount}`,
+            });
+            // Reload sales
+            loadSales();
+            // Play notification sound
+            playNotificationSound();
+          }
+        )
+        .subscribe();
+
+      setLoading(false);
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    };
+    loadData();
+  }, []);
+
+  const playNotificationSound = () => {
+    // Create a simple beep or use a hosted file. For now, just skipped or implemented if requested.
+    // const audio = new Audio('/sounds/kaching.mp3');
+    // audio.play().catch(e => console.log("Audio play failed", e));
+  };
+
+  const fetchNotifications = async (userId: string) => {
+    // Implement if notification table exists
+    // For now, mocking or empty
+    setNotifications([]);
+  };
+
+  const loadSales = async () => {
+    const { data } = await supabase
+      .from('purchases')
+      .select('*, customers(*)')
+      .order('created_at', { ascending: false });
+    if (data) mapSales(data);
+  };
+
+  const mapSales = (data: any[]) => {
+    const mapped = data.map(p => ({
+      id: p.id,
+      raffleId: p.raffle_id,
+      name: p.customers?.name || 'Desconhecido',
+      whatsapp: p.customers?.phone || '',
+      selectedNumbers: p.numbers,
+      status: p.status, // pending, paid, confirmed, paid_delayed, cancelled
+      createdAt: p.created_at,
+      total: p.total_amount
+    }));
+    setSales(mapped);
+  };
+
+  const loadRaffleDetails = async (raffleId: string) => {
+    // Already loading global sales, but can filter
+    return sales.filter(s => s.raffleId === raffleId);
+  };
+
+  const confirmPayment = async (saleId: string, isLate = false) => {
+    const status = isLate ? 'paid_delayed' : 'confirmed';
+
+    // Update DB
+    const { error } = await supabase
+      .from('purchases')
+      .update({ status: status, confirmed_at: new Date() })
+      .eq('id', saleId);
+
+    if (error) {
+      toast({ variant: "destructive", title: "Erro", description: error.message });
+      return;
+    }
+
+    // Update reserved_numbers status to 'paid'
+    await supabase
+      .from('reserved_numbers')
+      .update({ status: 'paid' })
+      .eq('purchase_id', saleId);
+
+    // Optimistic UI
+    setSales(prev => prev.map(sale => sale.id === saleId ? { ...sale, status } : sale));
+
+    toast({
+      title: isLate ? "Confirmado com Atraso!" : "Pagamento Confirmado!",
+      description: isLate
+        ? "Pagamento marcado como recebido fora do prazo."
+        : "O participante agora está com os números garantidos.",
+      className: isLate ? "bg-orange-100 border-orange-200" : "bg-green-100 border-green-200"
     });
+  };
+
+  const cancelReservation = async (saleId: string) => {
+    // Set status to cancelled
+    // Remove reserved_numbers (or set to cancelled)
+
+    const { error } = await supabase
+      .from('purchases')
+      .update({ status: 'cancelled' })
+      .eq('id', saleId);
+
+    if (error) {
+      toast({ variant: "destructive", title: "Erro", description: error.message });
+      return;
+    }
+
+    // Delete reservation to free up numbers
+    await supabase
+      .from('reserved_numbers')
+      .delete()
+      .eq('purchase_id', saleId);
+
+    setSales(prev => prev.map(sale => sale.id === saleId ? { ...sale, status: 'cancelled' } : sale));
+
+    toast({ title: "Reserva Cancelada", description: "Os números foram liberados.", variant: "destructive" });
   };
 
   const handleUpdateRaffle = (updatedRaffle: any) => {
@@ -79,7 +337,20 @@ export default function AdminDashboard() {
   };
 
   const handleCreateRaffle = (newRaffle: any) => {
-    setRaffles([newRaffle, ...raffles]);
+    const mapped = {
+      id: newRaffle.id,
+      title: newRaffle.title,
+      slug: newRaffle.slug,
+      description: newRaffle.description,
+      imageUrl: newRaffle.image_url,
+      pricePerNumber: newRaffle.ticket_price,
+      totalNumbers: newRaffle.total_numbers,
+      drawDate: newRaffle.draw_date,
+      status: newRaffle.status,
+      createdAt: newRaffle.created_at
+    };
+
+    setRaffles([mapped, ...raffles]);
     toast({
       title: "Rifa Criada!",
       description: "Sua nova rifa foi adicionada à lista.",
@@ -88,8 +359,12 @@ export default function AdminDashboard() {
 
   const confirmedNumbersForRaffle = useMemo(() => {
     if (!drawingRaffle) return [];
-    const confirmedParticipants = sales.filter(s => s.raffleId === drawingRaffle.id && s.status === 'confirmed');
-    const allNumbers: {num: number, buyer: any}[] = [];
+    // Filter sales for this raffle that are confirmed/paid/paid_delayed
+    const confirmedParticipants = sales.filter(s =>
+      s.raffleId === drawingRaffle.id &&
+      (s.status === 'confirmed' || s.status === 'paid' || s.status === 'paid_delayed')
+    );
+    const allNumbers: { num: number, buyer: any }[] = [];
     confirmedParticipants.forEach(p => {
       p.selectedNumbers.forEach((n: number) => {
         allNumbers.push({ num: n, buyer: p });
@@ -103,7 +378,7 @@ export default function AdminDashboard() {
       toast({
         variant: "destructive",
         title: "Sorteio Impossível",
-        description: "Não há participantes com pagamento confirmado.",
+        description: "Não há participantes aptos.",
       });
       return;
     }
@@ -112,7 +387,6 @@ export default function AdminDashboard() {
     setCountdown(5);
     setWinner(null);
 
-    // Countdown and Spin logic
     let count = 5;
     const interval = setInterval(() => {
       count -= 1;
@@ -120,15 +394,21 @@ export default function AdminDashboard() {
       if (count <= 0) {
         clearInterval(interval);
         clearInterval(spinInterval);
-        
-        // Pick Winner
+
         const randomIndex = Math.floor(Math.random() * confirmedNumbersForRaffle.length);
         const chosen = confirmedNumbersForRaffle[randomIndex];
         setWinner(chosen);
         setDrawStep('finished');
 
-        // Update Raffle Status
-        setRaffles(prev => prev.map(r => 
+        const updateWinner = async () => {
+          await supabase.from('raffles').update({
+            status: 'drawn',
+            winner_number: chosen.num,
+          }).eq('id', drawingRaffle.id);
+        };
+        updateWinner();
+
+        setRaffles(prev => prev.map(r =>
           r.id === drawingRaffle.id ? { ...r, status: 'drawn', winner: chosen.buyer.name, winningNumber: chosen.num } : r
         ));
       }
@@ -143,6 +423,28 @@ export default function AdminDashboard() {
     return sales.filter(s => s.raffleId === raffleId);
   };
 
+  const getStatusBadge = (sale: any) => {
+    switch (sale.status) {
+      case 'confirmed':
+      case 'paid':
+        return <Badge className="bg-green-500 hover:bg-green-600 text-white gap-1"><CheckCircle className="w-3 h-3" /> PAGO</Badge>;
+      case 'paid_delayed': // Novo status
+        return <Badge className="bg-orange-500 hover:bg-orange-600 text-white gap-1"><AlertTriangle className="w-3 h-3" /> PAGO (ATRASO)</Badge>;
+      case 'cancelled':
+        return <Badge variant="destructive" className="gap-1"><XCircle className="w-3 h-3" /> CANCELADO</Badge>;
+      default: // pending
+        return null;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-muted/30">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-muted/30 pb-20">
       <header className="bg-white border-b sticky top-0 z-10">
@@ -155,7 +457,29 @@ export default function AdminDashboard() {
             </Link>
             <h1 className="font-bold text-lg sm:text-xl">Painel RifaZap</h1>
           </div>
-          <CreateRaffleDialog onCreate={handleCreateRaffle} />
+
+          <div className="flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-0" align="end">
+                <div className="p-4 border-b font-bold">Notificações</div>
+                <div className="p-4 text-sm text-muted-foreground text-center">
+                  {notifications.length === 0 ? "Nenhuma notificação nova." : "..."}
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)}>
+              <Settings className="w-5 h-5" />
+            </Button>
+
+            <CreateRaffleDialog onCreate={handleCreateRaffle} />
+          </div>
         </div>
       </header>
 
@@ -180,7 +504,7 @@ export default function AdminDashboard() {
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 p-6 flex flex-col justify-between space-y-4">
                     <div className="space-y-2">
                       <CardTitle className="text-xl font-black">{raffle.title}</CardTitle>
@@ -197,29 +521,33 @@ export default function AdminDashboard() {
                         </Button>
                       </Link>
 
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => setEditingRaffle(raffle)}
                         className="gap-2 text-[10px] font-bold h-10 border-2"
                       >
                         <Pencil className="w-3.5 h-3.5" /> EDITAR
                       </Button>
 
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => setSummaryRaffle(raffle)}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSummaryRaffle(raffle);
+                          // loadRaffleDetails(raffle.id); // Sales already loaded globally
+                        }}
                         className="gap-2 text-[10px] font-bold h-10 border-2"
                       >
                         <FileText className="w-3.5 h-3.5" /> RESUMO
                       </Button>
-                      
-                      <Button 
-                        variant="default" 
-                        size="sm" 
+
+                      <Button
+                        variant="default"
+                        size="sm"
                         onClick={() => {
                           setDrawingRaffle(raffle);
+                          // loadRaffleDetails(raffle.id);
                           setDrawStep('idle');
                         }}
                         disabled={raffle.status === 'drawn'}
@@ -243,16 +571,21 @@ export default function AdminDashboard() {
                             <p className="text-[10px] font-bold text-green-700 uppercase">Número</p>
                             <p className="font-black text-2xl text-green-800">{raffle.winningNumber}</p>
                           </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-white border-green-200 text-green-700 hover:bg-green-100 font-bold"
                             onClick={() => {
-                              const p = sales.find(s => s.name === raffle.winner && s.raffleId === raffle.id);
-                              if (p) setViewingWinner({ ...p, winningNumber: raffle.winningNumber });
+                              // Find the winning sale
+                              const winningSale = sales.find(s =>
+                                s.raffleId === raffle.id &&
+                                s.selectedNumbers.includes(raffle.winningNumber)
+                              );
+                              setViewingWinner({ raffle, sale: winningSale || { name: raffle.winner, whatsapp: 'Não encontrado', total: 0 } });
                             }}
-                            className="border-green-200 text-green-700 hover:bg-green-100 font-bold h-10 px-4"
                           >
-                            DETALHES
+                            <Eye className="w-4 h-4 mr-2" />
+                            Ver Detalhes
                           </Button>
                         </div>
                       </div>
@@ -269,8 +602,10 @@ export default function AdminDashboard() {
                 <Card key={sale.id} className="border-none shadow-sm p-4 hover:bg-white transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <p className="font-bold text-base">{sale.name}</p>
-                      <p className="text-xs text-muted-foreground font-medium">{sale.whatsapp}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-base">{sale.name}</p>
+                        <span className="text-xs text-muted-foreground font-medium">({sale.whatsapp})</span>
+                      </div>
                       <div className="flex flex-wrap gap-1 mt-2">
                         {sale.selectedNumbers?.map((n: number) => (
                           <Badge key={n} variant="secondary" className="text-[9px] px-1.5 h-4 font-black">
@@ -278,284 +613,90 @@ export default function AdminDashboard() {
                           </Badge>
                         ))}
                       </div>
+                      <p className="text-[10px] text-muted-foreground pt-1">
+                        Rifa: {raffles.find(r => r.id === sale.raffleId)?.title}
+                      </p>
                     </div>
 
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="text-lg font-black text-foreground">R$ {(sale.selectedNumbers.length * (raffles.find(r => r.id === sale.raffleId)?.pricePerNumber || 0)).toFixed(2)}</p>
-                        <Badge 
-                          variant={sale.status === 'confirmed' ? 'default' : 'outline'}
-                          className={sale.status === 'confirmed' ? 'bg-green-500 text-white' : ''}
-                        >
-                          {sale.status === 'confirmed' ? 'PAGO' : 'PENDENTE'}
-                        </Badge>
+                        <p className="text-lg font-black text-foreground">R$ {sale.total.toFixed(2)}</p>
+                        {sale.status !== 'pending' && getStatusBadge(sale)}
                       </div>
-                      
-                      {sale.status === 'pending' && (
-                        <Button 
-                          size="sm" 
-                          onClick={() => confirmPayment(sale.id)} 
-                          className="bg-green-500 hover:bg-green-600 text-white font-bold h-10"
-                        >
-                          <CheckCircle className="w-4 h-4" /> CONFIRMAR
-                        </Button>
-                      )}
+
+                      <div className="flex flex-col gap-2">
+                        {sale.status === 'pending' && (() => {
+                          const created = new Date(sale.createdAt).getTime();
+                          const now = new Date().getTime();
+                          const diffMinutes = (now - created) / 1000 / 60;
+                          const isRecent = diffMinutes < 10;
+
+                          return (
+                            <PendingSaleActions sale={sale} onConfirm={confirmPayment} onCancel={cancelReservation} />
+                          );
+                        })()}
+
+                        {sale.status === 'cancelled' && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => confirmPayment(sale.id, true)}
+                            className="text-orange-600 border-orange-200 hover:bg-orange-50 font-bold h-8 w-full"
+                          >
+                            <AlertTriangle className="w-3 h-3 mr-1" /> Reviver (Atrasado)
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
           </TabsContent>
-        </Tabs>
-      </div>
+        </Tabs >
+      </div >
 
-      {/* Ganhador Detalhado Dialog */}
-      <Dialog open={!!viewingWinner} onOpenChange={(open) => !open && setViewingWinner(null)}>
-        <DialogContent className="sm:max-w-md rounded-3xl p-0 overflow-hidden">
-          <div className="bg-green-500 p-6 text-white text-center">
-            <Trophy className="w-12 h-12 mx-auto mb-2" />
-            <DialogTitle className="text-2xl font-black text-white">DADOS DO GANHADOR</DialogTitle>
-          </div>
-          <div className="p-6 space-y-4">
-            <div className="space-y-4">
-              <div className="bg-muted/30 p-4 rounded-2xl border">
-                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">Nome do Participante</p>
-                <p className="text-lg font-black">{viewingWinner?.name}</p>
-              </div>
-              <div className="bg-muted/30 p-4 rounded-2xl border">
-                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">WhatsApp de Contato</p>
-                <p className="text-lg font-black">{viewingWinner?.whatsapp}</p>
-              </div>
-              <div className="bg-muted/30 p-4 rounded-2xl border">
-                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">Cotas Adquiridas</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {viewingWinner?.selectedNumbers.map((n: number) => (
-                    <Badge 
-                      key={n} 
-                      variant={n === viewingWinner?.winningNumber ? "default" : "outline"} 
-                      className={n === viewingWinner?.winningNumber ? "bg-green-500 text-white border-none h-8 w-10 flex items-center justify-center font-black" : "h-8 w-10 flex items-center justify-center font-bold opacity-60"}
-                    >
-                      {n.toString().padStart(2, '0')}
-                    </Badge>
-                  ))}
-                </div>
-                {viewingWinner?.winningNumber && (
-                  <p className="mt-2 text-[10px] font-bold text-green-600 uppercase">⭐ Número {viewingWinner.winningNumber} foi o sorteado</p>
-                )}
-              </div>
-              <div className="bg-muted/30 p-4 rounded-2xl border">
-                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1 tracking-widest">Data do Registro</p>
-                <p className="text-sm font-bold">{viewingWinner?.createdAt && new Date(viewingWinner.createdAt).toLocaleString('pt-BR')}</p>
-              </div>
-            </div>
-            <Button 
-              className="w-full h-14 bg-green-500 hover:bg-green-600 text-white font-black text-lg gap-3 rounded-2xl shadow-lg mt-4"
-              onClick={() => {
-                const text = `🏆 *PARABÉNS!* Você foi o ganhador! Estou entrando em contato para combinarmos a entrega do prêmio.`;
-                window.open(`https://wa.me/${viewingWinner.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
-              }}
-            >
-              <MessageCircle className="w-6 h-6 fill-current" /> CONTATAR GANHADOR
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Sorteio Dialog */}
-      <Dialog open={!!drawingRaffle} onOpenChange={(open) => !open && setDrawingRaffle(null)}>
-        <DialogContent className="sm:max-w-2xl text-center p-0 overflow-hidden rounded-3xl">
-          <div className="p-8 space-y-6">
-            <DialogHeader>
-              <DialogTitle className="text-3xl font-black text-center flex items-center justify-center gap-2">
-                <Trophy className="w-8 h-8 text-primary-foreground" />
-                SORTEIO PROFISSIONAL
-              </DialogTitle>
-              <DialogDescription className="text-center font-bold text-lg">
-                Rifa: {drawingRaffle?.title}
-              </DialogDescription>
-            </DialogHeader>
-
-            {drawStep === 'idle' && (
-              <div className="space-y-6">
-                <div className="bg-muted/50 p-6 rounded-2xl text-left border">
-                  <h4 className="font-black text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <Users className="w-4 h-4" /> Participantes Aptos ({confirmedNumbersForRaffle.length})
-                  </h4>
-                  <ScrollArea className="h-64 pr-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {confirmedNumbersForRaffle.map((item, idx) => (
-                        <div key={idx} className="bg-white p-3 rounded-xl border flex justify-between items-center shadow-sm">
-                          <div>
-                            <p className="font-bold text-xs">{item.buyer.name}</p>
-                            <p className="text-[10px] text-muted-foreground">{item.buyer.whatsapp}</p>
-                          </div>
-                          <Badge className="font-black text-lg h-8 w-10 flex items-center justify-center">
-                            {item.num.toString().padStart(2, '0')}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </div>
-
-                <Button 
-                  onClick={startDrawCeremony}
-                  disabled={confirmedNumbersForRaffle.length === 0}
-                  className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
-                >
-                  <Dices className="w-8 h-8" /> INICIAR SORTEIO AGORA
-                </Button>
-              </div>
-            )}
-
-            {drawStep === 'counting' && (
-              <div className="py-20 space-y-12 animate-in zoom-in duration-500">
-                <div className="relative">
-                  <div className="w-48 h-48 bg-primary rounded-full flex items-center justify-center mx-auto shadow-[0_0_60px_rgba(255,221,43,0.4)] animate-pulse border-8 border-white">
-                    <span className="text-7xl font-black text-primary-foreground">
-                      {currentSpinNumber.toString().padStart(2, '0')}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 border-4 border-dashed border-primary/30 rounded-full animate-spin duration-[3000ms]" />
-                </div>
-                
-                <div className="space-y-2">
-                  <p className="text-2xl font-black text-muted-foreground uppercase tracking-[0.3em]">Sorteando em</p>
-                  <p className="text-6xl font-black text-primary-foreground animate-bounce">{countdown}s</p>
-                </div>
-              </div>
-            )}
-
-            {drawStep === 'finished' && winner && (
-              <div className="py-8 space-y-8 animate-in zoom-in duration-500">
-                <div className="relative">
-                  <div className="w-48 h-48 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl border-8 border-white">
-                    <span className="text-7xl font-black text-white">{winner.num.toString().padStart(2, '0')}</span>
-                  </div>
-                  <Zap className="absolute -top-6 -right-6 w-16 h-16 text-yellow-500 fill-current animate-bounce" />
-                </div>
-                
-                <div className="space-y-2">
-                  <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">GANHADOR(A)</p>
-                  <h3 className="text-4xl font-black text-foreground">{winner.buyer.name}</h3>
-                </div>
-
-                <div className="grid grid-cols-1 gap-3 px-6">
-                  <Button 
-                    className="w-full h-16 bg-green-500 hover:bg-green-600 text-white font-black text-xl gap-3 rounded-2xl shadow-lg"
-                    onClick={() => {
-                      const text = `🏆 *PARABÉNS!* Você foi o ganhador da rifa *${drawingRaffle.title}* com o número *${winner.num}*! 🥳`;
-                      window.open(`https://wa.me/${winner.buyer.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
-                    }}
-                  >
-                    <MessageCircle className="w-7 h-7 fill-current" /> AVISAR GANHADOR
-                  </Button>
-                  <Button variant="ghost" onClick={() => setDrawingRaffle(null)} className="font-bold">
-                    Fechar Sorteio
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Resumo Detalhado Dialog */}
-      <Dialog open={!!summaryRaffle} onOpenChange={(open) => !open && setSummaryRaffle(null)}>
-        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col p-0 rounded-3xl overflow-hidden">
-          <div className="bg-primary p-8 text-primary-foreground relative">
-            <div className="absolute top-0 right-0 p-8 opacity-10">
-              <FileText className="w-24 h-24" />
-            </div>
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-black text-primary-foreground">RESUMO DETALHADO</DialogTitle>
-              <DialogDescription className="text-primary-foreground/90 font-bold text-lg">
-                {summaryRaffle?.title}
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
-              <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Total Vendas</p>
-                <p className="text-2xl font-black text-black">{getRaffleSummary(summaryRaffle?.id).length}</p>
-              </div>
-              <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Confirmadas</p>
-                <p className="text-2xl font-black text-black">
-                  {getRaffleSummary(summaryRaffle?.id).filter(s => s.status === 'confirmed').length}
-                </p>
-              </div>
-              <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Pendentes</p>
-                <p className="text-2xl font-black text-black">
-                  {getRaffleSummary(summaryRaffle?.id).filter(s => s.status === 'pending').length}
-                </p>
-              </div>
-              <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-black/10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Arrecadado</p>
-                <p className="text-2xl font-black text-black">
-                  R$ {getRaffleSummary(summaryRaffle?.id)
-                    .filter(s => s.status === 'confirmed')
-                    .reduce((acc, curr) => acc + (curr.selectedNumbers.length * (summaryRaffle?.pricePerNumber || 0)), 0)
-                    .toFixed(2)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-8">
-            <h4 className="font-black text-sm uppercase tracking-widest mb-4 flex items-center gap-2 text-muted-foreground">
-              <Users className="w-4 h-4" /> Detalhamento de Compradores
-            </h4>
-            
-            <div className="space-y-3">
-              {getRaffleSummary(summaryRaffle?.id).length === 0 ? (
-                <div className="py-20 text-center border-2 border-dashed rounded-3xl bg-muted/20">
-                  <Package className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                  <p className="font-bold text-muted-foreground">Nenhuma venda registrada.</p>
-                </div>
-              ) : (
-                getRaffleSummary(summaryRaffle?.id).map((p: any) => (
-                  <div key={p.id} className="p-5 border rounded-2xl bg-white shadow-sm flex flex-col sm:flex-row justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-black text-lg">{p.name}</p>
-                        <Badge variant={p.status === 'confirmed' ? 'default' : 'outline'} className={p.status === 'confirmed' ? 'bg-green-500 text-white' : ''}>
-                          {p.status === 'confirmed' ? 'PAGO' : 'PENDENTE'}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm font-medium text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><MessageCircle className="w-3.5 h-3.5" /> {p.whatsapp}</span>
-                        <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {new Date(p.createdAt).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 justify-end content-center max-w-[200px]">
-                      {p.selectedNumbers.map((n: number) => (
-                        <span key={n} className="text-xs font-black bg-muted px-2 py-1 rounded-lg border shadow-sm">
-                          {n.toString().padStart(2, '0')}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <DialogFooter className="p-6 bg-muted/30 border-t">
-            <Button className="w-full h-12 rounded-xl font-black" onClick={() => setSummaryRaffle(null)}>
-              FECHAR RELATÓRIO
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <EditRaffleDialog 
-        raffle={editingRaffle} 
-        isOpen={!!editingRaffle} 
-        onClose={() => setEditingRaffle(null)} 
-        onUpdate={handleUpdateRaffle} 
+      <NotificationSettingsDialog
+        open={showSettings}
+        onOpenChange={setShowSettings}
       />
-    </div>
+
+      <EditRaffleDialog
+        isOpen={!!editingRaffle}
+        raffle={editingRaffle}
+        onClose={() => setEditingRaffle(null)}
+        onUpdate={handleUpdateRaffle}
+      />
+
+      <RaffleSummaryDialog
+        isOpen={!!summaryRaffle}
+        raffle={summaryRaffle}
+        sales={sales}
+        onOpenChange={(open) => !open && setSummaryRaffle(null)}
+      />
+
+      <DrawRaffleDialog
+        isOpen={!!drawingRaffle}
+        raffle={drawingRaffle}
+        sales={sales}
+        onOpenChange={(open) => !open && setDrawingRaffle(null)}
+        onDrawComplete={(winner) => {
+          // Refresh local state to show updated winner immediately
+          handleUpdateRaffle({
+            ...drawingRaffle,
+            status: 'drawn',
+            winner: winner.buyer.name,
+            winningNumber: winner.num
+          });
+        }}
+      />
+
+      <WinnerDetailsDialog
+        isOpen={!!viewingWinner}
+        onOpenChange={(open) => !open && setViewingWinner(null)}
+        winnerSale={viewingWinner?.sale}
+        raffle={viewingWinner?.raffle}
+      />
+    </div >
   );
 }

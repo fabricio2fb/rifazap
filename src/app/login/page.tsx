@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Zap, Loader2, Mail, Lock, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const supabase = createClient();
 
   // Simulação de login para evitar erros de banco de dados
   const handleEmailAuth = async (type: 'login' | 'register') => {
@@ -30,26 +31,55 @@ export default function LoginPage() {
       });
       return;
     }
-    
+
     setAuthLoading(true);
     setErrorMessage(null);
 
-    // Simula um atraso de rede
-    setTimeout(() => {
-      setAuthLoading(false);
+    try {
+      if (type === 'login') {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        if (error) throw error;
+        router.push("/admin");
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          }
+        });
+        if (error) throw error;
+        toast({
+          title: "Conta criada!",
+          description: "Verifique seu e-mail para confirmar (se necessário) ou faça login.",
+        });
+        // Should we auto login? Usually requires email confirm if configured, but let's try pushing or letting them login
+        // For better UX in dev mode with disabled email confirm:
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) router.push("/admin");
+      }
+    } catch (error: any) {
+      setErrorMessage(error.message || "Erro na autenticação. Verifique seus dados.");
       toast({
-        title: type === 'login' ? "Bem-vindo de volta!" : "Conta criada!",
-        description: "Acessando seu painel administrativo (Modo Simulação).",
+        variant: "destructive",
+        title: "Erro de Autenticação",
+        description: error.message || "Verifique suas credenciais.",
       });
-      router.push("/admin");
-    }, 1000);
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
     setAuthLoading(true);
+    // Not implemented in backend yet, keeping mock delay or TODO
+    toast({ title: "Em breve", description: "Login com Google será habilitado em breve." });
     setTimeout(() => {
       setAuthLoading(false);
-      router.push("/admin");
+      // router.push("/admin");
     }, 1000);
   };
 
@@ -87,10 +117,10 @@ export default function LoginPage() {
                 <Label htmlFor="email">E-mail</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="exemplo@email.com" 
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="exemplo@email.com"
                     className="pl-10"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -101,19 +131,19 @@ export default function LoginPage() {
                 <Label htmlFor="password">Senha</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    id="password" 
-                    type="password" 
-                    placeholder="••••••" 
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••"
                     className="pl-10"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
-              <Button 
-                onClick={() => handleEmailAuth('login')} 
-                className="w-full h-11 font-bold" 
+              <Button
+                onClick={() => handleEmailAuth('login')}
+                className="w-full h-11 font-bold"
                 disabled={authLoading}
               >
                 {authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Acessar Painel"}
@@ -125,10 +155,10 @@ export default function LoginPage() {
                 <Label htmlFor="reg-email">E-mail</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    id="reg-email" 
-                    type="email" 
-                    placeholder="exemplo@email.com" 
+                  <Input
+                    id="reg-email"
+                    type="email"
+                    placeholder="exemplo@email.com"
                     className="pl-10"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -139,19 +169,19 @@ export default function LoginPage() {
                 <Label htmlFor="reg-password">Crie uma Senha</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    id="reg-password" 
-                    type="password" 
-                    placeholder="Mínimo 6 caracteres" 
+                  <Input
+                    id="reg-password"
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
                     className="pl-10"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
-              <Button 
-                onClick={() => handleEmailAuth('register')} 
-                className="w-full h-11 font-bold bg-primary hover:bg-primary/90 text-primary-foreground" 
+              <Button
+                onClick={() => handleEmailAuth('register')}
+                className="w-full h-11 font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
                 disabled={authLoading}
               >
                 {authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Cadastrar e Iniciar"}
@@ -168,9 +198,9 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button 
-            onClick={handleGoogleLogin} 
-            variant="outline" 
+          <Button
+            onClick={handleGoogleLogin}
+            variant="outline"
             className="w-full h-11 gap-3 font-semibold hover:bg-muted"
             disabled={authLoading}
           >
