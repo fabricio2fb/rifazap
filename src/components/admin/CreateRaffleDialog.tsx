@@ -53,13 +53,14 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
 
   async function handleCreateAndShowPayment(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
     setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
-      const formData = new FormData(e.currentTarget);
+      const formData = new FormData(form);
       const title = formData.get('title') as string;
 
       // Generate base slug
