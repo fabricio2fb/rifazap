@@ -28,7 +28,8 @@ import {
   XCircle,
   AlertTriangle,
   Bell,
-  Settings
+  Settings,
+  Ticket
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -57,9 +58,13 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
   useEffect(() => {
     const calculateTime = () => {
       const created = new Date(sale.createdAt).getTime();
-      const expireTime = created + 10 * 60 * 1000; // 10 minutes limit
       const now = new Date().getTime();
-      const diff = expireTime - now;
+
+      // Calculate how many ms have passed since creation
+      const msPassed = now - created;
+      const limitMs = 10 * 60 * 1000; // 10 minutes strictly
+
+      const diff = limitMs - msPassed;
 
       if (diff <= 0) {
         setIsExpired(true);
@@ -67,8 +72,11 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
         return;
       }
 
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      // If diff is larger than limit (future date or offset), cap it to limit
+      const actualDiff = Math.min(diff, limitMs);
+
+      const minutes = Math.floor(actualDiff / (1000 * 60));
+      const seconds = Math.floor((actualDiff % (1000 * 60)) / 1000);
 
       setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       setIsExpired(false);
@@ -655,7 +663,9 @@ export default function AdminDashboard() {
                           const created = new Date(sale.createdAt).getTime();
                           const now = new Date().getTime();
                           const diffMinutes = (now - created) / 1000 / 60;
-                          const isRecent = diffMinutes < 10;
+
+                          // If it's more than 10 minutes old, it's NOT recent (but we still show actions with "Atrasado" logic)
+                          const isExpiredLocal = diffMinutes >= 10;
 
                           return (
                             <PendingSaleActions sale={sale} onConfirm={confirmPayment} onCancel={cancelReservation} />
