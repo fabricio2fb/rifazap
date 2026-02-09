@@ -562,6 +562,27 @@ export default function AdminDashboard() {
                       </Button>
                     </div>
 
+                    {raffle.status === 'pending_payment' && (
+                      <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 text-left">
+                          <Zap className="w-6 h-6 text-blue-600 fill-current" />
+                          <div>
+                            <p className="text-[10px] font-bold text-blue-700 uppercase leading-none mb-1">Pagamento Necessário</p>
+                            <p className="text-sm font-medium text-blue-800 leading-tight">Sua rifa está salva, mas falta pagar a taxa para ativar.</p>
+                          </div>
+                        </div>
+                        <Button
+                          className="w-full sm:w-auto bg-[#0052FF] hover:bg-[#0041CC] text-white font-black text-xs gap-2 px-6 h-12 shadow-lg transition-all active:scale-95 shrink-0"
+                          onClick={() => {
+                            const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${raffle.id}`;
+                            window.open(paymentUrl, '_blank');
+                          }}
+                        >
+                          <Zap className="w-4 h-4 fill-current" /> PAGAR TAXA
+                        </Button>
+                      </div>
+                    )}
+
                     {raffle.status === 'drawn' && (
                       <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
