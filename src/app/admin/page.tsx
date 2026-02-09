@@ -499,8 +499,13 @@ export default function AdminDashboard() {
                       <Image src={raffle.imageUrl} alt={raffle.title} fill className="object-cover" />
                     )}
                     <div className="absolute top-3 left-3 flex flex-col gap-2">
-                      <Badge variant={raffle.status === 'active' ? 'default' : raffle.status === 'drawn' ? 'secondary' : 'outline'} className="shadow-lg px-3 py-1 font-bold">
-                        {raffle.status === 'active' ? 'ATIVA' : raffle.status === 'drawn' ? 'SORTEADA' : 'ENCERRADA'}
+                      <Badge
+                        variant={raffle.status === 'active' ? 'default' : raffle.status === 'drawn' ? 'secondary' : 'outline'}
+                        className={`shadow-lg px-3 py-1 font-bold ${raffle.status === 'pending_payment' ? 'border-orange-500 text-orange-600 bg-orange-50' : ''}`}
+                      >
+                        {raffle.status === 'active' ? 'ATIVA' :
+                          raffle.status === 'drawn' ? 'SORTEADA' :
+                            raffle.status === 'pending_payment' ? 'PGTO PENDENTE' : 'ENCERRADA'}
                       </Badge>
                     </div>
                   </div>

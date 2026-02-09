@@ -108,7 +108,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
         draw_date: pendingRaffle.draw_date,
         pix_key: pendingRaffle.pix_key,
         pix_key_type: pendingRaffle.pix_key_type,
-        status: 'active'
+        status: 'pending_payment'
         // whatsapp contact and group link are not in schema? let's check schema.
         // checking schema: id, slug, organizer_id, title, description, image_url, prize_description (missing in dialog?), ticket_price, total_numbers, draw_date, pix_key, pix_key_type, status...
         // START CORRECTION: detailed mapping below
