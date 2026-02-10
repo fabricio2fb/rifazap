@@ -60,11 +60,9 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
       const created = new Date(sale.createdAt).getTime();
       const now = new Date().getTime();
 
-      // Calculate how many ms have passed since creation
-      const msPassed = now - created;
-      const limitMs = 10 * 60 * 1000; // 10 minutes strictly
-
-      const diff = limitMs - msPassed;
+      const limitMs = 10 * 60 * 1000;
+      const expireTime = created + limitMs;
+      const diff = expireTime - now;
 
       if (diff <= 0) {
         setIsExpired(true);
@@ -72,11 +70,12 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
         return;
       }
 
-      // If diff is larger than limit (future date or offset), cap it to limit
-      const actualDiff = Math.min(diff, limitMs);
+      // If diff is larger than limit (client clock behind server), 
+      // we still show the countdown starting from the limit.
+      const displayMs = diff > limitMs ? limitMs : diff;
 
-      const minutes = Math.floor(actualDiff / (1000 * 60));
-      const seconds = Math.floor((actualDiff % (1000 * 60)) / 1000);
+      const minutes = Math.floor(displayMs / (1000 * 60));
+      const seconds = Math.floor((displayMs % (1000 * 60)) / 1000);
 
       setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       setIsExpired(false);
@@ -216,17 +215,18 @@ export default function AdminDashboard() {
         .channel('admin-dashboard')
         .on(
           'postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'purchases' },
+          { event: '*', schema: 'public', table: 'purchases' },
           (payload) => {
-            // New sale!
-            toast({
-              title: "Nova Venda!",
-              description: `Venda iniciada. Valor: R$ ${payload.new.total_amount}`,
-            });
-            // Reload sales
+            // Reload sales on any change (INSERT, UPDATE, DELETE)
             loadSales();
-            // Play notification sound
-            playNotificationSound();
+
+            if (payload.eventType === 'INSERT') {
+              toast({
+                title: "Nova Venda!",
+                description: `Venda iniciada. Valor: R$ ${payload.new.total_amount}`,
+              });
+              playNotificationSound();
+            }
           }
         )
         .subscribe();

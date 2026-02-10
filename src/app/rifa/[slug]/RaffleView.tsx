@@ -19,9 +19,64 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
     const [isMyNumbersOpen, setIsMyNumbersOpen] = useState(false);
     const [participants, setParticipants] = useState<any[]>(initialParticipants);
     const supabase = createClient();
+    const { toast } = useToast();
 
     // Polling or Realtime could be added here later if needed
     // For now we use the initial data from server
+
+    useEffect(() => {
+        const channel = supabase
+            .channel(`raffle-${initialRaffle.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'purchases',
+                    filter: `raffle_id=eq.${initialRaffle.id}`
+                },
+                (payload) => {
+                    console.log('Realtime update:', payload);
+                    if (payload.eventType === 'INSERT') {
+                        const newParticipant = {
+                            raffleId: payload.new.raffle_id,
+                            status: payload.new.status,
+                            selectedNumbers: payload.new.numbers
+                        };
+                        setParticipants(prev => [...prev, newParticipant]);
+
+                        toast({
+                            title: "Nova reserva!",
+                            description: "Alguém acabou de reservar números nesta rifa.",
+                        });
+                    } else if (payload.eventType === 'UPDATE') {
+                        setParticipants(prev => prev.map(p => {
+                            // This is a bit tricky since we don't have purchase ID in the simplified state
+                            // but we can match by the numbers array if they are unique per purchase
+                            const isMatch = JSON.stringify(p.selectedNumbers) === JSON.stringify(payload.old?.numbers || payload.new.numbers);
+                            if (isMatch) {
+                                return {
+                                    ...p,
+                                    status: payload.new.status,
+                                    selectedNumbers: payload.new.numbers
+                                };
+                            }
+                            return p;
+                        }));
+                    } else if (payload.eventType === 'DELETE') {
+                        // Handle cancellations if needed (reserved numbers being freed)
+                        setParticipants(prev => prev.filter(p =>
+                            JSON.stringify(p.selectedNumbers) !== JSON.stringify(payload.old.numbers)
+                        ));
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [initialRaffle.id, supabase, toast]);
 
     const paidNumbers = useMemo(() =>
         participants

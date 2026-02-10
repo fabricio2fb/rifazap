@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import RaffleView from "./RaffleView";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Info, AlertCircle } from "lucide-react";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -69,6 +70,24 @@ export default async function PublicRafflePage({ params }: Props) {
         <p className="text-muted-foreground mb-6">Verifique se o link está correto.</p>
         <Link href="/">
           <Button>Voltar para Início</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  // Block unpaid raffles
+  if (raffleData.status === 'pending_payment') {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-background">
+        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+          <Info className="w-8 h-8 text-orange-600" />
+        </div>
+        <h1 className="text-2xl font-bold mb-2">Rifa em Ativação</h1>
+        <p className="text-muted-foreground mb-6 max-w-sm">
+          Esta rifa foi criada mas está aguardando o pagamento da taxa de publicação para ser aberta ao público. <b>Se você é o organizador, acesse o painel para pagar.</b>
+        </p>
+        <Link href="/">
+          <Button variant="outline">Voltar para Início</Button>
         </Link>
       </div>
     );
