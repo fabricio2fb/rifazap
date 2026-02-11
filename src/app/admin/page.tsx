@@ -55,20 +55,17 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
   const [timeLeft, setTimeLeft] = useState("");
   const [isExpired, setIsExpired] = useState(false);
 
-  // Robust UTC parsing for Supabase timestamps
-  const parseUTC = (dateStr: string) => {
-    if (!dateStr) return 0;
-    // If it's already an ISO string with T or Z, new Date() handles it
-    // If it's a raw DB string 'YYYY-MM-DD HH:MM:SS', we force UTC
-    let d = dateStr;
-    if (!d.includes('T') && !d.includes('Z')) {
-      d = d.replace(' ', 'T') + 'Z';
-    }
-    return new Date(d).getTime();
+  // Practical UTC parsing
+  const getCreatedDate = () => {
+    if (!sale.createdAt) return new Date();
+    const d = sale.createdAt;
+    // Force UTC by ensuring 'Z' or ISO format
+    const isoStr = d.includes('T') || d.includes('Z') ? d : d.replace(' ', 'T') + 'Z';
+    return new Date(isoStr);
   };
 
   useEffect(() => {
-    const created = parseUTC(sale.createdAt);
+    const created = getCreatedDate().getTime();
 
     const calculateTime = () => {
       const now = Date.now();
@@ -94,11 +91,9 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
     return () => clearInterval(interval);
   }, [sale.createdAt]);
 
-  // Format creation time in Brasilia
-  const formattedCreationTime = new Date(parseUTC(sale.createdAt)).toLocaleTimeString('pt-BR', {
+  const formattedTime = getCreatedDate().toLocaleTimeString('pt-BR', {
     hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'America/Sao_Paulo'
+    minute: '2-digit'
   });
 
   return (
@@ -114,7 +109,7 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
           </div>
         )}
         <span className="text-[10px] text-muted-foreground font-medium">
-          Gerado às {formattedCreationTime} (Brasília)
+          Gerado às {formattedTime}
         </span>
       </div>
 

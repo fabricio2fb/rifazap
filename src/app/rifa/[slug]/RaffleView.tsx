@@ -165,9 +165,7 @@ ${url}`;
                         <div>
                             <p className="text-xs text-muted-foreground uppercase font-semibold">Sorteio</p>
                             <p className="font-bold text-sm">
-                                {new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
-                                    timeZone: 'America/Sao_Paulo'
-                                })}
+                                {new Date(initialRaffle.drawDate.includes('Z') ? initialRaffle.drawDate : initialRaffle.drawDate.replace(' ', 'T') + 'Z').toLocaleDateString('pt-BR')}
                             </p>
                         </div>
                     </div>

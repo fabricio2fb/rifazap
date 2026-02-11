@@ -23,9 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.ticket_price);
   const parseUTC = (d: string) => (!d ? "" : (d.includes('T') || d.includes('Z') ? d : d.replace(' ', 'T') + 'Z'));
-  const date = new Date(parseUTC(raffle.draw_date)).toLocaleDateString('pt-BR', {
-    timeZone: 'America/Sao_Paulo'
-  });
+  const date = new Date(parseUTC(raffle.draw_date)).toLocaleDateString('pt-BR');
   const description = `Cada número custa ${price}. Sorteio dia ${date}.`;
   const url = `https://rifazap.vercel.app/rifa/${slug}`;
 
