@@ -102,7 +102,11 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
     const shareOnWhatsApp = () => {
         const url = `https://rifazap.vercel.app/rifa/${initialRaffle.slug}`;
         const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
-        const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR');
+
+        // Force Brasilia time for share message
+        const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
+            timeZone: 'America/Sao_Paulo'
+        });
 
         const text = `🎟️ RIFA ATIVA
 
@@ -160,7 +164,11 @@ ${url}`;
                         </div>
                         <div>
                             <p className="text-xs text-muted-foreground uppercase font-semibold">Sorteio</p>
-                            <p className="font-bold text-sm">{new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR')}</p>
+                            <p className="font-bold text-sm">
+                                {new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
+                                    timeZone: 'America/Sao_Paulo'
+                                })}
+                            </p>
                         </div>
                     </div>
                 </div>

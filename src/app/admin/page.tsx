@@ -56,13 +56,17 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
   const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
-    const calculateTime = () => {
-      const created = new Date(sale.createdAt).getTime();
-      const now = new Date().getTime();
+    const startTime = Date.now();
+    const created = new Date(sale.createdAt).getTime();
 
-      const limitMs = 10 * 60 * 1000;
-      const expireTime = created + limitMs;
-      const diff = expireTime - now;
+    // How much time had already passed when we mounted (or 0 if client clock is behind server)
+    const initialTimePassed = Math.max(0, startTime - created);
+
+    const calculateTime = () => {
+      const msSinceMount = Date.now() - startTime;
+      const totalMsPassed = initialTimePassed + msSinceMount;
+      const limitMs = 10 * 60 * 1000; // 10 minutes
+      const diff = limitMs - totalMsPassed;
 
       if (diff <= 0) {
         setIsExpired(true);
@@ -70,12 +74,8 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
         return;
       }
 
-      // If diff is larger than limit (client clock behind server), 
-      // we still show the countdown starting from the limit.
-      const displayMs = diff > limitMs ? limitMs : diff;
-
-      const minutes = Math.floor(displayMs / (1000 * 60));
-      const seconds = Math.floor((displayMs % (1000 * 60)) / 1000);
+      const minutes = Math.floor(diff / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
       setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       setIsExpired(false);
@@ -85,6 +85,13 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
     const interval = setInterval(calculateTime, 1000);
     return () => clearInterval(interval);
   }, [sale.createdAt]);
+
+  // Format creation time in Brasilia
+  const formattedCreationTime = new Date(sale.createdAt).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'America/Sao_Paulo'
+  });
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -99,7 +106,7 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
           </div>
         )}
         <span className="text-[10px] text-muted-foreground font-medium">
-          Gerado às {new Date(sale.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+          Gerado às {formattedCreationTime} (Brasília)
         </span>
       </div>
 
