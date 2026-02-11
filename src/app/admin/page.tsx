@@ -55,32 +55,32 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
   const [timeLeft, setTimeLeft] = useState("");
   const [isExpired, setIsExpired] = useState(false);
 
-  // Practical UTC parsing
-  const getCreatedDate = () => {
-    if (!sale.createdAt) return new Date();
-    const d = sale.createdAt;
-    // Force UTC by ensuring 'Z' or ISO format
-    const isoStr = d.includes('T') || d.includes('Z') ? d : d.replace(' ', 'T') + 'Z';
-    return new Date(isoStr);
-  };
-
   useEffect(() => {
-    const created = getCreatedDate().getTime();
-
     const calculateTime = () => {
-      const now = Date.now();
-      const msPassed = now - created;
-      const limitMs = 10 * 60 * 1000; // 10 minutes
-      const diff = limitMs - msPassed;
+      if (!sale.createdAt) return;
 
-      if (diff <= 0) {
+      const created = new Date(sale.createdAt).getTime();
+      const now = Date.now();
+      let msPassed = now - created;
+
+      // Aggressive practical fix for the common 3-hour UTC mismatch in Brazil
+      // If the difference is roughly 3 hours (between 2.5h and 3.5h), adjust it.
+      const threeHoursMs = 3 * 60 * 60 * 1000;
+      if (Math.abs(msPassed) > 2.5 * 60 * 60 * 1000 && Math.abs(msPassed) < 3.5 * 60 * 60 * 1000) {
+        msPassed = msPassed > 0 ? msPassed - threeHoursMs : msPassed + threeHoursMs;
+      }
+
+      const limitMs = 10 * 60 * 1000; // 10 minutes
+      const timeRemaining = limitMs - Math.max(0, msPassed);
+
+      if (timeRemaining <= 0) {
         setIsExpired(true);
         setTimeLeft("00:00");
         return;
       }
 
-      const minutes = Math.floor(diff / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const minutes = Math.floor(timeRemaining / (1000 * 60));
+      const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
       setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       setIsExpired(false);
@@ -91,11 +91,6 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
     return () => clearInterval(interval);
   }, [sale.createdAt]);
 
-  const formattedTime = getCreatedDate().toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex flex-col items-center gap-1 mb-2">
@@ -104,13 +99,10 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
           {isExpired ? "EXPIRADO" : "PENDENTE"}
         </Badge>
         {!isExpired && (
-          <div className="flex items-center gap-1 font-mono text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100">
+          <div className="flex items-center gap-1 font-mono text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100 italic">
             Tempo restante: {timeLeft}
           </div>
         )}
-        <span className="text-[10px] text-muted-foreground font-medium">
-          Gerado às {formattedTime}
-        </span>
       </div>
 
       <div className="flex flex-col gap-1 w-full">
