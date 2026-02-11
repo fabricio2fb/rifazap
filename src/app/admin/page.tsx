@@ -55,18 +55,26 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
   const [timeLeft, setTimeLeft] = useState("");
   const [isExpired, setIsExpired] = useState(false);
 
-  useEffect(() => {
-    const startTime = Date.now();
-    const created = new Date(sale.createdAt).getTime();
+  // Robust UTC parsing for Supabase timestamps
+  const parseUTC = (dateStr: string) => {
+    if (!dateStr) return 0;
+    // If it's already an ISO string with T or Z, new Date() handles it
+    // If it's a raw DB string 'YYYY-MM-DD HH:MM:SS', we force UTC
+    let d = dateStr;
+    if (!d.includes('T') && !d.includes('Z')) {
+      d = d.replace(' ', 'T') + 'Z';
+    }
+    return new Date(d).getTime();
+  };
 
-    // How much time had already passed when we mounted (or 0 if client clock is behind server)
-    const initialTimePassed = Math.max(0, startTime - created);
+  useEffect(() => {
+    const created = parseUTC(sale.createdAt);
 
     const calculateTime = () => {
-      const msSinceMount = Date.now() - startTime;
-      const totalMsPassed = initialTimePassed + msSinceMount;
+      const now = Date.now();
+      const msPassed = now - created;
       const limitMs = 10 * 60 * 1000; // 10 minutes
-      const diff = limitMs - totalMsPassed;
+      const diff = limitMs - msPassed;
 
       if (diff <= 0) {
         setIsExpired(true);
@@ -87,7 +95,7 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
   }, [sale.createdAt]);
 
   // Format creation time in Brasilia
-  const formattedCreationTime = new Date(sale.createdAt).toLocaleTimeString('pt-BR', {
+  const formattedCreationTime = new Date(parseUTC(sale.createdAt)).toLocaleTimeString('pt-BR', {
     hour: '2-digit',
     minute: '2-digit',
     timeZone: 'America/Sao_Paulo'

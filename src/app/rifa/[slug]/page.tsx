@@ -22,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!raffle) return { title: "Rifa não encontrada" };
 
   const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.ticket_price);
-  const date = new Date(raffle.draw_date).toLocaleDateString('pt-BR', {
+  const parseUTC = (d: string) => (!d ? "" : (d.includes('T') || d.includes('Z') ? d : d.replace(' ', 'T') + 'Z'));
+  const date = new Date(parseUTC(raffle.draw_date)).toLocaleDateString('pt-BR', {
     timeZone: 'America/Sao_Paulo'
   });
   const description = `Cada número custa ${price}. Sorteio dia ${date}.`;
