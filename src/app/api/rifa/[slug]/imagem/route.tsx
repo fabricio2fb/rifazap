@@ -60,7 +60,9 @@ export async function GET(
         });
 
         const paidCount = Array.from(statusMap.values()).filter(s => s === 'pago').length;
-        const percentageSold = Math.round((paidCount / totalNumbers) * 100);
+        const reservedCount = Array.from(statusMap.values()).filter(s => s === 'reservado').length;
+        // PERCENTAGE INCLUDES BOTH PAID AND RESERVED (TO MATCH SITE)
+        const percentageSold = Math.round(((paidCount + reservedCount) / totalNumbers) * 100);
 
         // Format draw date
         const drawDateFormatted = new Date(raffle.draw_date).toLocaleDateString('pt-BR', {
@@ -118,13 +120,12 @@ export async function GET(
                         ))}
                     </div>
 
-                    {/* HEADER */}
-                    <div style={{ display: 'flex', fontSize: '80px', marginBottom: '10px' }}>⚡</div>
-                    <div style={{ display: 'flex', fontSize: '64px', fontWeight: '900', color: '#000000', textAlign: 'center', lineHeight: '1', textTransform: 'uppercase', marginBottom: '20px' }}>
+                    {/* HEADER - REMOVED TOP BOLT AS REQUESTED */}
+                    <div style={{ display: 'flex', fontSize: '64px', fontWeight: '900', color: '#000000', textAlign: 'center', lineHeight: '1.2', textTransform: 'uppercase', marginBottom: '20px', marginTop: '20px' }}>
                         {raffle.title}
                     </div>
 
-                    {/* STATS BOXES (LIKE SITE) */}
+                    {/* STATS BOXES */}
                     <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', gap: '20px', marginBottom: '30px' }}>
                         <div style={{ display: 'flex', flex: 1, backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '15px 20px', border: '1px solid #E5E7EB', alignItems: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <div style={{ display: 'flex', fontSize: '32px', marginRight: '15px' }}>🏆</div>
@@ -143,33 +144,33 @@ export async function GET(
                     </div>
 
                     {/* LEGENDA */}
-                    <div style={{ display: 'flex', marginBottom: '25px', gap: '30px', fontSize: '20px', fontWeight: 'bold' }}>
+                    <div style={{ display: 'flex', marginBottom: '25px', gap: '40px', fontSize: '22px', fontWeight: 'bold' }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <div style={{ width: '24px', height: '24px', backgroundColor: '#22C55E', borderRadius: '50%', marginRight: '8px' }}></div>
+                            <div style={{ width: '28px', height: '28px', backgroundColor: '#22C55E', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span>Livre</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <div style={{ width: '24px', height: '24px', backgroundColor: '#F97316', borderRadius: '50%', marginRight: '8px' }}></div>
+                            <div style={{ width: '28px', height: '28px', backgroundColor: '#F97316', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span>Reservado</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <div style={{ width: '24px', height: '24px', backgroundColor: '#CBD5E1', borderRadius: '50%', marginRight: '8px' }}></div>
+                            <div style={{ width: '28px', height: '28px', backgroundColor: '#CBD5E1', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span>Pago</span>
                         </div>
                     </div>
 
                     {/* PROGRESS BAR */}
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: '30px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '16px', fontWeight: '900', color: '#374151' }}>
-                            <span>PROGRESSO DA RIFA</span>
-                            <span>{percentageSold}% VENDIDO</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '18px', fontWeight: '900', color: '#374151' }}>
+                            <span style={{ letterSpacing: '1px' }}>PROGRESSO DA RIFA</span>
+                            <span style={{ color: '#F97316' }}>{percentageSold}% VENDIDO</span>
                         </div>
-                        <div style={{ display: 'flex', width: '100%', height: '14px', backgroundColor: '#E5E7EB', borderRadius: '7px', overflow: 'hidden', border: '1px solid #D1D5DB' }}>
+                        <div style={{ display: 'flex', width: '100%', height: '16px', backgroundColor: '#E5E7EB', borderRadius: '8px', overflow: 'hidden', border: '1px solid #D1D5DB' }}>
                             <div style={{ display: 'flex', width: `${percentageSold}%`, height: '100%', backgroundColor: '#F97316' }}></div>
                         </div>
                     </div>
 
-                    {/* NUMBER GRID (YELLOW CONTAINER) */}
+                    {/* NUMBER GRID */}
                     <div
                         style={{
                             display: 'flex',
@@ -218,13 +219,16 @@ export async function GET(
                         ))}
                     </div>
 
-                    {/* FOOTER */}
+                    {/* FOOTER - ADDED MORE DETAILS */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto' }}>
                         <div style={{ display: 'flex', fontSize: '32px', fontWeight: '900', color: '#111827', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '5px' }}>
                             PARTICIPE AGORA MESMO
                         </div>
-                        <div style={{ display: 'flex', fontSize: '18px', fontWeight: 'bold', color: '#4B5563' }}>
-                            COMPRA SEGURA E PAGAMENTO VIA SITE
+                        <div style={{ display: 'flex', fontSize: '20px', fontWeight: 'bold', color: '#1A1A1A', marginBottom: '8px' }}>
+                            SORTEIO DIA: {drawDateFormatted}
+                        </div>
+                        <div style={{ display: 'flex', fontSize: '16px', fontWeight: 'bold', color: '#4B5563' }}>
+                            COMPRA SEGURA • PAGAMENTO VIA SITE
                         </div>
                     </div>
                 </div>

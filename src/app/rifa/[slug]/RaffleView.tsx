@@ -90,7 +90,7 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
             .flatMap(p => p.selectedNumbers) || [],
         [participants]);
 
-    const totalSold = paidNumbers.length; // Only count paid for progress
+    const totalSold = paidNumbers.length + reservedNumbers.length;
     const progressPercent = (totalSold / initialRaffle.totalNumbers) * 100;
 
     const handleNumberClick = (num: number) => {
