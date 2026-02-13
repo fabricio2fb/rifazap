@@ -90,7 +90,17 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
             .flatMap(p => p.selectedNumbers) || [],
         [participants]);
 
-    const totalSold = paidNumbers.length + reservedNumbers.length;
+    const soldNumbersSet = useMemo(() => {
+        const set = new Set<number>();
+        participants.forEach(p => {
+            if (['confirmed', 'paid', 'paid_delayed', 'pending', 'waiting_payment'].includes(p.status)) {
+                p.selectedNumbers.forEach((n: number) => set.add(n));
+            }
+        });
+        return set;
+    }, [participants]);
+
+    const totalSold = soldNumbersSet.size;
     const progressPercent = (totalSold / initialRaffle.totalNumbers) * 100;
 
     const handleNumberClick = (num: number) => {
