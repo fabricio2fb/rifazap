@@ -432,35 +432,11 @@ Sorteio: ${date}
 👉 Garanta o seu número:
 ${url}`;
 
-      const file = new File([blob], `status-${raffle.slug}.png`, { type: 'image/png' });
-
-      // Try to use Web Share API if possible
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: `Rifa ${raffle.title}`,
-            text: shareText
-          });
-          toast({
-            title: "Pronto!",
-            description: "Compartilhado com sucesso.",
-          });
-          return;
-        } catch (err) {
-          if ((err as Error).name !== 'AbortError') {
-            console.error('Share API error:', err);
-          } else {
-            return; // User cancelled
-          }
-        }
-      }
-
-      // Fallback
+      // Direct Download + WhatsApp Redirect Flow
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = `rifa-${raffle.slug}-status.png`;
+      a.download = `status-rifa.png`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(downloadUrl);
@@ -468,10 +444,10 @@ ${url}`;
 
       toast({
         title: "Imagem baixada!",
-        description: "Agora anexe-a no seu WhatsApp para compartilhar.",
+        description: "Agora anexe-a no seu WhatsApp para completar o compartilhamento.",
       });
 
-      // After download, open WhatsApp
+      // Immediately open WhatsApp
       shareOnWhatsApp(raffle);
     } catch (error) {
       console.error('Error sharing image:', error);
