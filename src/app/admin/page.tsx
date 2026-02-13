@@ -432,7 +432,7 @@ Sorteio: ${date}
 👉 Garanta o seu número:
 ${url}`;
 
-      const file = new File([blob], `rifa-${raffle.slug}-status.png`, { type: 'image/png' });
+      const file = new File([blob], `status-${raffle.slug}.png`, { type: 'image/png' });
 
       // Try to use Web Share API if possible
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -443,8 +443,8 @@ ${url}`;
             text: shareText
           });
           toast({
-            title: "Compartilhado!",
-            description: "Sucesso ao enviar para o WhatsApp.",
+            title: "Pronto!",
+            description: "Compartilhado com sucesso.",
           });
           return;
         } catch (err) {

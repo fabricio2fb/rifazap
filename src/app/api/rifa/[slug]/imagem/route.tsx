@@ -69,30 +69,30 @@ export async function GET(
                 }}
             >
                 {/* TOPO */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px' }}>
-                    <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#1a1a1a', textAlign: 'center', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px', backgroundColor: 'white' }}>
+                    <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#1a1a1a', textAlign: 'center', marginBottom: '10px', backgroundColor: 'white' }}>
                         ⚡ RIFA DO {raffle.title.toUpperCase()}
                     </div>
-                    <div style={{ fontSize: '28px', color: '#666', marginBottom: '5px' }}>
+                    <div style={{ fontSize: '28px', color: '#666', marginBottom: '5px', backgroundColor: 'white' }}>
                         Cada número {price}
                     </div>
-                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ef4444' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ef4444', backgroundColor: 'white' }}>
                         Sorteio {date}
                     </div>
                 </div>
 
                 {/* LEGENDA */}
-                <div style={{ display: 'flex', gap: '30px', marginBottom: '40px', fontSize: '20px', fontWeight: '600' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '20px', height: '20px', backgroundColor: '#22c55e', borderRadius: '4px' }}></div>
+                <div style={{ display: 'flex', marginBottom: '40px', fontSize: '20px', fontWeight: '600', backgroundColor: 'white' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: 'white' }}>
+                        <div style={{ width: '20px', height: '20px', backgroundColor: '#22c55e', borderRadius: '4px', marginRight: '8px' }}></div>
                         <span>Livre</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '20px', height: '20px', backgroundColor: '#eab308', borderRadius: '4px' }}></div>
+                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: 'white' }}>
+                        <div style={{ width: '20px', height: '20px', backgroundColor: '#eab308', borderRadius: '4px', marginRight: '8px' }}></div>
                         <span>Reservado</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '20px', height: '20px', backgroundColor: '#94a3b8', borderRadius: '4px' }}></div>
+                    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white' }}>
+                        <div style={{ width: '20px', height: '20px', backgroundColor: '#94a3b8', borderRadius: '4px', marginRight: '8px' }}></div>
                         <span>Pago</span>
                     </div>
                 </div>
@@ -104,8 +104,8 @@ export async function GET(
                         flexWrap: 'wrap',
                         width: '1000px',
                         justifyContent: 'center',
-                        gap: '4px',
                         marginBottom: '40px',
+                        backgroundColor: 'white',
                     }}
                 >
                     {Array.from({ length: totalNumbers }, (_, i) => {
@@ -127,6 +127,7 @@ export async function GET(
                                     fontSize: `${fontSize}px`,
                                     fontWeight: 'bold',
                                     borderRadius: '4px',
+                                    margin: '2px', // Replacement for gap: 4px
                                 }}
                             >
                                 {num}
