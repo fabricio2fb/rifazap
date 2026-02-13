@@ -36,7 +36,8 @@ export async function GET(
         const { data: purchases } = await supabase
             .from('purchases')
             .select('status, numbers')
-            .eq('raffle_id', raffle.id);
+            .eq('raffle_id', raffle.id)
+            .neq('status', 'cancelled');
 
         // 3. Status Mapping & Data Prep
         const totalNumbers = raffle.total_numbers;
@@ -80,7 +81,7 @@ export async function GET(
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
-                        backgroundColor: '#F8FAFC',
+                        backgroundColor: '#F1F5F9',
                         padding: '30px 40px',
                         position: 'relative',
                     }}
@@ -91,18 +92,16 @@ export async function GET(
                             position: 'absolute',
                             top: 0,
                             left: 0,
-                            width: '100%',
-                            height: '100%',
+                            width: '800px',
+                            height: '1000px',
                             display: 'flex',
                             flexWrap: 'wrap',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            opacity: 0.05,
+                            opacity: 0.1,
                             pointerEvents: 'none',
                         }}
                     >
-                        {Array.from({ length: 40 }).map((_, i) => (
-                            <div key={i} style={{ fontSize: '60px', margin: '40px' }}>⚡</div>
+                        {Array.from({ length: 48 }).map((_, i) => (
+                            <div key={i} style={{ width: '100px', height: '125px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '50px' }}>⚡</div>
                         ))}
                     </div>
 
