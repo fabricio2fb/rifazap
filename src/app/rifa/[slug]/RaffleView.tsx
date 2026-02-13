@@ -129,9 +129,17 @@ ${url}`;
 
         try {
             const response = await fetch(`/api/rifa/${initialRaffle.slug}/imagem`);
-            if (!response.ok) throw new Error('Falha ao gerar imagem');
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Falha ao gerar imagem');
+            }
 
             const blob = await response.blob();
+
+            if (blob.size < 100) {
+                throw new Error('A imagem gerada está vazia ou corrompida');
+            }
 
             const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
             const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
@@ -155,8 +163,12 @@ ${url}`;
             a.download = `status-rifa.png`;
             document.body.appendChild(a);
             a.click();
-            window.URL.revokeObjectURL(downloadUrl);
-            document.body.removeChild(a);
+
+            // Short delay to ensure download starts on all mobile browsers before clean up
+            setTimeout(() => {
+                window.URL.revokeObjectURL(downloadUrl);
+                document.body.removeChild(a);
+            }, 100);
 
             toast({
                 title: "Imagem baixada!",
@@ -170,7 +182,7 @@ ${url}`;
             toast({
                 variant: 'destructive',
                 title: "Erro ao gerar imagem",
-                description: "Tente novamente em instantes.",
+                description: error instanceof Error ? error.message : "O servidor levou muito tempo. Tente novamente em instantes.",
             });
         }
     };
