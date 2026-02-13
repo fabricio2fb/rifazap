@@ -66,12 +66,12 @@ export async function GET(
             rows.push(allNums.slice(i, i + cols));
         }
 
-        const gridWidth = 720; // Padding 40 on each side of 800
+        const gridWidth = 720;
         const boxSize = Math.floor((gridWidth - (cols * 4)) / cols);
         const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 10 : 14) : 20;
         const showNumbers = totalNumbers <= 500;
 
-        return new ImageResponse(
+        const response = new ImageResponse(
             (
                 <div
                     style={{
@@ -86,29 +86,29 @@ export async function GET(
                     }}
                 >
                     {/* TOPO */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '30px' }}>
-                        <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#1A1A1A', textAlign: 'center', marginBottom: '5px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '30px', backgroundColor: '#FFFFFF' }}>
+                        <div style={{ display: 'flex', fontSize: '40px', fontWeight: 'bold', color: '#1A1A1A', textAlign: 'center', marginBottom: '5px', backgroundColor: '#FFFFFF' }}>
                             ⚡ RIFA DO {raffle.title.toUpperCase()}
                         </div>
-                        <div style={{ fontSize: '24px', color: '#666666', marginBottom: '5px' }}>
+                        <div style={{ display: 'flex', fontSize: '24px', color: '#666666', marginBottom: '5px', backgroundColor: '#FFFFFF' }}>
                             Cada número {price}
                         </div>
-                        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#EF4444' }}>
+                        <div style={{ display: 'flex', fontSize: '20px', fontWeight: 'bold', color: '#EF4444', backgroundColor: '#FFFFFF' }}>
                             Sorteio {date}
                         </div>
                     </div>
 
                     {/* LEGENDA */}
-                    <div style={{ display: 'flex', marginBottom: '30px', fontSize: '16px', fontWeight: '600' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
+                    <div style={{ display: 'flex', marginBottom: '30px', fontSize: '16px', fontWeight: '600', backgroundColor: '#FFFFFF' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px', backgroundColor: '#FFFFFF' }}>
                             <div style={{ width: '16px', height: '16px', backgroundColor: '#22C55E', borderRadius: '4px', marginRight: '6px', border: '1px solid #16a34a' }}></div>
                             <span style={{ color: '#000000' }}>Livre</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px', backgroundColor: '#FFFFFF' }}>
                             <div style={{ width: '16px', height: '16px', backgroundColor: '#EAB308', borderRadius: '4px', marginRight: '6px', border: '1px solid #ca8a04' }}></div>
                             <span style={{ color: '#000000' }}>Reservado</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
                             <div style={{ width: '16px', height: '16px', backgroundColor: '#94A3B8', borderRadius: '4px', marginRight: '6px', border: '1px solid #64748b' }}></div>
                             <span style={{ color: '#000000' }}>Pago</span>
                         </div>
@@ -122,13 +122,15 @@ export async function GET(
                             width: `${gridWidth}px`,
                             alignItems: 'center',
                             marginBottom: '30px',
+                            backgroundColor: '#FFFFFF',
                         }}
                     >
                         {rows.map((row, rowIndex) => (
-                            <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                            <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
                                 {row.map((num) => {
                                     const status = statusMap.get(num) || 'livre';
                                     const bgColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#22C55E';
+                                    const borderColor = status === 'pago' ? '#64748b' : status === 'reservado' ? '#ca8a04' : '#16a34a';
 
                                     return (
                                         <div
@@ -145,7 +147,7 @@ export async function GET(
                                                 fontWeight: 'bold',
                                                 borderRadius: '3px',
                                                 margin: '2px',
-                                                border: `1px solid ${status === 'pago' ? '#64748b' : status === 'reservado' ? '#ca8a04' : '#16a34a'}`,
+                                                border: `1px solid ${borderColor}`,
                                             }}
                                         >
                                             {showNumbers ? num : ''}
@@ -157,8 +159,8 @@ export async function GET(
                     </div>
 
                     {/* RODAPÉ */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto' }}>
-                        <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#0052FF', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto', backgroundColor: '#FFFFFF' }}>
+                        <div style={{ display: 'flex', fontSize: '28px', fontWeight: 'bold', color: '#0052FF', marginBottom: '8px', backgroundColor: '#FFFFFF' }}>
                             rifazap.vercel.app
                         </div>
                         <div style={{
@@ -178,13 +180,15 @@ export async function GET(
             {
                 width: 800,
                 height: 1000,
-                headers: {
-                    'Cache-Control': 'no-store, max-age=0, must-revalidate',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                },
             }
         );
+
+        // Set headers separately
+        response.headers.set('Cache-Control', 'no-store, max-age=0, must-revalidate');
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error('Error generating image:', error);
         return new Response(JSON.stringify({
