@@ -412,21 +412,25 @@ ${url}`;
     });
 
     try {
-      const response = await fetch(`/api/rifa/${raffle.slug}/imagem`);
+      const slugEncoded = encodeURIComponent(raffle.slug);
+      const response = await fetch(`/api/rifa/${slugEncoded}/imagem?t=${Date.now()}`);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Falha ao gerar imagem');
+        const contentType = response.headers.get('content-type');
+        let errorMessage = 'Erro ao gerar imagem';
+        if (contentType?.includes('application/json')) {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } else {
+          errorMessage = await response.text() || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       const blob = await response.blob();
 
       if (blob.size < 500) {
-        const text = await blob.text();
-        if (text.startsWith('Erro')) {
-          throw new Error(text);
-        }
-        throw new Error('A imagem gerada está vazia ou corrompida (tamanho insuficiente)');
+        throw new Error(`Imagem muito pequena (${blob.size} bytes). Verifique sua conexão.`);
       }
 
       const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
@@ -452,11 +456,11 @@ ${url}`;
       document.body.appendChild(a);
       a.click();
 
-      // Short delay to ensure download starts
+      // Longer delay for mobile browsers
       setTimeout(() => {
         window.URL.revokeObjectURL(downloadUrl);
         document.body.removeChild(a);
-      }, 500);
+      }, 1000);
 
       toast({
         title: "Imagem baixada!",
@@ -469,7 +473,7 @@ ${url}`;
       console.error('Error sharing image:', error);
       toast({
         variant: 'destructive',
-        title: "Não foi possível gerar a imagem",
+        title: "Falha no download da imagem",
         description: error instanceof Error ? error.message : "Tente novamente em instantes.",
       });
     }

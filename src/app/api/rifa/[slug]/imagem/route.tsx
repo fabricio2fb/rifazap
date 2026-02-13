@@ -26,7 +26,10 @@ export async function GET(
             .single();
 
         if (raffleError || !raffle) {
-            return new Response('Rifa não encontrada', { status: 404 });
+            return new Response(JSON.stringify({ error: 'Rifa não encontrada' }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
 
         // 2. Fetch Purchases/Participants
@@ -52,81 +55,78 @@ export async function GET(
         const paidCount = Array.from(statusMap.values()).filter(s => s === 'pago').length;
         const percentageSold = Math.round((paidCount / totalNumbers) * 100);
 
-        // 5. Grid Calculation
+        // 5. Grid Calculation (Resolution 800x1000)
         let cols = 10;
         if (totalNumbers > 100) cols = 20;
         if (totalNumbers > 500) cols = 25;
 
         const rows = [];
+        const allNums = Array.from({ length: totalNumbers }, (_, i) => i + 1);
         for (let i = 0; i < totalNumbers; i += cols) {
-            const rowArr = Array.from({ length: totalNumbers }).slice(i, i + cols);
-            if (rowArr.length > 0) rows.push(rowArr);
+            rows.push(allNums.slice(i, i + cols));
         }
 
-        const boxSize = Math.floor((1000 - (cols * 4)) / cols);
-        const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 12 : 16) : 24;
+        const gridWidth = 720; // Padding 40 on each side of 800
+        const boxSize = Math.floor((gridWidth - (cols * 4)) / cols);
+        const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 10 : 14) : 20;
         const showNumbers = totalNumbers <= 500;
 
         return new ImageResponse(
             (
                 <div
                     style={{
-                        height: '1350px',
-                        width: '1080px',
+                        height: '1000px',
+                        width: '800px',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
                         backgroundColor: '#FFFFFF',
-                        padding: '60px 40px',
+                        padding: '40px',
                     }}
                 >
                     {/* TOPO */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#1A1A1A', textAlign: 'center', marginBottom: '10px', backgroundColor: '#FFFFFF', display: 'flex' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '30px' }}>
+                        <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#1A1A1A', textAlign: 'center', marginBottom: '5px' }}>
                             ⚡ RIFA DO {raffle.title.toUpperCase()}
                         </div>
-                        <div style={{ fontSize: '28px', color: '#666666', marginBottom: '5px', backgroundColor: '#FFFFFF', display: 'flex' }}>
+                        <div style={{ fontSize: '24px', color: '#666666', marginBottom: '5px' }}>
                             Cada número {price}
                         </div>
-                        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#EF4444', backgroundColor: '#FFFFFF', display: 'flex' }}>
+                        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#EF4444' }}>
                             Sorteio {date}
                         </div>
                     </div>
 
                     {/* LEGENDA */}
-                    <div style={{ display: 'flex', marginBottom: '40px', fontSize: '20px', fontWeight: '600', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: '#FFFFFF' }}>
-                            <div style={{ width: '20px', height: '20px', backgroundColor: '#22C55E', borderRadius: '4px', marginRight: '8px', border: '1px solid #16a34a' }}></div>
+                    <div style={{ display: 'flex', marginBottom: '30px', fontSize: '16px', fontWeight: '600' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
+                            <div style={{ width: '16px', height: '16px', backgroundColor: '#22C55E', borderRadius: '4px', marginRight: '6px', border: '1px solid #16a34a' }}></div>
                             <span style={{ color: '#000000' }}>Livre</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: '#FFFFFF' }}>
-                            <div style={{ width: '20px', height: '20px', backgroundColor: '#EAB308', borderRadius: '4px', marginRight: '8px', border: '1px solid #ca8a04' }}></div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
+                            <div style={{ width: '16px', height: '16px', backgroundColor: '#EAB308', borderRadius: '4px', marginRight: '6px', border: '1px solid #ca8a04' }}></div>
                             <span style={{ color: '#000000' }}>Reservado</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
-                            <div style={{ width: '20px', height: '20px', backgroundColor: '#94A3B8', borderRadius: '4px', marginRight: '8px', border: '1px solid #64748b' }}></div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div style={{ width: '16px', height: '16px', backgroundColor: '#94A3B8', borderRadius: '4px', marginRight: '6px', border: '1px solid #64748b' }}></div>
                             <span style={{ color: '#000000' }}>Pago</span>
                         </div>
                     </div>
 
-                    {/* GRADE (Otimizada com Linhas) */}
+                    {/* GRADE */}
                     <div
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            width: '1000px',
+                            width: `${gridWidth}px`,
                             alignItems: 'center',
-                            marginBottom: '40px',
-                            backgroundColor: '#FFFFFF',
+                            marginBottom: '30px',
                         }}
                     >
                         {rows.map((row, rowIndex) => (
-                            <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
-                                {row.map((_, colIndex) => {
-                                    const num = (rowIndex * cols) + colIndex + 1;
-                                    if (num > totalNumbers) return null;
-
+                            <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                                {row.map((num) => {
                                     const status = statusMap.get(num) || 'livre';
                                     const bgColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#22C55E';
 
@@ -143,7 +143,7 @@ export async function GET(
                                                 justifyContent: 'center',
                                                 fontSize: `${fontSize}px`,
                                                 fontWeight: 'bold',
-                                                borderRadius: '4px',
+                                                borderRadius: '3px',
                                                 margin: '2px',
                                                 border: `1px solid ${status === 'pago' ? '#64748b' : status === 'reservado' ? '#ca8a04' : '#16a34a'}`,
                                             }}
@@ -157,17 +157,17 @@ export async function GET(
                     </div>
 
                     {/* RODAPÉ */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#0052FF', marginBottom: '10px', backgroundColor: '#FFFFFF', display: 'flex' }}>
-                            Pagamento via site: rifazap.vercel.app
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto' }}>
+                        <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#0052FF', marginBottom: '8px' }}>
+                            rifazap.vercel.app
                         </div>
                         <div style={{
-                            fontSize: '36px',
+                            fontSize: '32px',
                             fontWeight: 'bold',
                             color: '#FFFFFF',
                             backgroundColor: '#1A1A1A',
-                            padding: '10px 40px',
-                            borderRadius: '50px',
+                            padding: '8px 30px',
+                            borderRadius: '40px',
                             display: 'flex',
                         }}>
                             {percentageSold}% VENDIDO
@@ -176,12 +176,23 @@ export async function GET(
                 </div>
             ),
             {
-                width: 1080,
-                height: 1350,
+                width: 800,
+                height: 1000,
+                headers: {
+                    'Cache-Control': 'no-store, max-age=0, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                },
             }
         );
     } catch (error) {
         console.error('Error generating image:', error);
-        return new Response('Erro servidor: ' + (error instanceof Error ? error.message : String(error)), { status: 500 });
+        return new Response(JSON.stringify({
+            error: 'Erro no servidor ao gerar imagem',
+            details: error instanceof Error ? error.message : String(error)
+        }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 }
