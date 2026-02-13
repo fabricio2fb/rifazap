@@ -66,9 +66,9 @@ export async function GET(
             rows.push(allNums.slice(i, i + cols));
         }
 
-        const gridWidth = 720;
-        const boxSize = Math.floor((gridWidth - (cols * 4)) / cols);
-        const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 10 : 14) : 20;
+        const gridWidth = 700;
+        const boxSize = Math.floor((gridWidth - (cols * 6)) / cols);
+        const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 10 : 12) : 18;
         const showNumbers = totalNumbers <= 500;
 
         const response = new ImageResponse(
@@ -82,55 +82,68 @@ export async function GET(
                         alignItems: 'center',
                         justifyContent: 'flex-start',
                         backgroundColor: '#FFFFFF',
-                        padding: '40px',
+                        padding: '30px 40px',
                     }}
                 >
-                    {/* TOPO */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '30px', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ display: 'flex', fontSize: '40px', fontWeight: 'bold', color: '#1A1A1A', textAlign: 'center', marginBottom: '5px', backgroundColor: '#FFFFFF' }}>
-                            ⚡ RIFA DO {raffle.title.toUpperCase()}
+                    {/* ICONE RAIO */}
+                    <div style={{ display: 'flex', fontSize: '60px', marginBottom: '10px' }}>⚡</div>
+
+                    {/* TITULO */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+                        <div style={{ display: 'flex', fontSize: '64px', fontWeight: 'bold', color: '#000000', textAlign: 'center', lineHeight: '1' }}>
+                            RIFA {raffle.title.toUpperCase()}
                         </div>
-                        <div style={{ display: 'flex', fontSize: '24px', color: '#666666', marginBottom: '5px', backgroundColor: '#FFFFFF' }}>
-                            Cada número {price}
-                        </div>
-                        <div style={{ display: 'flex', fontSize: '20px', fontWeight: 'bold', color: '#EF4444', backgroundColor: '#FFFFFF' }}>
-                            Sorteio {date}
+                        <div style={{ display: 'flex', fontSize: '24px', color: '#1A1A1A', marginTop: '10px' }}>
+                            Valor de cada número: <span style={{ fontWeight: 'bold', marginLeft: '6px' }}>{price}</span>
                         </div>
                     </div>
 
-                    {/* LEGENDA */}
-                    <div style={{ display: 'flex', marginBottom: '30px', fontSize: '16px', fontWeight: '600', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px', backgroundColor: '#FFFFFF' }}>
-                            <div style={{ width: '16px', height: '16px', backgroundColor: '#22C55E', borderRadius: '4px', marginRight: '6px', border: '1px solid #16a34a' }}></div>
+                    {/* LEGENDA CIRCULAR */}
+                    <div style={{ display: 'flex', marginBottom: '25px', fontSize: '24px', fontWeight: 'bold' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px' }}>
+                            <div style={{ width: '32px', height: '32px', backgroundColor: '#86EFAC', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span style={{ color: '#000000' }}>Livre</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px', backgroundColor: '#FFFFFF' }}>
-                            <div style={{ width: '16px', height: '16px', backgroundColor: '#EAB308', borderRadius: '4px', marginRight: '6px', border: '1px solid #ca8a04' }}></div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px' }}>
+                            <div style={{ width: '32px', height: '32px', backgroundColor: '#FDE047', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span style={{ color: '#000000' }}>Reservado</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
-                            <div style={{ width: '16px', height: '16px', backgroundColor: '#94A3B8', borderRadius: '4px', marginRight: '6px', border: '1px solid #64748b' }}></div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div style={{ width: '32px', height: '32px', backgroundColor: '#CBD5E1', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span style={{ color: '#000000' }}>Pago</span>
                         </div>
                     </div>
 
-                    {/* GRADE */}
+                    {/* BARRA DE PROGRESSO */}
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '600px', marginBottom: '25px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '14px', fontWeight: 'bold', color: '#64748B' }}>
+                            <span>Progresso da Rifa</span>
+                            <span>{percentageSold}% Vendido</span>
+                        </div>
+                        <div style={{ display: 'flex', width: '100%', height: '8px', backgroundColor: '#E2E8F0', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', width: `${percentageSold}%`, height: '100%', backgroundColor: '#FDE047' }}></div>
+                        </div>
+                    </div>
+
+                    {/* GRADE DE NUMEROS (CONTAINER AMARELO) */}
                     <div
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            width: `${gridWidth}px`,
+                            width: '740px',
+                            backgroundColor: '#FFDA5A',
+                            borderRadius: '16px',
+                            padding: '20px 10px',
                             alignItems: 'center',
                             marginBottom: '30px',
-                            backgroundColor: '#FFFFFF',
                         }}
                     >
                         {rows.map((row, rowIndex) => (
-                            <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
+                            <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                                 {row.map((num) => {
                                     const status = statusMap.get(num) || 'livre';
-                                    const bgColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#22C55E';
-                                    const borderColor = status === 'pago' ? '#64748b' : status === 'reservado' ? '#ca8a04' : '#16a34a';
+                                    const bgColor = status === 'pago' ? '#CBD5E1' : status === 'reservado' ? '#FDE047' : '#FFFFFF';
+                                    const borderColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#D1D5DB';
 
                                     return (
                                         <div
@@ -139,14 +152,14 @@ export async function GET(
                                                 width: `${boxSize}px`,
                                                 height: `${boxSize}px`,
                                                 backgroundColor: bgColor,
-                                                color: '#FFFFFF',
+                                                color: '#000000',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                                 fontSize: `${fontSize}px`,
                                                 fontWeight: 'bold',
-                                                borderRadius: '3px',
-                                                margin: '2px',
+                                                borderRadius: '6px',
+                                                margin: '3px',
                                                 border: `1px solid ${borderColor}`,
                                             }}
                                         >
@@ -159,20 +172,9 @@ export async function GET(
                     </div>
 
                     {/* RODAPÉ */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ display: 'flex', fontSize: '28px', fontWeight: 'bold', color: '#0052FF', marginBottom: '8px', backgroundColor: '#FFFFFF' }}>
-                            rifazap.vercel.app
-                        </div>
-                        <div style={{
-                            fontSize: '32px',
-                            fontWeight: 'bold',
-                            color: '#FFFFFF',
-                            backgroundColor: '#1A1A1A',
-                            padding: '8px 30px',
-                            borderRadius: '40px',
-                            display: 'flex',
-                        }}>
-                            {percentageSold}% VENDIDO
+                    <div style={{ display: 'flex', marginTop: 'auto', marginBottom: '10px' }}>
+                        <div style={{ display: 'flex', fontSize: '36px', fontWeight: 'bold', color: '#000000', letterSpacing: '1px' }}>
+                            PAGAMENTO VIA SITE
                         </div>
                     </div>
                 </div>
