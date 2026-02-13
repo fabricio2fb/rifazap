@@ -37,9 +37,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: url,
       images: [
         {
-          url: raffle.image_url,
-          width: 1200,
-          height: 630,
+          url: `${url}/imagem`,
+          width: 1080,
+          height: 1350,
           alt: raffle.title,
         },
       ],
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: raffle.title,
       description: description,
-      images: [raffle.image_url],
+      images: [`${url}/imagem`],
     },
   };
 }

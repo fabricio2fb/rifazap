@@ -383,6 +383,106 @@ export default function AdminDashboard() {
     return allNumbers;
   }, [drawingRaffle, sales]);
 
+  const shareOnWhatsApp = (raffle: any) => {
+    const url = `https://rifazap.vercel.app/rifa/${raffle.slug}`;
+    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
+
+    // Force Brasilia time for share message
+    const date = new Date(raffle.drawDate).toLocaleDateString('pt-BR', {
+      timeZone: 'America/Sao_Paulo'
+    });
+
+    const text = `🎟️ RIFA ATIVA
+
+Prêmio: ${raffle.title}
+Valor por número: ${price}
+Sorteio: ${date}
+
+👉 Garanta o seu número:
+${url}`;
+
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+  };
+
+  const shareWithImage = async (raffle: any) => {
+    toast({
+      title: "Gerando imagem...",
+      description: "Aguarde enquanto preparamos a imagem de status.",
+    });
+
+    try {
+      const response = await fetch(`/api/rifa/${raffle.slug}/imagem`);
+      if (!response.ok) throw new Error('Falha ao gerar imagem');
+
+      const blob = await response.blob();
+
+      const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
+      const date = new Date(raffle.drawDate).toLocaleDateString('pt-BR', {
+        timeZone: 'America/Sao_Paulo'
+      });
+      const url = `https://rifazap.vercel.app/rifa/${raffle.slug}`;
+
+      const shareText = `🎟️ RIFA ATIVA
+
+Prêmio: ${raffle.title}
+Valor por número: ${price}
+Sorteio: ${date}
+
+👉 Garanta o seu número:
+${url}`;
+
+      const file = new File([blob], `rifa-${raffle.slug}-status.png`, { type: 'image/png' });
+
+      // Try to use Web Share API if possible
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: `Rifa ${raffle.title}`,
+            text: shareText
+          });
+          toast({
+            title: "Compartilhado!",
+            description: "Sucesso ao enviar para o WhatsApp.",
+          });
+          return;
+        } catch (err) {
+          if ((err as Error).name !== 'AbortError') {
+            console.error('Share API error:', err);
+          } else {
+            return; // User cancelled
+          }
+        }
+      }
+
+      // Fallback
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `rifa-${raffle.slug}-status.png`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+      document.body.removeChild(a);
+
+      toast({
+        title: "Imagem baixada!",
+        description: "Agora anexe-a no seu WhatsApp para compartilhar.",
+      });
+
+      // After download, open WhatsApp
+      shareOnWhatsApp(raffle);
+    } catch (error) {
+      console.error('Error sharing image:', error);
+      toast({
+        variant: 'destructive',
+        title: "Erro ao gerar imagem",
+        description: "Tente novamente em instantes.",
+      });
+    }
+  };
+
   const startDrawCeremony = () => {
     if (confirmedNumbersForRaffle.length === 0) {
       toast({
@@ -569,6 +669,15 @@ export default function AdminDashboard() {
                         className="gap-2 text-[10px] font-bold h-10 shadow-md bg-primary text-primary-foreground"
                       >
                         <Dices className="w-3.5 h-3.5" /> SORTEAR
+                      </Button>
+
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => shareWithImage(raffle)}
+                        className="gap-2 text-[10px] font-bold h-10 shadow-md bg-[#25D366] hover:bg-[#128C7E] text-white"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5 fill-current" /> COMPARTILHAR
                       </Button>
                     </div>
 

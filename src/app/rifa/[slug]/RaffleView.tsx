@@ -121,6 +121,84 @@ ${url}`;
         window.open(`https://wa.me/?text=${encodedText}`, '_blank');
     };
 
+    const shareWithImage = async () => {
+        toast({
+            title: "Gerando imagem...",
+            description: "Aguarde enquanto preparamos sua imagem de status.",
+        });
+
+        try {
+            const response = await fetch(`/api/rifa/${initialRaffle.slug}/imagem`);
+            if (!response.ok) throw new Error('Falha ao gerar imagem');
+
+            const blob = await response.blob();
+
+            const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
+            const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
+                timeZone: 'America/Sao_Paulo'
+            });
+            const url = `https://rifazap.vercel.app/rifa/${initialRaffle.slug}`;
+
+            const shareText = `🎟️ RIFA ATIVA
+
+Prêmio: ${initialRaffle.title}
+Valor por número: ${price}
+Sorteio: ${date}
+
+👉 Garanta o seu número:
+${url}`;
+
+            const file = new File([blob], `rifa-${initialRaffle.slug}-status.png`, { type: 'image/png' });
+
+            // Try to use Web Share API if possible
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: `Rifa ${initialRaffle.title}`,
+                        text: shareText
+                    });
+                    toast({
+                        title: "Compartilhado!",
+                        description: "Sucesso ao enviar para o WhatsApp.",
+                    });
+                    return;
+                } catch (err) {
+                    if ((err as Error).name !== 'AbortError') {
+                        console.error('Share API error:', err);
+                    } else {
+                        return; // User cancelled
+                    }
+                }
+            }
+
+            // Fallback for desktop or non-supporting browsers
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `rifa-${initialRaffle.slug}-status.png`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(downloadUrl);
+            document.body.removeChild(a);
+
+            toast({
+                title: "Imagem baixada!",
+                description: "Agora anexe-a no seu WhatsApp para compartilhar.",
+            });
+
+            // After download, open WhatsApp
+            shareOnWhatsApp();
+        } catch (error) {
+            console.error('Error sharing image:', error);
+            toast({
+                variant: 'destructive',
+                title: "Erro ao gerar imagem",
+                description: "Tente novamente em instantes.",
+            });
+        }
+    };
+
     return (
         <div className="max-w-xl mx-auto pb-32 bg-white min-h-screen">
             <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -181,10 +259,18 @@ ${url}`;
 
                 <div className="flex flex-col gap-3">
                     <Button
-                        className="w-full gap-2 font-bold h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl shadow-md transition-all active:scale-95"
+                        className="w-full gap-2 font-bold h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md transition-all active:scale-95"
+                        onClick={shareWithImage}
+                    >
+                        <Image src="/favicon-32x32.png" alt="Logo" width={24} height={24} className="rounded" /> Compartilhar com Imagem
+                    </Button>
+
+                    <Button
+                        variant="outline"
+                        className="w-full gap-2 border-[#25D366] text-[#25D366] hover:bg-green-50 font-bold h-12 rounded-xl"
                         onClick={shareOnWhatsApp}
                     >
-                        <MessageCircle className="w-6 h-6 fill-current" /> Compartilhar no WhatsApp
+                        <MessageCircle className="w-6 h-6 fill-current" /> Apenas Texto
                     </Button>
 
                     {initialRaffle.whatsappGroupLink && (
