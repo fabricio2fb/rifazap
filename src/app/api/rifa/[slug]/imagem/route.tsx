@@ -44,13 +44,19 @@ export async function GET(
     const paidCount = Array.from(statusMap.values()).filter(s => s === 'pago').length;
     const percentageSold = Math.round((paidCount / totalNumbers) * 100);
 
-    // Grid Calculation
+    // 5. Grid Calculation
     let cols = 10;
     if (totalNumbers > 100) cols = 20;
     if (totalNumbers > 500) cols = 25;
 
+    const rows = [];
+    for (let i = 0; i < totalNumbers; i += cols) {
+        rows.push(Array.from({ length: totalNumbers }).slice(i, i + cols));
+    }
+
     const boxSize = Math.floor((1000 - (cols * 4)) / cols);
     const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 12 : 16) : 24;
+    const showNumbers = totalNumbers <= 500;
 
     return new ImageResponse(
         (
@@ -64,7 +70,6 @@ export async function GET(
                     justifyContent: 'flex-start',
                     backgroundColor: '#FFFFFF',
                     padding: '60px 40px',
-                    fontFamily: 'sans-serif',
                 }}
             >
                 {/* TOPO */}
@@ -96,43 +101,49 @@ export async function GET(
                     </div>
                 </div>
 
-                {/* GRADE */}
+                {/* GRADE (Otimizada com Linhas) */}
                 <div
                     style={{
                         display: 'flex',
-                        flexWrap: 'wrap',
+                        flexDirection: 'column',
                         width: '1000px',
-                        justifyContent: 'center',
+                        alignItems: 'center',
                         marginBottom: '40px',
                         backgroundColor: '#FFFFFF',
                     }}
                 >
-                    {Array.from({ length: totalNumbers }, (_, i) => {
-                        const num = i + 1;
-                        const status = statusMap.get(num) || 'livre';
-                        const bgColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#22C55E';
+                    {rows.map((row, rowIndex) => (
+                        <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
+                            {row.map((_, colIndex) => {
+                                const num = (rowIndex * cols) + colIndex + 1;
+                                if (num > totalNumbers) return null;
 
-                        return (
-                            <div
-                                key={num}
-                                style={{
-                                    width: `${boxSize}px`,
-                                    height: `${boxSize}px`,
-                                    backgroundColor: bgColor,
-                                    color: '#FFFFFF',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: `${fontSize}px`,
-                                    fontWeight: 'bold',
-                                    borderRadius: '4px',
-                                    margin: '2px',
-                                }}
-                            >
-                                {num}
-                            </div>
-                        );
-                    })}
+                                const status = statusMap.get(num) || 'livre';
+                                const bgColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#22C55E';
+
+                                return (
+                                    <div
+                                        key={num}
+                                        style={{
+                                            width: `${boxSize}px`,
+                                            height: `${boxSize}px`,
+                                            backgroundColor: bgColor,
+                                            color: '#FFFFFF',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: `${fontSize}px`,
+                                            fontWeight: 'bold',
+                                            borderRadius: '4px',
+                                            margin: '2px',
+                                        }}
+                                    >
+                                        {showNumbers ? num : ''}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ))}
                 </div>
 
                 {/* RODAPÉ */}
