@@ -80,17 +80,17 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
 
     const paidNumbers = useMemo(() =>
         participants
-            .filter(p => p.status === 'confirmed')
+            .filter(p => ['confirmed', 'paid', 'paid_delayed'].includes(p.status))
             .flatMap(p => p.selectedNumbers) || [],
         [participants]);
 
     const reservedNumbers = useMemo(() =>
         participants
-            .filter(p => p.status === 'pending')
+            .filter(p => ['pending', 'waiting_payment'].includes(p.status))
             .flatMap(p => p.selectedNumbers) || [],
         [participants]);
 
-    const totalSold = paidNumbers.length + reservedNumbers.length;
+    const totalSold = paidNumbers.length; // Only count paid for progress
     const progressPercent = (totalSold / initialRaffle.totalNumbers) * 100;
 
     const handleNumberClick = (num: number) => {

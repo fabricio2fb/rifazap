@@ -38,24 +38,23 @@ export async function GET(
             .select('status, numbers')
             .eq('raffle_id', raffle.id);
 
-        // 3. Map status of each number
-        const statusMap = new Map<number, 'pago' | 'reservado' | 'livre'>();
+        // 3. Status Mapping & Data Prep
+        const totalNumbers = raffle.total_numbers;
+        const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.ticket_price);
+
+        const statusMap = new Map<number, string>();
         purchases?.forEach(p => {
-            const status = p.status === 'confirmed' || p.status === 'paid' || p.status === 'paid_delayed' ? 'pago' : 'reservado';
+            const isPaid = ['confirmed', 'paid', 'paid_delayed'].includes(p.status);
+            const status = isPaid ? 'pago' : 'reservado';
             p.numbers.forEach((num: number) => {
                 statusMap.set(num, status);
             });
         });
 
-        const totalNumbers = raffle.total_numbers;
-        const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.ticket_price);
-        const date = new Date(raffle.draw_date).toLocaleDateString('pt-BR');
-
-        // Percentage sold
         const paidCount = Array.from(statusMap.values()).filter(s => s === 'pago').length;
         const percentageSold = Math.round((paidCount / totalNumbers) * 100);
 
-        // 5. Grid Calculation (Resolution 800x1000)
+        // 4. Grid Calculation (Resolution 800x1000)
         let cols = 10;
         if (totalNumbers > 100) cols = 20;
         if (totalNumbers > 500) cols = 25;
@@ -81,15 +80,37 @@ export async function GET(
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
-                        backgroundColor: '#FFFFFF',
+                        backgroundColor: '#F8FAFC',
                         padding: '30px 40px',
+                        position: 'relative',
                     }}
                 >
+                    {/* BACKGROUND PATTERN */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            opacity: 0.05,
+                            pointerEvents: 'none',
+                        }}
+                    >
+                        {Array.from({ length: 40 }).map((_, i) => (
+                            <div key={i} style={{ fontSize: '60px', margin: '40px' }}>⚡</div>
+                        ))}
+                    </div>
+
                     {/* ICONE RAIO */}
-                    <div style={{ display: 'flex', fontSize: '60px', marginBottom: '10px' }}>⚡</div>
+                    <div style={{ display: 'flex', fontSize: '60px', marginBottom: '10px', position: 'relative' }}>⚡</div>
 
                     {/* TITULO */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px', position: 'relative' }}>
                         <div style={{ display: 'flex', fontSize: '64px', fontWeight: 'bold', color: '#000000', textAlign: 'center', lineHeight: '1' }}>
                             RIFA {raffle.title.toUpperCase()}
                         </div>
@@ -99,7 +120,7 @@ export async function GET(
                     </div>
 
                     {/* LEGENDA CIRCULAR */}
-                    <div style={{ display: 'flex', marginBottom: '25px', fontSize: '24px', fontWeight: 'bold' }}>
+                    <div style={{ display: 'flex', marginBottom: '25px', fontSize: '24px', fontWeight: 'bold', position: 'relative' }}>
                         <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px' }}>
                             <div style={{ width: '32px', height: '32px', backgroundColor: '#22C55E', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span style={{ color: '#000000' }}>Livre</span>
@@ -115,7 +136,7 @@ export async function GET(
                     </div>
 
                     {/* BARRA DE PROGRESSO */}
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '600px', marginBottom: '25px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '600px', marginBottom: '25px', position: 'relative' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '14px', fontWeight: 'bold', color: '#64748B' }}>
                             <span>Progresso da Rifa</span>
                             <span>{percentageSold}% Vendido</span>
@@ -136,14 +157,16 @@ export async function GET(
                             padding: '20px 10px',
                             alignItems: 'center',
                             marginBottom: '30px',
+                            position: 'relative',
+                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                         }}
                     >
                         {rows.map((row, rowIndex) => (
                             <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                                 {row.map((num) => {
                                     const status = statusMap.get(num) || 'livre';
-                                    const bgColor = status === 'pago' ? '#CBD5E1' : status === 'reservado' ? '#F97316' : '#FFFFFF';
-                                    const borderColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EA580C' : '#D1D5DB';
+                                    const bgColor = (status === 'pago') ? '#CBD5E1' : (status === 'reservado' ? '#F97316' : '#FFFFFF');
+                                    const borderColor = (status === 'pago') ? '#94A3B8' : (status === 'reservado' ? '#EA580C' : '#D1D5DB');
 
                                     return (
                                         <div
@@ -172,7 +195,7 @@ export async function GET(
                     </div>
 
                     {/* RODAPÉ */}
-                    <div style={{ display: 'flex', marginTop: 'auto', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', marginTop: 'auto', marginBottom: '10px', position: 'relative' }}>
                         <div style={{ display: 'flex', fontSize: '36px', fontWeight: 'bold', color: '#000000', letterSpacing: '1px' }}>
                             PAGAMENTO VIA SITE
                         </div>
