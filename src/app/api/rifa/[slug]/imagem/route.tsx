@@ -1,173 +1,187 @@
 import { ImageResponse } from 'next/og';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> }
 ) {
-    const { slug } = await params;
-    const supabase = await createClient();
+    try {
+        const { slug } = await params;
 
-    // 1. Fetch Raffle Data
-    const { data: raffle, error: raffleError } = await supabase
-        .from('raffles')
-        .select('*')
-        .eq('slug', slug)
-        .single();
+        // Use a direct client to avoid cookie issues in image generation
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
 
-    if (raffleError || !raffle) {
-        return new Response('Rifa não encontrada', { status: 404 });
-    }
+        // 1. Fetch Raffle Data
+        const { data: raffle, error: raffleError } = await supabase
+            .from('raffles')
+            .select('*')
+            .eq('slug', slug)
+            .single();
 
-    // 2. Fetch Purchases/Participants
-    const { data: purchases } = await supabase
-        .from('purchases')
-        .select('status, numbers')
-        .eq('raffle_id', raffle.id);
+        if (raffleError || !raffle) {
+            return new Response('Rifa não encontrada', { status: 404 });
+        }
 
-    // 3. Map status of each number
-    const statusMap = new Map<number, 'pago' | 'reservado' | 'livre'>();
-    purchases?.forEach(p => {
-        const status = p.status === 'confirmed' || p.status === 'paid' || p.status === 'paid_delayed' ? 'pago' : 'reservado';
-        p.numbers.forEach((num: number) => {
-            statusMap.set(num, status);
+        // 2. Fetch Purchases/Participants
+        const { data: purchases } = await supabase
+            .from('purchases')
+            .select('status, numbers')
+            .eq('raffle_id', raffle.id);
+
+        // 3. Map status of each number
+        const statusMap = new Map<number, 'pago' | 'reservado' | 'livre'>();
+        purchases?.forEach(p => {
+            const status = p.status === 'confirmed' || p.status === 'paid' || p.status === 'paid_delayed' ? 'pago' : 'reservado';
+            p.numbers.forEach((num: number) => {
+                statusMap.set(num, status);
+            });
         });
-    });
 
-    const totalNumbers = raffle.total_numbers;
-    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.ticket_price);
-    const date = new Date(raffle.draw_date).toLocaleDateString('pt-BR');
+        const totalNumbers = raffle.total_numbers;
+        const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.ticket_price);
+        const date = new Date(raffle.draw_date).toLocaleDateString('pt-BR');
 
-    // Percentage sold
-    const paidCount = Array.from(statusMap.values()).filter(s => s === 'pago').length;
-    const percentageSold = Math.round((paidCount / totalNumbers) * 100);
+        // Percentage sold
+        const paidCount = Array.from(statusMap.values()).filter(s => s === 'pago').length;
+        const percentageSold = Math.round((paidCount / totalNumbers) * 100);
 
-    // 5. Grid Calculation
-    let cols = 10;
-    if (totalNumbers > 100) cols = 20;
-    if (totalNumbers > 500) cols = 25;
+        // 5. Grid Calculation
+        let cols = 10;
+        if (totalNumbers > 100) cols = 20;
+        if (totalNumbers > 500) cols = 25;
 
-    const rows = [];
-    for (let i = 0; i < totalNumbers; i += cols) {
-        rows.push(Array.from({ length: totalNumbers }).slice(i, i + cols));
-    }
+        const rows = [];
+        for (let i = 0; i < totalNumbers; i += cols) {
+            const rowArr = Array.from({ length: totalNumbers }).slice(i, i + cols);
+            if (rowArr.length > 0) rows.push(rowArr);
+        }
 
-    const boxSize = Math.floor((1000 - (cols * 4)) / cols);
-    const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 12 : 16) : 24;
-    const showNumbers = totalNumbers <= 500;
+        const boxSize = Math.floor((1000 - (cols * 4)) / cols);
+        const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 12 : 16) : 24;
+        const showNumbers = totalNumbers <= 500;
 
-    return new ImageResponse(
-        (
-            <div
-                style={{
-                    height: '1350px',
-                    width: '1080px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    backgroundColor: '#FFFFFF',
-                    padding: '60px 40px',
-                }}
-            >
-                {/* TOPO */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px', backgroundColor: '#FFFFFF' }}>
-                    <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#1A1A1A', textAlign: 'center', marginBottom: '10px', backgroundColor: '#FFFFFF', display: 'flex' }}>
-                        ⚡ RIFA DO {raffle.title.toUpperCase()}
-                    </div>
-                    <div style={{ fontSize: '28px', color: '#666666', marginBottom: '5px', backgroundColor: '#FFFFFF', display: 'flex' }}>
-                        Cada número {price}
-                    </div>
-                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#EF4444', backgroundColor: '#FFFFFF', display: 'flex' }}>
-                        Sorteio {date}
-                    </div>
-                </div>
-
-                {/* LEGENDA */}
-                <div style={{ display: 'flex', marginBottom: '40px', fontSize: '20px', fontWeight: '600', backgroundColor: '#FFFFFF' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ width: '20px', height: '20px', backgroundColor: '#22C55E', borderRadius: '4px', marginRight: '8px' }}></div>
-                        <span style={{ color: '#000000' }}>Livre</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ width: '20px', height: '20px', backgroundColor: '#EAB308', borderRadius: '4px', marginRight: '8px' }}></div>
-                        <span style={{ color: '#000000' }}>Reservado</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
-                        <div style={{ width: '20px', height: '20px', backgroundColor: '#94A3B8', borderRadius: '4px', marginRight: '8px' }}></div>
-                        <span style={{ color: '#000000' }}>Pago</span>
-                    </div>
-                </div>
-
-                {/* GRADE (Otimizada com Linhas) */}
+        return new ImageResponse(
+            (
                 <div
                     style={{
+                        height: '1350px',
+                        width: '1080px',
                         display: 'flex',
                         flexDirection: 'column',
-                        width: '1000px',
                         alignItems: 'center',
-                        marginBottom: '40px',
+                        justifyContent: 'flex-start',
                         backgroundColor: '#FFFFFF',
+                        padding: '60px 40px',
                     }}
                 >
-                    {rows.map((row, rowIndex) => (
-                        <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
-                            {row.map((_, colIndex) => {
-                                const num = (rowIndex * cols) + colIndex + 1;
-                                if (num > totalNumbers) return null;
-
-                                const status = statusMap.get(num) || 'livre';
-                                const bgColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#22C55E';
-
-                                return (
-                                    <div
-                                        key={num}
-                                        style={{
-                                            width: `${boxSize}px`,
-                                            height: `${boxSize}px`,
-                                            backgroundColor: bgColor,
-                                            color: '#FFFFFF',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontSize: `${fontSize}px`,
-                                            fontWeight: 'bold',
-                                            borderRadius: '4px',
-                                            margin: '2px',
-                                        }}
-                                    >
-                                        {showNumbers ? num : ''}
-                                    </div>
-                                );
-                            })}
+                    {/* TOPO */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px', backgroundColor: '#FFFFFF' }}>
+                        <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#1A1A1A', textAlign: 'center', marginBottom: '10px', backgroundColor: '#FFFFFF', display: 'flex' }}>
+                            ⚡ RIFA DO {raffle.title.toUpperCase()}
                         </div>
-                    ))}
-                </div>
+                        <div style={{ fontSize: '28px', color: '#666666', marginBottom: '5px', backgroundColor: '#FFFFFF', display: 'flex' }}>
+                            Cada número {price}
+                        </div>
+                        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#EF4444', backgroundColor: '#FFFFFF', display: 'flex' }}>
+                            Sorteio {date}
+                        </div>
+                    </div>
 
-                {/* RODAPÉ */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto', backgroundColor: '#FFFFFF' }}>
-                    <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#0052FF', marginBottom: '10px', backgroundColor: '#FFFFFF', display: 'flex' }}>
-                        Pagamento via site: rifazap.vercel.app
+                    {/* LEGENDA */}
+                    <div style={{ display: 'flex', marginBottom: '40px', fontSize: '20px', fontWeight: '600', backgroundColor: '#FFFFFF' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: '#FFFFFF' }}>
+                            <div style={{ width: '20px', height: '20px', backgroundColor: '#22C55E', borderRadius: '4px', marginRight: '8px', border: '1px solid #16a34a' }}></div>
+                            <span style={{ color: '#000000' }}>Livre</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px', backgroundColor: '#FFFFFF' }}>
+                            <div style={{ width: '20px', height: '20px', backgroundColor: '#EAB308', borderRadius: '4px', marginRight: '8px', border: '1px solid #ca8a04' }}></div>
+                            <span style={{ color: '#000000' }}>Reservado</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
+                            <div style={{ width: '20px', height: '20px', backgroundColor: '#94A3B8', borderRadius: '4px', marginRight: '8px', border: '1px solid #64748b' }}></div>
+                            <span style={{ color: '#000000' }}>Pago</span>
+                        </div>
                     </div>
-                    <div style={{
-                        fontSize: '36px',
-                        fontWeight: 'bold',
-                        color: '#FFFFFF',
-                        backgroundColor: '#1A1A1A',
-                        padding: '10px 40px',
-                        borderRadius: '50px',
-                        display: 'flex',
-                    }}>
-                        {percentageSold}% VENDIDO
+
+                    {/* GRADE (Otimizada com Linhas) */}
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '1000px',
+                            alignItems: 'center',
+                            marginBottom: '40px',
+                            backgroundColor: '#FFFFFF',
+                        }}
+                    >
+                        {rows.map((row, rowIndex) => (
+                            <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
+                                {row.map((_, colIndex) => {
+                                    const num = (rowIndex * cols) + colIndex + 1;
+                                    if (num > totalNumbers) return null;
+
+                                    const status = statusMap.get(num) || 'livre';
+                                    const bgColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#22C55E';
+
+                                    return (
+                                        <div
+                                            key={num}
+                                            style={{
+                                                width: `${boxSize}px`,
+                                                height: `${boxSize}px`,
+                                                backgroundColor: bgColor,
+                                                color: '#FFFFFF',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: `${fontSize}px`,
+                                                fontWeight: 'bold',
+                                                borderRadius: '4px',
+                                                margin: '2px',
+                                                border: `1px solid ${status === 'pago' ? '#64748b' : status === 'reservado' ? '#ca8a04' : '#16a34a'}`,
+                                            }}
+                                        >
+                                            {showNumbers ? num : ''}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* RODAPÉ */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto', backgroundColor: '#FFFFFF' }}>
+                        <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#0052FF', marginBottom: '10px', backgroundColor: '#FFFFFF', display: 'flex' }}>
+                            Pagamento via site: rifazap.vercel.app
+                        </div>
+                        <div style={{
+                            fontSize: '36px',
+                            fontWeight: 'bold',
+                            color: '#FFFFFF',
+                            backgroundColor: '#1A1A1A',
+                            padding: '10px 40px',
+                            borderRadius: '50px',
+                            display: 'flex',
+                        }}>
+                            {percentageSold}% VENDIDO
+                        </div>
                     </div>
                 </div>
-            </div>
-        ),
-        {
-            width: 1080,
-            height: 1350,
-        }
-    );
+            ),
+            {
+                width: 1080,
+                height: 1350,
+            }
+        );
+    } catch (error) {
+        console.error('Error generating image:', error);
+        return new Response('Erro servidor: ' + (error instanceof Error ? error.message : String(error)), { status: 500 });
+    }
 }

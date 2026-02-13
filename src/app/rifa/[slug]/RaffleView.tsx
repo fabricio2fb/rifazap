@@ -137,8 +137,12 @@ ${url}`;
 
             const blob = await response.blob();
 
-            if (blob.size < 100) {
-                throw new Error('A imagem gerada está vazia ou corrompida');
+            if (blob.size < 500) { // PNGs are usually larger than 500 bytes
+                const text = await blob.text();
+                if (text.startsWith('Erro')) {
+                    throw new Error(text);
+                }
+                throw new Error('A imagem gerada está vazia ou corrompida (tamanho insuficiente)');
             }
 
             const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
@@ -164,11 +168,11 @@ ${url}`;
             document.body.appendChild(a);
             a.click();
 
-            // Short delay to ensure download starts on all mobile browsers before clean up
+            // Short delay to ensure download starts
             setTimeout(() => {
                 window.URL.revokeObjectURL(downloadUrl);
                 document.body.removeChild(a);
-            }, 100);
+            }, 500);
 
             toast({
                 title: "Imagem baixada!",
@@ -181,8 +185,8 @@ ${url}`;
             console.error('Error sharing image:', error);
             toast({
                 variant: 'destructive',
-                title: "Erro ao gerar imagem",
-                description: error instanceof Error ? error.message : "O servidor levou muito tempo. Tente novamente em instantes.",
+                title: "Não foi possível gerar a imagem",
+                description: error instanceof Error ? error.message : "Tente novamente em instantes.",
             });
         }
     };
