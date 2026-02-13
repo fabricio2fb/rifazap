@@ -296,7 +296,7 @@ ${url}`;
 
                     <div className="flex flex-wrap gap-4 text-xs font-semibold uppercase">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3 h-3 rounded-sm bg-rifa-available/20 border border-rifa-available/20" />
+                            <div className="w-3 h-3 rounded-sm bg-rifa-available" />
                             <span>Livre</span>
                         </div>
                         <div className="flex items-center gap-1.5">

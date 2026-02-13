@@ -101,11 +101,11 @@ export async function GET(
                     {/* LEGENDA CIRCULAR */}
                     <div style={{ display: 'flex', marginBottom: '25px', fontSize: '24px', fontWeight: 'bold' }}>
                         <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px' }}>
-                            <div style={{ width: '32px', height: '32px', backgroundColor: '#86EFAC', borderRadius: '50%', marginRight: '10px' }}></div>
+                            <div style={{ width: '32px', height: '32px', backgroundColor: '#22C55E', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span style={{ color: '#000000' }}>Livre</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginRight: '30px' }}>
-                            <div style={{ width: '32px', height: '32px', backgroundColor: '#FDE047', borderRadius: '50%', marginRight: '10px' }}></div>
+                            <div style={{ width: '32px', height: '32px', backgroundColor: '#F97316', borderRadius: '50%', marginRight: '10px' }}></div>
                             <span style={{ color: '#000000' }}>Reservado</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -121,7 +121,7 @@ export async function GET(
                             <span>{percentageSold}% Vendido</span>
                         </div>
                         <div style={{ display: 'flex', width: '100%', height: '8px', backgroundColor: '#E2E8F0', borderRadius: '4px', overflow: 'hidden' }}>
-                            <div style={{ display: 'flex', width: `${percentageSold}%`, height: '100%', backgroundColor: '#FDE047' }}></div>
+                            <div style={{ display: 'flex', width: `${percentageSold}%`, height: '100%', backgroundColor: '#F97316' }}></div>
                         </div>
                     </div>
 
@@ -142,8 +142,8 @@ export async function GET(
                             <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                                 {row.map((num) => {
                                     const status = statusMap.get(num) || 'livre';
-                                    const bgColor = status === 'pago' ? '#CBD5E1' : status === 'reservado' ? '#FDE047' : '#FFFFFF';
-                                    const borderColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EAB308' : '#D1D5DB';
+                                    const bgColor = status === 'pago' ? '#CBD5E1' : status === 'reservado' ? '#F97316' : '#FFFFFF';
+                                    const borderColor = status === 'pago' ? '#94A3B8' : status === 'reservado' ? '#EA580C' : '#D1D5DB';
 
                                     return (
                                         <div
