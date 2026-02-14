@@ -210,7 +210,9 @@ ${url}`;
             <div className="relative aspect-[4/3] w-full overflow-hidden">
                 {initialRaffle.imageUrl && (
                     <Image
-                        src={initialRaffle.imageUrl}
+                        src={initialRaffle.imageUrl.includes('cloudinary.com')
+                            ? initialRaffle.imageUrl.replace('/upload/', '/upload/q_auto,f_auto/')
+                            : initialRaffle.imageUrl}
                         alt={initialRaffle.title}
                         fill
                         className="object-cover"

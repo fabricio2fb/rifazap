@@ -19,6 +19,7 @@ interface EditRaffleDialogProps {
 
 export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaffleDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { toast } = useToast();
   const supabase = createClient();
@@ -51,6 +52,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
 
     try {
       let currentImageUrl = formData.imageUrl;
+      let editCountIncrement = 0;
 
       // 1. Handle image upload if a new file is selected
       if (selectedFile) {
@@ -72,15 +74,18 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
       }
 
       // 2. Prepare update data (snake_case for DB)
-      const updateData = {
+      const updateData: any = {
         title: formData.title,
         description: formData.description,
         image_url: currentImageUrl,
         draw_date: formData.drawDate,
         whatsapp_contact: formData.whatsappContact,
         whatsapp_group_link: formData.whatsappGroupLink,
-        // Slug is NOT included here to preserve the existing link
       };
+
+      if (editCountIncrement > 0) {
+        updateData.image_edit_count = (raffle.imageEditCount || 0) + 1;
+      }
 
       // 3. Update in Database
       const { data, error } = await supabase
@@ -101,6 +106,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
         drawDate: data.draw_date,
         whatsappContact: data.whatsapp_contact,
         whatsappGroupLink: data.whatsapp_group_link,
+        imageEditCount: data.image_edit_count,
       };
 
       onUpdate(updatedRaffle);
@@ -118,6 +124,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
       });
     } finally {
       setLoading(false);
+      setUploading(false);
     }
   }
 
@@ -178,11 +185,21 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
               />
               <Label
                 htmlFor="edit-photo-upload"
-                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20"
+                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20 overflow-hidden relative ${raffle.imageEditCount >= 5 ? 'cursor-not-allowed opacity-50' : ''}`}
+                onClick={(e) => {
+                  if (raffle.imageEditCount >= 5) {
+                    e.preventDefault();
+                    toast({
+                      variant: "destructive",
+                      title: "Limite atingido",
+                      description: "Você já editou a imagem desta rifa 5 vezes."
+                    });
+                  }
+                }}
               >
                 {selectedFile ? (
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-xs font-bold text-primary-foreground">{selectedFile.name}</span>
+                    <span className="text-xs font-bold text-primary-foreground">Nova imagem selecionada</span>
                     <Button
                       type="button"
                       variant="ghost"
@@ -193,10 +210,19 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
                       Remover e trocar
                     </Button>
                   </div>
+                ) : uploading ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    <span className="text-[10px] font-medium">Enviando para Cloudinary...</span>
+                  </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                  <div className="flex flex-col items-center gap-1 text-muted-foreground text-center p-2">
                     <ImageIcon className="w-8 h-8 opacity-20" />
                     <span className="text-xs font-medium">Trocar imagem atual</span>
+                    <span className="text-[10px] opacity-70">Limite: {raffle.imageEditCount || 0}/5 edições</span>
+                    {raffle.imageEditCount >= 5 && (
+                      <span className="text-[10px] text-destructive font-bold uppercase mt-1">Bloqueado</span>
+                    )}
                   </div>
                 )}
               </Label>

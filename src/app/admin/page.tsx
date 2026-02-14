@@ -196,6 +196,7 @@ export default function AdminDashboard() {
           pixKey: r.pix_key,
           whatsappContact: r.whatsapp_contact,
           whatsappGroupLink: r.whatsapp_group_link,
+          imageEditCount: r.image_edit_count || 0,
           createdAt: r.created_at
         }));
         setRaffles(mappedRaffles);

@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { createClient } from "@/lib/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -41,13 +42,46 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
   const [loading, setLoading] = useState(false);
   const [pendingRaffle, setPendingRaffle] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>('');
   const { toast } = useToast();
 
   const supabase = createClient();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setSelectedFile(file);
+
+      // Instantly upload to Cloudinary for preview and capture the URL
+      setUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Erro no upload');
+
+        setImageUrl(data.secure_url);
+        toast({
+          title: "Imagem pronta!",
+          description: "Sua foto foi carregada com sucesso.",
+        });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Erro no upload",
+          description: error.message,
+        });
+        setSelectedFile(null);
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -75,13 +109,17 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
       const uniqueSuffix = Math.random().toString(36).substring(2, 6);
       const slug = `${baseSlug}-${uniqueSuffix}`;
 
+      if (!imageUrl) {
+        throw new Error("Por favor, selecione e carregue uma imagem para o prêmio.");
+      }
+
       const raffleData = {
         organizer_id: user.id,
         title: title,
         slug: slug,
         description: formData.get('description') as string,
         prize_description: formData.get('description') as string,
-        image_url: 'https://picsum.photos/seed/' + Math.floor(Math.random() * 1000) + '/800/600',
+        image_url: imageUrl,
         ticket_price: Number(formData.get('price')),
         total_numbers: Number(formData.get('total')),
         draw_date: formData.get('date') as string,
@@ -165,25 +203,25 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
                   />
                   <Label
                     htmlFor="photo-upload"
-                    className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20"
+                    className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20 overflow-hidden relative"
                   >
-                    {selectedFile ? (
+                    {imageUrl ? (
+                      <div className="relative w-full h-full">
+                        <Image src={imageUrl} alt="Preview" fill className="object-cover" />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <span className="text-white text-xs font-bold">Trocar Imagem</span>
+                        </div>
+                      </div>
+                    ) : uploading ? (
                       <div className="flex flex-col items-center gap-2">
-                        <span className="text-xs font-bold text-primary-foreground">{selectedFile.name}</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-[10px]"
-                          onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
-                        >
-                          Remover e trocar
-                        </Button>
+                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                        <span className="text-xs font-medium text-muted-foreground">Enviando para Cloudinary...</span>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-1 text-muted-foreground">
                         <ImageIcon className="w-10 h-10 opacity-20" />
                         <span className="text-xs font-medium">Clique para selecionar foto</span>
+                        <span className="text-[10px] opacity-50">JPG, PNG ou WEBP (Max 5MB)</span>
                       </div>
                     )}
                   </Label>

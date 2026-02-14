@@ -27,6 +27,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `Cada número custa ${price}. Sorteio dia ${date}.`;
   const url = `https://rifazap.vercel.app/rifa/${slug}`;
 
+  // Cloudinary Optimization for OG
+  let ogImageUrl = `${url}/imagem`; // Default to dynamic image
+  if (raffle.image_url && raffle.image_url.includes('cloudinary.com')) {
+    // Insert transformations after /upload/
+    ogImageUrl = raffle.image_url.replace('/upload/', '/upload/w_1200,h_630,c_fill,q_auto,f_auto/');
+  }
+
   return {
     title: raffle.title,
     description: description,
@@ -37,9 +44,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: url,
       images: [
         {
-          url: `${url}/imagem`,
-          width: 1080,
-          height: 1350,
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
           alt: raffle.title,
         },
       ],
@@ -48,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: raffle.title,
       description: description,
-      images: [`${url}/imagem`],
+      images: [ogImageUrl],
     },
   };
 }
