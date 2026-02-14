@@ -35,13 +35,22 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
 
   useEffect(() => {
     if (raffle) {
+      // Format date to YYYY-MM-DD for input[type="date"]
+      let formattedDate = '';
+      if (raffle.drawDate) {
+        const dateObj = new Date(raffle.drawDate);
+        if (!isNaN(dateObj.getTime())) {
+          formattedDate = dateObj.toISOString().split('T')[0];
+        }
+      }
+
       setFormData({
         title: raffle.title || '',
         description: raffle.description || '',
         imageUrl: raffle.imageUrl || '',
         whatsappContact: raffle.whatsappContact || '',
         whatsappGroupLink: raffle.whatsappGroupLink || '',
-        drawDate: raffle.drawDate || '',
+        drawDate: formattedDate,
       });
     }
   }, [raffle]);
@@ -56,21 +65,25 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
 
       // 1. Handle image upload if a new file is selected
       if (selectedFile) {
-        const fileExt = selectedFile.name.split('.').pop();
-        const fileName = `${raffle.id}-${Math.floor(Math.random() * 1000000)}.${fileExt}`;
-        const filePath = `raffle-images/${fileName}`;
+        // Enforce 5-edit limit
+        if ((raffle.imageEditCount || 0) >= 5) {
+          throw new Error("Limite de 5 edições de imagem atingido.");
+        }
 
-        const { error: uploadError } = await supabase.storage
-          .from('raffles')
-          .upload(filePath, selectedFile);
+        setUploading(true);
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', selectedFile);
 
-        if (uploadError) throw uploadError;
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: uploadFormData,
+        });
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('raffles')
-          .getPublicUrl(filePath);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Erro no upload para Cloudinary');
 
-        currentImageUrl = publicUrl;
+        currentImageUrl = data.secure_url;
+        editCountIncrement = 1;
       }
 
       // 2. Prepare update data (snake_case for DB)
