@@ -1,13 +1,14 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Pencil, Image as ImageIcon, Link as LinkIcon, Lock, Phone, Upload } from 'lucide-react';
+import { Pencil, Image as ImageIcon, Link as LinkIcon, Lock, Phone, Upload, Loader2 } from 'lucide-react';
 
 interface EditRaffleDialogProps {
   raffle: any;
@@ -19,6 +20,9 @@ interface EditRaffleDialogProps {
 export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaffleDialogProps) {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { toast } = useToast();
+  const supabase = createClient();
+
   const [formData, setFormData] = useState<any>({
     title: '',
     description: '',
@@ -45,23 +49,76 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
     e.preventDefault();
     setLoading(true);
 
-    const updatedData = {
-      ...raffle,
-      ...formData,
-      slug: formData.title.toLowerCase()
-        .trim()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^\w\s-]/g, '')
-        .replace(/[\s_-]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-    };
+    try {
+      let currentImageUrl = formData.imageUrl;
 
-    setTimeout(() => {
-      onUpdate(updatedData);
-      setLoading(false);
+      // 1. Handle image upload if a new file is selected
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${raffle.id}-${Math.floor(Math.random() * 1000000)}.${fileExt}`;
+        const filePath = `raffle-images/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('raffles')
+          .upload(filePath, selectedFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('raffles')
+          .getPublicUrl(filePath);
+
+        currentImageUrl = publicUrl;
+      }
+
+      // 2. Prepare update data (snake_case for DB)
+      const updateData = {
+        title: formData.title,
+        description: formData.description,
+        image_url: currentImageUrl,
+        draw_date: formData.drawDate,
+        whatsapp_contact: formData.whatsappContact,
+        whatsapp_group_link: formData.whatsappGroupLink,
+        // Slug is NOT included here to preserve the existing link
+      };
+
+      // 3. Update in Database
+      const { data, error } = await supabase
+        .from('raffles')
+        .update(updateData)
+        .eq('id', raffle.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // 4. Map back to camelCase for the parent UI state
+      const updatedRaffle = {
+        ...raffle,
+        title: data.title,
+        description: data.description,
+        imageUrl: data.image_url,
+        drawDate: data.draw_date,
+        whatsappContact: data.whatsapp_contact,
+        whatsappGroupLink: data.whatsapp_group_link,
+      };
+
+      onUpdate(updatedRaffle);
+      toast({
+        title: "Alterações salvas!",
+        description: "As informações da rifa foram atualizadas com sucesso.",
+      });
       onClose();
-    }, 500);
+    } catch (error: any) {
+      console.error('Error updating raffle:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao salvar",
+        description: error.message || "Não foi possível atualizar as informações."
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,29 +138,29 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
             Editar Informações
           </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div className="grid gap-2">
             <Label htmlFor="edit-title" className="font-semibold">Título do Prêmio</Label>
-            <Input 
-              id="edit-title" 
-              value={formData.title} 
-              onChange={(e) => setFormData({...formData, title: e.target.value})}
-              placeholder="Ex: iPhone 15 Pro Max" 
-              required 
-              className="h-12 text-base" 
+            <Input
+              id="edit-title"
+              value={formData.title}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Ex: iPhone 15 Pro Max"
+              required
+              className="h-12 text-base"
             />
           </div>
 
           <div className="grid gap-2">
             <Label htmlFor="edit-description" className="font-semibold">Descrição e Regras</Label>
-            <Textarea 
-              id="edit-description" 
-              value={formData.description} 
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
-              placeholder="Descreva os detalhes do prêmio..." 
-              required 
-              className="min-h-[80px] text-base" 
+            <Textarea
+              id="edit-description"
+              value={formData.description}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Descreva os detalhes do prêmio..."
+              required
+              className="min-h-[80px] text-base"
             />
           </div>
 
@@ -112,25 +169,25 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
               <Upload className="w-4 h-4" /> Atualizar Foto do Prêmio
             </Label>
             <div className="relative">
-              <Input 
-                id="edit-photo-upload" 
-                type="file" 
-                accept="image/*" 
+              <Input
+                id="edit-photo-upload"
+                type="file"
+                accept="image/*"
                 onChange={handleFileChange}
-                className="hidden" 
+                className="hidden"
               />
-              <Label 
+              <Label
                 htmlFor="edit-photo-upload"
                 className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/20"
               >
                 {selectedFile ? (
                   <div className="flex flex-col items-center gap-2">
                     <span className="text-xs font-bold text-primary-foreground">{selectedFile.name}</span>
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-7 text-[10px]" 
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-[10px]"
                       onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
                     >
                       Remover e trocar
@@ -166,13 +223,13 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
 
           <div className="grid gap-2">
             <Label htmlFor="edit-date" className="font-semibold">Nova Data do Sorteio</Label>
-            <Input 
-              id="edit-date" 
-              type="date" 
-              value={formData.drawDate} 
-              onChange={(e) => setFormData({...formData, drawDate: e.target.value})}
-              required 
-              className="h-12 text-base" 
+            <Input
+              id="edit-date"
+              type="date"
+              value={formData.drawDate}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, drawDate: e.target.value })}
+              required
+              className="h-12 text-base"
             />
           </div>
 
@@ -180,13 +237,13 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
             <Label htmlFor="edit-whatsappContact" className="flex items-center gap-2 font-semibold text-green-700">
               <Phone className="w-4 h-4" /> WhatsApp para Comprovantes
             </Label>
-            <Input 
-              id="edit-whatsappContact" 
-              value={formData.whatsappContact} 
-              onChange={(e) => setFormData({...formData, whatsappContact: e.target.value})}
-              placeholder="5511999999999" 
-              required 
-              className="h-12 border-green-100" 
+            <Input
+              id="edit-whatsappContact"
+              value={formData.whatsappContact}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, whatsappContact: e.target.value })}
+              placeholder="5511999999999"
+              required
+              className="h-12 border-green-100"
             />
           </div>
 
@@ -201,17 +258,18 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
             <Label htmlFor="edit-whatsappGroupLink" className="flex items-center gap-2 font-semibold text-green-700">
               <LinkIcon className="w-4 h-4" /> Link do Grupo (WhatsApp)
             </Label>
-            <Input 
-              id="edit-whatsappGroupLink" 
-              value={formData.whatsappGroupLink} 
-              onChange={(e) => setFormData({...formData, whatsappGroupLink: e.target.value})}
-              placeholder="https://chat.whatsapp.com/..." 
-              className="h-12 border-green-100" 
+            <Input
+              id="edit-whatsappGroupLink"
+              value={formData.whatsappGroupLink}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, whatsappGroupLink: e.target.value })}
+              placeholder="https://chat.whatsapp.com/..."
+              className="h-12 border-green-100"
             />
           </div>
 
           <div className="pt-4 sticky bottom-0 bg-white pb-2">
             <Button type="submit" className="w-full h-14 font-bold text-lg shadow-xl" disabled={loading}>
+              {loading ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : null}
               {loading ? "Salvando..." : "Salvar Alterações"}
             </Button>
           </div>

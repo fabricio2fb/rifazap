@@ -87,6 +87,8 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
         draw_date: formData.get('date') as string,
         pix_key: formData.get('pix') as string,
         pix_key_type: 'random',
+        whatsapp_contact: formData.get('whatsappContact') as string,
+        whatsapp_group_link: formData.get('whatsappGroupLink') as string,
         status: 'pending_payment'
       };
 

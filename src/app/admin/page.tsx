@@ -194,6 +194,8 @@ export default function AdminDashboard() {
           winningNumber: r.winner_number,
           winner: r.winner_name || 'Ganhador',
           pixKey: r.pix_key,
+          whatsappContact: r.whatsapp_contact,
+          whatsappGroupLink: r.whatsapp_group_link,
           createdAt: r.created_at
         }));
         setRaffles(mappedRaffles);
