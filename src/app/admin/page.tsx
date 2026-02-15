@@ -61,18 +61,43 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
     const calculateTime = () => {
       if (!sale.createdAt) return 0;
 
+      // 🔍 DEBUG
+      console.log('=== DEBUG TIMER ===');
+      console.log('Sale ID:', sale.id);
+      console.log('Sale createdAt (raw):', sale.createdAt);
+
       let createdTimestamp;
-      if (sale.createdAt.endsWith('Z')) {
-        createdTimestamp = new Date(sale.createdAt).getTime();
+      const dateStr = sale.createdAt;
+
+      // Robust Date Parsing
+      if (dateStr.endsWith('Z')) {
+        createdTimestamp = new Date(dateStr).getTime();
+      } else if (dateStr.includes('T')) {
+        // Assume UTC if ISO format but missing Z
+        createdTimestamp = new Date(dateStr + 'Z').getTime();
       } else {
-        createdTimestamp = new Date(sale.createdAt + 'Z').getTime();
+        // Last resort try standard parsing
+        createdTimestamp = new Date(dateStr).getTime();
+      }
+
+      // Validation
+      if (isNaN(createdTimestamp)) {
+        console.error('Data inválida para timer:', dateStr);
+        return 600; // Fallback to 10 min
       }
 
       const now = Date.now();
       const msElapsed = Math.max(0, now - createdTimestamp);
       const totalSeconds = 600; // 10 min
       const elapsedSeconds = Math.floor(msElapsed / 1000);
-      return Math.max(0, totalSeconds - elapsedSeconds);
+      const remaining = Math.max(0, totalSeconds - elapsedSeconds);
+
+      console.log('Created TS:', createdTimestamp);
+      console.log('Now:', now);
+      console.log('Remaining (s):', remaining);
+      console.log('===================');
+
+      return remaining;
     };
 
     const initial = calculateTime();
