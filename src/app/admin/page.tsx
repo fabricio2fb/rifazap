@@ -56,38 +56,39 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
   const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
-    const calculateTime = () => {
-      if (!sale.createdAt) return;
+    // 1. Calculate Expiration Time ONCE
+    // Ensure we treat the DB timestamp as UTC
+    let createdTimestamp;
+    if (sale.createdAt.endsWith('Z')) {
+      createdTimestamp = new Date(sale.createdAt).getTime();
+    } else {
+      // If no Z, appending it forces UTC interpretation
+      createdTimestamp = new Date(sale.createdAt + 'Z').getTime();
+    }
 
-      const created = new Date(sale.createdAt).getTime();
+    const expiresAt = createdTimestamp + (10 * 60 * 1000); // 10 minutes from creation
+
+    const updateTimer = () => {
       const now = Date.now();
-      let msPassed = now - created;
+      const msRemaining = expiresAt - now;
 
-      // Aggressive practical fix for the common 3-hour UTC mismatch in Brazil
-      // If the difference is roughly 3 hours (between 2.5h and 3.5h), adjust it.
-      const threeHoursMs = 3 * 60 * 60 * 1000;
-      if (Math.abs(msPassed) > 2.5 * 60 * 60 * 1000 && Math.abs(msPassed) < 3.5 * 60 * 60 * 1000) {
-        msPassed = msPassed > 0 ? msPassed - threeHoursMs : msPassed + threeHoursMs;
-      }
-
-      const limitMs = 10 * 60 * 1000; // 10 minutes
-      const timeRemaining = limitMs - Math.max(0, msPassed);
-
-      if (timeRemaining <= 0) {
+      if (msRemaining <= 0) {
         setIsExpired(true);
         setTimeLeft("00:00");
-        return;
+        return; // Stop updating if expired
       }
 
-      const minutes = Math.floor(timeRemaining / (1000 * 60));
-      const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
+      const minutes = Math.floor(msRemaining / (1000 * 60));
+      const seconds = Math.floor((msRemaining % (1000 * 60)) / 1000);
       setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       setIsExpired(false);
     };
 
-    calculateTime();
-    const interval = setInterval(calculateTime, 1000);
+    // Run immediately
+    updateTimer();
+
+    // Update every second
+    const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
   }, [sale.createdAt]);
 
@@ -100,7 +101,7 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
         </Badge>
         {!isExpired && (
           <div className="flex items-center gap-1 font-mono text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100 italic">
-            Tempo restante: {timeLeft}
+            Tempo restante: {timeLeft || "..."}
           </div>
         )}
       </div>
