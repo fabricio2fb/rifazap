@@ -52,48 +52,53 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfirm: (id: string, isLate?: boolean) => void, onCancel: (id: string) => void }) => {
-  const [timeLeft, setTimeLeft] = useState("");
-  const [isExpired, setIsExpired] = useState(false);
+  // ABORDAGEM SIMPLES: Decrementa o estado localmente
+  const [secondsRemaining, setSecondsRemaining] = useState(() => {
+    if (!sale.createdAt) return 0;
 
-  useEffect(() => {
-    // 1. Calculate Expiration Time ONCE
-    // Ensure we treat the DB timestamp as UTC
     let createdTimestamp;
     if (sale.createdAt.endsWith('Z')) {
       createdTimestamp = new Date(sale.createdAt).getTime();
     } else {
-      // If no Z, appending it forces UTC interpretation
       createdTimestamp = new Date(sale.createdAt + 'Z').getTime();
     }
 
-    const expiresAt = createdTimestamp + (10 * 60 * 1000); // 10 minutes from creation
+    const now = Date.now();
+    // Se criado no futuro, considera 0 decorrido. Se passado, calcula decorrido.
+    const msElapsed = Math.max(0, now - createdTimestamp);
 
-    const updateTimer = () => {
-      const now = Date.now();
-      const msRemaining = expiresAt - now;
+    const totalSeconds = 600; // 10 min
+    const elapsedSeconds = Math.floor(msElapsed / 1000);
 
-      if (msRemaining <= 0) {
-        setIsExpired(true);
-        setTimeLeft("00:00");
-        return; // Stop updating if expired
-      }
+    return Math.max(0, totalSeconds - elapsedSeconds);
+  });
 
-      // Cap at 10 minutes visually to avoid confusing "14:14" if clocks are skewed
-      const cappedMs = Math.min(msRemaining, 10 * 60 * 1000);
+  const [isExpired, setIsExpired] = useState(false);
 
-      const minutes = Math.floor(cappedMs / (1000 * 60));
-      const seconds = Math.floor((cappedMs % (1000 * 60)) / 1000);
-      setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
-      setIsExpired(false);
-    };
+  useEffect(() => {
+    if (secondsRemaining <= 0) {
+      setIsExpired(true);
+      return;
+    }
 
-    // Run immediately
-    updateTimer();
+    const interval = setInterval(() => {
+      setSecondsRemaining((prev) => {
+        if (prev <= 1) {
+          setIsExpired(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-    // Update every second
-    const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [sale.createdAt]);
+  }, []);
+
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -104,7 +109,7 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
         </Badge>
         {!isExpired && (
           <div className="flex items-center gap-1 font-mono text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100 italic">
-            Tempo restante: {timeLeft || "..."}
+            Tempo restante: {formatTime(secondsRemaining)}
           </div>
         )}
       </div>
