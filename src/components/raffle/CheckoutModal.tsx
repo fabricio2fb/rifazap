@@ -72,12 +72,20 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
       // Try to find customer
       const { data: existingCustomer } = await supabase
         .from('customers')
-        .select('id')
+        .select('id, name')
         .eq('phone', phone)
         .single();
 
       if (existingCustomer) {
         customerId = existingCustomer.id;
+        // UPDATE NAME IF DIFFERENT
+        // This fixes the issue where a user is stuck with an old name (e.g. "BIA")
+        if (existingCustomer.name !== formData.name) {
+          await supabase
+            .from('customers')
+            .update({ name: formData.name })
+            .eq('id', customerId);
+        }
       } else {
         // Create new customer
         const { data: newCustomer, error: createError } = await supabase

@@ -78,8 +78,11 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
         return; // Stop updating if expired
       }
 
-      const minutes = Math.floor(msRemaining / (1000 * 60));
-      const seconds = Math.floor((msRemaining % (1000 * 60)) / 1000);
+      // Cap at 10 minutes visually to avoid confusing "14:14" if clocks are skewed
+      const cappedMs = Math.min(msRemaining, 10 * 60 * 1000);
+
+      const minutes = Math.floor(cappedMs / (1000 * 60));
+      const seconds = Math.floor((cappedMs % (1000 * 60)) / 1000);
       setTimeLeft(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       setIsExpired(false);
     };
