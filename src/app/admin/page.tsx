@@ -53,6 +53,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfirm: (id: string, isLate?: boolean) => void, onCancel: (id: string) => void }) => {
   // ABORDAGEM SIMPLES: Decrementa o estado localmente
+  // ABORDAGEM SIMPLES: Decrementa o estado localmente
   const [secondsRemaining, setSecondsRemaining] = useState(() => {
     if (!sale.createdAt) return 0;
 
@@ -70,7 +71,27 @@ const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfir
     const totalSeconds = 600; // 10 min
     const elapsedSeconds = Math.floor(msElapsed / 1000);
 
-    return Math.max(0, totalSeconds - elapsedSeconds);
+    const restante = Math.max(0, totalSeconds - elapsedSeconds);
+
+    console.log('[Timer Debug]', {
+      saleId: sale.id,
+      createdAt: sale.createdAt,
+      createdTimestamp,
+      now,
+      msElapsed,
+      restante
+    });
+
+    console.log('[Timer Debug]', {
+      saleId: sale.id,
+      createdAt: sale.createdAt,
+      createdTimestamp,
+      now,
+      msElapsed,
+      restante
+    });
+
+    return restante;
   });
 
   const [isExpired, setIsExpired] = useState(false);
