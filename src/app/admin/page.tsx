@@ -52,74 +52,71 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfirm: (id: string, isLate?: boolean) => void, onCancel: (id: string) => void }) => {
-  // ABORDAGEM SIMPLES: Decrementa o estado localmente
-  // ABORDAGEM SIMPLES: Decrementa o estado localmente
-  const [secondsRemaining, setSecondsRemaining] = useState(() => {
-    if (!sale.createdAt) return 0;
-
-    let createdTimestamp;
-    if (sale.createdAt.endsWith('Z')) {
-      createdTimestamp = new Date(sale.createdAt).getTime();
-    } else {
-      createdTimestamp = new Date(sale.createdAt + 'Z').getTime();
-    }
-
-    const now = Date.now();
-    // Se criado no futuro, considera 0 decorrido. Se passado, calcula decorrido.
-    const msElapsed = Math.max(0, now - createdTimestamp);
-
-    const totalSeconds = 600; // 10 min
-    const elapsedSeconds = Math.floor(msElapsed / 1000);
-
-    const restante = Math.max(0, totalSeconds - elapsedSeconds);
-
-    console.log('[Timer Debug]', {
-      saleId: sale.id,
-      createdAt: sale.createdAt,
-      createdTimestamp,
-      now,
-      msElapsed,
-      restante
-    });
-
-    console.log('[Timer Debug]', {
-      saleId: sale.id,
-      createdAt: sale.createdAt,
-      createdTimestamp,
-      now,
-      msElapsed,
-      restante
-    });
-
-    return restante;
-  });
-
+  // Fix Hydration Mismatch: Initialize with null so server/client match initially
+  const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
   const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
-    if (secondsRemaining <= 0) {
+    // Move calculation here to run ONLY on client
+    const calculateTime = () => {
+      if (!sale.createdAt) return 0;
+
+      let createdTimestamp;
+      if (sale.createdAt.endsWith('Z')) {
+        createdTimestamp = new Date(sale.createdAt).getTime();
+      } else {
+        createdTimestamp = new Date(sale.createdAt + 'Z').getTime();
+      }
+
+      const now = Date.now();
+      const msElapsed = Math.max(0, now - createdTimestamp);
+      const totalSeconds = 600; // 10 min
+      const elapsedSeconds = Math.floor(msElapsed / 1000);
+      return Math.max(0, totalSeconds - elapsedSeconds);
+    };
+
+    const initial = calculateTime();
+    setSecondsRemaining(initial);
+
+    if (initial <= 0) {
       setIsExpired(true);
       return;
     }
 
     const interval = setInterval(() => {
       setSecondsRemaining((prev) => {
-        if (prev <= 1) {
+        // If prev is null, it means we just started, so recalculate or use initial
+        const current = prev !== null ? prev : initial;
+
+        if (current <= 1) {
           setIsExpired(true);
           return 0;
         }
-        return prev - 1;
+        return current - 1;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [sale.createdAt]); // Depend on sale.createdAt
 
   const formatTime = (totalSeconds: number) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
+
+  // Show skeleton or nothing during hydration to prevent mismatch
+  if (secondsRemaining === null) {
+    return (
+      <div className="flex flex-col gap-2 w-full animate-pulse">
+        <div className="h-6 w-full bg-gray-200 rounded"></div>
+        <div className="flex gap-1">
+          <div className="h-7 w-full bg-gray-200 rounded"></div>
+          <div className="h-7 w-full bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-2 w-full">
