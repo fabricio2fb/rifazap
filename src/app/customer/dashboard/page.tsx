@@ -111,12 +111,14 @@ export default function CustomerDashboard() {
 
                                         <div className="flex-1 p-6 flex flex-col justify-between gap-4">
                                             <div>
-                                                <div className="flex items-center justify-between mb-4">
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
                                                     <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                                                         <DollarSign className="w-4 h-4" />
                                                         Total: R$ {purchase.total_amount?.toFixed(2)}
                                                     </div>
-                                                    {getStatusBadge(purchase.status)}
+                                                    <div className="self-start sm:self-auto">
+                                                        {getStatusBadge(purchase.status)}
+                                                    </div>
                                                 </div>
 
                                                 <div className="space-y-2">
@@ -133,15 +135,13 @@ export default function CustomerDashboard() {
 
                                             <div className="pt-4 border-t flex justify-end">
                                                 {purchase.status === 'pending' && (
-                                                    // Redirect to raffle page for payment if needed, or show payment info?
-                                                    // For simplicity, just link to the raffle page
-                                                    <Link href={`/rifa/${purchase.raffle?.slug}`}>
-                                                        <Button size="sm" variant="outline">Ver Rifa / Pagar</Button>
+                                                    <Link href={`/rifa/${purchase.raffle?.slug}`} className="w-full sm:w-auto">
+                                                        <Button size="sm" variant="outline" className="w-full sm:w-auto">Ver Rifa / Pagar</Button>
                                                     </Link>
                                                 )}
                                                 {purchase.status !== 'pending' && (
-                                                    <Link href={`/rifa/${purchase.raffle?.slug}`}>
-                                                        <Button size="sm" variant="outline">Ver Sorteio</Button>
+                                                    <Link href={`/rifa/${purchase.raffle?.slug}`} className="w-full sm:w-auto">
+                                                        <Button size="sm" variant="outline" className="w-full sm:w-auto">Ver Sorteio</Button>
                                                     </Link>
                                                 )}
                                             </div>

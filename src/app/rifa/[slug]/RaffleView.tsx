@@ -6,7 +6,7 @@ import { NumberGrid } from "@/components/raffle/NumberGrid";
 import { CheckoutModal } from "@/components/raffle/CheckoutModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Calendar, Trophy, CheckCircle, Info, Ticket } from "lucide-react";
+import { MessageCircle, Calendar, Trophy, CheckCircle, Info, Ticket, Zap } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/lib/supabase/client";
@@ -328,6 +328,16 @@ ${url}`;
                         selectedNumbers={selectedNumbers}
                         onNumberClick={handleNumberClick}
                     />
+                </div>
+
+                <div className="pt-12 pb-8 text-center space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-muted-foreground/50">
+                        <Zap className="w-4 h-4" />
+                        <span className="font-bold text-sm uppercase tracking-wider">RifaZap</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground/60 max-w-xs mx-auto leading-relaxed">
+                        Esta rifa é de responsabilidade do organizador. A RifaZap fornece a tecnologia para realização do sorteio.
+                    </p>
                 </div>
             </div>
 

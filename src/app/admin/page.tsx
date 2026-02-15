@@ -762,19 +762,22 @@ ${url}`;
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <p className="text-lg font-black text-foreground">R$ {sale.total.toFixed(2)}</p>
-                        {sale.status !== 'pending' && getStatusBadge(sale)}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 border-t sm:border-t-0 pt-4 sm:pt-0 mt-2 sm:mt-0">
+                      <div className="flex justify-between sm:block sm:text-right">
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-muted-foreground sm:hidden">Valor Total</p>
+                          <p className="text-lg font-black text-foreground">R$ {sale.total.toFixed(2)}</p>
+                        </div>
+                        <div className="sm:mt-1">
+                          {sale.status !== 'pending' && getStatusBadge(sale)}
+                        </div>
                       </div>
 
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2 w-full sm:w-auto">
                         {sale.status === 'pending' && (() => {
                           const created = new Date(sale.createdAt).getTime();
                           const now = new Date().getTime();
                           const diffMinutes = (now - created) / 1000 / 60;
-
-                          // If it's more than 10 minutes old, it's NOT recent (but we still show actions with "Atrasado" logic)
                           const isExpiredLocal = diffMinutes >= 10;
 
                           return (

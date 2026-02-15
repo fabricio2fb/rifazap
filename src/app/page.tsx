@@ -20,6 +20,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 export default function Home() {
   const [animationStep, setAnimationStep] = useState(0);
 
@@ -31,13 +37,13 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-6 mx-auto">
+        <div className="container flex h-16 items-center justify-between px-4 md:px-6 mx-auto">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-            <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
+            <span className="text-xl md:text-2xl font-bold tracking-tighter">RifaZap</span>
           </div>
           <div className="hidden md:flex items-center gap-4">
             <Link href="/customer/login">
@@ -47,31 +53,46 @@ export default function Home() {
               <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Começar Agora</Button>
             </Link>
           </div>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="h-6 w-6" />
-          </Button>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <div className="flex flex-col gap-6 mt-8">
+                <Link href="/customer/login" className="w-full">
+                  <Button variant="outline" className="w-full font-bold border-2 h-12 text-lg">Meus Números</Button>
+                </Link>
+                <Link href="/login" className="w-full">
+                  <Button className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-12 text-lg">Começar Agora</Button>
+                </Link>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </nav>
 
-      <main className="flex-1">
+      <main className="flex-1 w-full">
         {/* Hero Section */}
-        <section className="relative bg-primary py-20 px-6 overflow-hidden">
+        <section className="relative bg-primary py-12 md:py-20 px-4 md:px-6 overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-          <div className="container relative mx-auto text-center space-y-8">
-            <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider text-primary-foreground animate-bounce">
-              <Zap className="w-4 h-4" />
+          <div className="container relative mx-auto text-center space-y-6 md:space-y-8">
+            <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider text-primary-foreground animate-bounce">
+              <Zap className="w-3 h-3 md:w-4 md:h-4" />
               Plataforma #1 para Rifas Digitais
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight tracking-tight">
-              Sua Rifa no WhatsApp <br /> <span className="text-white">em 60 Segundos</span>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight tracking-tight px-2">
+              Sua Rifa no WhatsApp <br className="hidden sm:block" /> <span className="text-white">em 60 Segundos</span>
             </h1>
-            <p className="max-w-2xl mx-auto text-xl text-primary-foreground/90 font-medium">
+            <p className="max-w-2xl mx-auto text-lg md:text-xl text-primary-foreground/90 font-medium px-4">
               A maneira mais simples, rápida e profissional de organizar sorteios, gerenciar pagamentos via PIX e crescer sua audiência.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-              <Link href="/login">
-                <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
-                  Criar Minha Rifa <ArrowRight className="w-6 h-6" />
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 w-full px-4 sm:px-0">
+              <Link href="/login" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto h-14 md:h-16 px-6 md:px-10 text-lg md:text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
+                  Criar Minha Rifa <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
                 </Button>
               </Link>
             </div>
