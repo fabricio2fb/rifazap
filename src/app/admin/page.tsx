@@ -1,903 +1,302 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import {
-  Trophy,
-  ExternalLink,
   Package,
-  User,
   CheckCircle,
-  ArrowLeft,
-  Zap,
-  MessageCircle,
-  Pencil,
-  Dices,
+  Wallet,
+  Trophy,
+  TrendingUp,
   Users,
-  Eye,
-  FileText,
-  Search,
-  Timer,
-  Info,
-  Calendar,
-  XCircle,
-  AlertTriangle,
-  Bell,
-  Settings,
-  Ticket
+  ArrowUpRight,
 } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
-import { EditRaffleDialog } from "@/components/admin/EditRaffleDialog";
-import { NotificationSettingsDialog } from "@/components/admin/NotificationSettingsDialog";
-import { RaffleSummaryDialog } from "@/components/admin/RaffleSummaryDialog";
-import { DrawRaffleDialog } from "@/components/admin/DrawRaffleDialog";
-import { WinnerDetailsDialog } from "@/components/admin/WinnerDetailsDialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
-const PendingSaleActions = ({ sale, onConfirm, onCancel }: { sale: any, onConfirm: (id: string, isLate?: boolean) => void, onCancel: (id: string) => void }) => {
-  // Fix Hydration Mismatch: Initialize with null so server/client match initially
-  const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
-  const [isExpired, setIsExpired] = useState(false);
-
-  useEffect(() => {
-    // Move calculation here to run ONLY on client
-    const calculateTime = () => {
-      if (!sale.createdAt) return 0;
-
-      // 🔍 DEBUG
-      console.log('=== DEBUG TIMER ===');
-      console.log('Sale ID:', sale.id);
-      console.log('Sale createdAt (raw):', sale.createdAt);
-
-      let createdTimestamp;
-      const dateStr = sale.createdAt;
-
-      // Robust Date Parsing
-      if (dateStr.endsWith('Z')) {
-        createdTimestamp = new Date(dateStr).getTime();
-      } else if (dateStr.includes('T')) {
-        // Assume UTC if ISO format but missing Z
-        createdTimestamp = new Date(dateStr + 'Z').getTime();
-      } else {
-        // Last resort try standard parsing
-        createdTimestamp = new Date(dateStr).getTime();
-      }
-
-      // Validation
-      if (isNaN(createdTimestamp)) {
-        console.error('Data inválida para timer:', dateStr);
-        return 600; // Fallback to 10 min
-      }
-
-      const now = Date.now();
-      const msElapsed = Math.max(0, now - createdTimestamp);
-      const totalSeconds = 600; // 10 min
-      const elapsedSeconds = Math.floor(msElapsed / 1000);
-      const remaining = Math.max(0, totalSeconds - elapsedSeconds);
-
-      console.log('Created TS:', createdTimestamp);
-      console.log('Now:', now);
-      console.log('Remaining (s):', remaining);
-      console.log('===================');
-
-      return remaining;
-    };
-
-    const initial = calculateTime();
-    setSecondsRemaining(initial);
-
-    if (initial <= 0) {
-      setIsExpired(true);
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setSecondsRemaining((prev) => {
-        // If prev is null, it means we just started, so recalculate or use initial
-        const current = prev !== null ? prev : initial;
-
-        if (current <= 1) {
-          setIsExpired(true);
-          return 0;
-        }
-        return current - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [sale.createdAt]); // Depend on sale.createdAt
-
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  // Show skeleton or nothing during hydration to prevent mismatch
-  if (secondsRemaining === null) {
-    return (
-      <div className="flex flex-col gap-2 w-full animate-pulse">
-        <div className="h-6 w-full bg-gray-200 rounded"></div>
-        <div className="flex gap-1">
-          <div className="h-7 w-full bg-gray-200 rounded"></div>
-          <div className="h-7 w-full bg-gray-200 rounded"></div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex flex-col items-center gap-1 mb-2">
-        <Badge variant="outline" className={`gap-1 w-full justify-center ${isExpired ? 'text-orange-600 border-orange-500' : 'text-yellow-600 border-yellow-500'}`}>
-          <Timer className="w-3 h-3" />
-          {isExpired ? "EXPIRADO" : "PENDENTE"}
-        </Badge>
-        {!isExpired && (
-          <div className="flex items-center gap-1 font-mono text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100 italic">
-            Tempo restante: {formatTime(secondsRemaining)}
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1 w-full">
-        {!isExpired ? (
-          <Button
-            size="sm"
-            onClick={() => onConfirm(sale.id, false)}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold h-7 w-full text-[10px]"
-          >
-            <CheckCircle className="w-3 h-3 mr-1" /> Confirmar
-          </Button>
-        ) : (
-          <Button
-            size="sm"
-            onClick={() => onConfirm(sale.id, true)}
-            className="bg-orange-500 hover:bg-orange-600 text-white font-bold h-7 w-full text-[10px]"
-          >
-            <AlertTriangle className="w-3 h-3 mr-1" /> Pago c/ Atraso
-          </Button>
-        )}
-        <Button
-          size="sm"
-          variant="destructive"
-          onClick={() => onCancel(sale.id)}
-          className="font-bold h-7 w-full text-[10px]"
-        >
-          <XCircle className="w-3 h-3 mr-1" /> Cancelar
-        </Button>
-      </div>
-    </div>
-  );
-};
+import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("raffles");
-  const [raffles, setRaffles] = useState<any[]>([]);
-  const [sales, setSales] = useState<any[]>([]);
-  const [editingRaffle, setEditingRaffle] = useState<any>(null);
-  const [showSettings, setShowSettings] = useState(false);
-
-  // Notifications
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-
-  // Custom Loading State
+  const [stats, setStats] = useState({
+    activeRaffles: 0,
+    totalSales: 0,
+    revenue: 0,
+    drawnRaffles: 0,
+  });
+  const [recentSales, setRecentSales] = useState<any[]>([]);
+  const [topRaffles, setTopRaffles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
   const router = useRouter();
   const supabase = createClient();
 
-  // States for Draw
-  const [drawingRaffle, setDrawingRaffle] = useState<any>(null);
-  const [drawStep, setDrawStep] = useState<'idle' | 'counting' | 'finished'>('idle');
-  const [countdown, setCountdown] = useState(5);
-  const [winner, setWinner] = useState<any>(null);
-  const [currentSpinNumber, setCurrentSpinNumber] = useState(0);
-
-  // States for Summary and Winner Details
-  const [summaryRaffle, setSummaryRaffle] = useState<any>(null);
-  const [viewingWinner, setViewingWinner] = useState<any>(null);
-
-  const { toast } = useToast();
-
   useEffect(() => {
     const loadData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
-      // Fetch raffles
-      const { data: rafflesData } = await supabase
-        .from('raffles')
-        .select('*')
-        .eq('organizer_id', user.id)
-        .order('created_at', { ascending: false });
+      // Buscar rifas
+      const { data: raffles } = await supabase
+        .from("raffles")
+        .select("*")
+        .eq("organizer_id", user.id);
 
-      if (rafflesData) {
-        const mappedRaffles = rafflesData.map(r => ({
-          id: r.id,
-          title: r.title,
-          slug: r.slug,
-          description: r.description,
-          imageUrl: r.image_url,
-          pricePerNumber: r.ticket_price,
-          totalNumbers: r.total_numbers,
-          drawDate: r.draw_date,
-          status: r.status,
-          winningNumber: r.winner_number,
-          winner: r.winner_name || 'Ganhador',
-          pixKey: r.pix_key,
-          whatsappContact: r.whatsapp_contact,
-          whatsappGroupLink: r.whatsapp_group_link,
-          imageEditCount: r.image_edit_count || 0,
-          createdAt: r.created_at
-        }));
-        setRaffles(mappedRaffles);
+      // Buscar vendas
+      const { data: sales } = await supabase
+        .from("purchases")
+        .select("*, customers(*), raffles!inner(organizer_id, title)")
+        .eq("raffles.organizer_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (raffles && sales) {
+        const activeRaffles = raffles.filter((r) => r.status === "active").length;
+        const drawnRaffles = raffles.filter((r) => r.status === "drawn").length;
+
+        // Helper para filtrar vendas confirmadas
+        const isConfirmed = (s: any) =>
+          s.status === "confirmed" ||
+          s.status === "paid" ||
+          s.status === "paid_delayed";
+
+        const confirmedSales = sales.filter(isConfirmed);
+        const revenue = confirmedSales.reduce((acc, s) => acc + s.total_amount, 0);
+
+        setStats({
+          activeRaffles,
+          totalSales: confirmedSales.length, // Agora conta apenas as pagas/confirmadas
+          revenue,
+          drawnRaffles,
+        });
+
+        // Vendas recentes (últimas 4) - Mantemos todas para visibilidade de lances pendentes
+        setRecentSales(
+          sales.slice(0, 4).map((s) => ({
+            id: s.id,
+            name: s.customers?.name || "Desconhecido",
+            numbersCount: s.numbers?.length || 0,
+            status: s.status,
+          }))
+        );
+
+        // Top rifas (por progresso de vendas CONFIRMADAS)
+        const raffleStats = raffles.map((raffle) => {
+          // Filtrar apenas vendas confirmadas desta rifa específica
+          const raffleConfirmedSales = sales.filter((s) => s.raffle_id === raffle.id && isConfirmed(s));
+          const soldNumbers = raffleConfirmedSales.reduce(
+            (acc, s) => acc + (s.numbers?.length || 0),
+            0
+          );
+          const progress = (soldNumbers / raffle.total_numbers) * 100;
+
+          return {
+            id: raffle.id,
+            title: raffle.title,
+            progress: Math.min(100, Math.round(progress)), // Limitar a 100% visualmente
+            soldNumbers,
+            totalNumbers: raffle.total_numbers,
+          };
+        });
+
+        // Ordenar por progresso e pegar top 4
+        setTopRaffles(
+          raffleStats
+            .sort((a, b) => b.progress - a.progress)
+            .slice(0, 4)
+        );
       }
-
-      // Load Sales
-      const { data: allSales } = await supabase
-        .from('purchases')
-        .select('*, customers(*)')
-        .order('created_at', { ascending: false });
-
-      if (allSales) {
-        mapSales(allSales);
-      }
-
-      // Load Notifications
-      fetchNotifications(user.id);
-
-      // Subscribe to Realtime Purchases
-      const channel = supabase
-        .channel('admin-dashboard')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'purchases' },
-          (payload) => {
-            // Reload sales on any change (INSERT, UPDATE, DELETE)
-            loadSales();
-
-            if (payload.eventType === 'INSERT') {
-              toast({
-                title: "Nova Venda!",
-                description: `Venda iniciada. Valor: R$ ${payload.new.total_amount}`,
-              });
-              playNotificationSound();
-            }
-          }
-        )
-        .subscribe();
 
       setLoading(false);
-
-      return () => {
-        supabase.removeChannel(channel);
-      };
     };
+
     loadData();
-  }, []);
-
-  const playNotificationSound = () => {
-    // Create a simple beep or use a hosted file. For now, just skipped or implemented if requested.
-    // const audio = new Audio('/sounds/kaching.mp3');
-    // audio.play().catch(e => console.log("Audio play failed", e));
-  };
-
-  const fetchNotifications = async (userId: string) => {
-    // Implement if notification table exists
-    // For now, mocking or empty
-    setNotifications([]);
-  };
-
-  const loadSales = async () => {
-    const { data } = await supabase
-      .from('purchases')
-      .select('*, customers(*)')
-      .order('created_at', { ascending: false });
-    if (data) mapSales(data);
-  };
-
-  const mapSales = (data: any[]) => {
-    const mapped = data.map(p => ({
-      id: p.id,
-      raffleId: p.raffle_id,
-      name: p.customers?.name || 'Desconhecido',
-      whatsapp: p.customers?.phone || '',
-      selectedNumbers: p.numbers,
-      status: p.status, // pending, paid, confirmed, paid_delayed, cancelled
-      createdAt: p.created_at,
-      total: p.total_amount
-    }));
-    setSales(mapped);
-  };
-
-  const loadRaffleDetails = async (raffleId: string) => {
-    // Already loading global sales, but can filter
-    return sales.filter(s => s.raffleId === raffleId);
-  };
-
-  const confirmPayment = async (saleId: string, isLate = false) => {
-    const status = isLate ? 'paid_delayed' : 'confirmed';
-
-    // Update DB
-    const { error } = await supabase
-      .from('purchases')
-      .update({ status: status, confirmed_at: new Date() })
-      .eq('id', saleId);
-
-    if (error) {
-      toast({ variant: "destructive", title: "Erro", description: error.message });
-      return;
-    }
-
-    // Update reserved_numbers status to 'paid'
-    await supabase
-      .from('reserved_numbers')
-      .update({ status: 'paid' })
-      .eq('purchase_id', saleId);
-
-    // Optimistic UI
-    setSales(prev => prev.map(sale => sale.id === saleId ? { ...sale, status } : sale));
-
-    toast({
-      title: isLate ? "Confirmado com Atraso!" : "Pagamento Confirmado!",
-      description: isLate
-        ? "Pagamento marcado como recebido fora do prazo."
-        : "O participante agora está com os números garantidos.",
-      className: isLate ? "bg-orange-100 border-orange-200" : "bg-green-100 border-green-200"
-    });
-  };
-
-  const cancelReservation = async (saleId: string) => {
-    // Set status to cancelled
-    // Remove reserved_numbers (or set to cancelled)
-
-    const { error } = await supabase
-      .from('purchases')
-      .update({ status: 'cancelled' })
-      .eq('id', saleId);
-
-    if (error) {
-      toast({ variant: "destructive", title: "Erro", description: error.message });
-      return;
-    }
-
-    // Delete reservation to free up numbers
-    await supabase
-      .from('reserved_numbers')
-      .delete()
-      .eq('purchase_id', saleId);
-
-    setSales(prev => prev.map(sale => sale.id === saleId ? { ...sale, status: 'cancelled' } : sale));
-
-    toast({ title: "Reserva Cancelada", description: "Os números foram liberados.", variant: "destructive" });
-  };
-
-  const handleUpdateRaffle = (updatedRaffle: any) => {
-    setRaffles(prev => prev.map(r => r.id === updatedRaffle.id ? updatedRaffle : r));
-    toast({
-      title: "Rifa Atualizada!",
-      description: "As informações foram alteradas com sucesso.",
-    });
-  };
-
-  const handleCreateRaffle = (newRaffle: any) => {
-    const mapped = {
-      id: newRaffle.id,
-      title: newRaffle.title,
-      slug: newRaffle.slug,
-      description: newRaffle.description,
-      imageUrl: newRaffle.image_url,
-      pricePerNumber: newRaffle.ticket_price,
-      totalNumbers: newRaffle.total_numbers,
-      drawDate: newRaffle.draw_date,
-      status: newRaffle.status,
-      createdAt: newRaffle.created_at
-    };
-
-    setRaffles([mapped, ...raffles]);
-    toast({
-      title: "Rifa Criada!",
-      description: "Sua nova rifa foi adicionada à lista.",
-    });
-  };
-
-  const confirmedNumbersForRaffle = useMemo(() => {
-    if (!drawingRaffle) return [];
-    // Filter sales for this raffle that are confirmed/paid/paid_delayed
-    const confirmedParticipants = sales.filter(s =>
-      s.raffleId === drawingRaffle.id &&
-      (s.status === 'confirmed' || s.status === 'paid' || s.status === 'paid_delayed')
-    );
-    const allNumbers: { num: number, buyer: any }[] = [];
-    confirmedParticipants.forEach(p => {
-      p.selectedNumbers.forEach((n: number) => {
-        allNumbers.push({ num: n, buyer: p });
-      });
-    });
-    return allNumbers;
-  }, [drawingRaffle, sales]);
-
-  const shareOnWhatsApp = (raffle: any) => {
-    const url = `https://rifazap.vercel.app/rifa/${raffle.slug}`;
-    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
-
-    // Force Brasilia time for share message
-    const date = new Date(raffle.drawDate).toLocaleDateString('pt-BR', {
-      timeZone: 'America/Sao_Paulo'
-    });
-
-    const text = `🎟️ RIFA ATIVA
-
-Prêmio: ${raffle.title}
-Valor por número: ${price}
-Sorteio: ${date}
-
-👉 Garanta o seu número:
-${url}`;
-
-    const encodedText = encodeURIComponent(text);
-    window.open(`https://wa.me/?text=${encodedText}`, '_blank');
-  };
-
-  const shareWithImage = async (raffle: any) => {
-    toast({
-      title: "Gerando imagem...",
-      description: "Aguarde enquanto preparamos a imagem de status.",
-    });
-
-    try {
-      const slugEncoded = encodeURIComponent(raffle.slug);
-      const response = await fetch(`/api/rifa/${slugEncoded}/imagem?t=${Date.now()}`);
-
-      if (!response.ok) {
-        const contentType = response.headers.get('content-type');
-        let errorMessage = 'Erro ao gerar imagem';
-        if (contentType?.includes('application/json')) {
-          const errorData = await response.json();
-          errorMessage = errorData.error || errorMessage;
-        } else {
-          errorMessage = await response.text() || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const blob = await response.blob();
-
-      if (blob.size < 500) {
-        throw new Error(`Imagem muito pequena (${blob.size} bytes). Verifique sua conexão.`);
-      }
-
-      const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
-      const date = new Date(raffle.drawDate).toLocaleDateString('pt-BR', {
-        timeZone: 'America/Sao_Paulo'
-      });
-      const url = `https://rifazap.vercel.app/rifa/${raffle.slug}`;
-
-      const shareText = `🎟️ RIFA ATIVA
-
-Prêmio: ${raffle.title}
-Valor por número: ${price}
-Sorteio: ${date}
-
-👉 Garanta o seu número:
-${url}`;
-
-      // Direct Download + WhatsApp Redirect Flow
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = `status-rifa.png`;
-      document.body.appendChild(a);
-      a.click();
-
-      // Longer delay for mobile browsers
-      setTimeout(() => {
-        window.URL.revokeObjectURL(downloadUrl);
-        document.body.removeChild(a);
-      }, 1000);
-
-      toast({
-        title: "Imagem baixada!",
-        description: "Agora anexe-a no seu WhatsApp para completar o compartilhamento.",
-      });
-
-      // Immediately open WhatsApp
-      shareOnWhatsApp(raffle);
-    } catch (error) {
-      console.error('Error sharing image:', error);
-      toast({
-        variant: 'destructive',
-        title: "Falha no download da imagem",
-        description: error instanceof Error ? error.message : "Tente novamente em instantes.",
-      });
-    }
-  };
-
-  const startDrawCeremony = () => {
-    if (confirmedNumbersForRaffle.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Sorteio Impossível",
-        description: "Não há participantes aptos.",
-      });
-      return;
-    }
-
-    setDrawStep('counting');
-    setCountdown(5);
-    setWinner(null);
-
-    let count = 5;
-    const interval = setInterval(() => {
-      count -= 1;
-      setCountdown(count);
-      if (count <= 0) {
-        clearInterval(interval);
-        clearInterval(spinInterval);
-
-        const randomIndex = Math.floor(Math.random() * confirmedNumbersForRaffle.length);
-        const chosen = confirmedNumbersForRaffle[randomIndex];
-        setWinner(chosen);
-        setDrawStep('finished');
-
-        const updateWinner = async () => {
-          await supabase.from('raffles').update({
-            status: 'drawn',
-            winner_number: chosen.num,
-          }).eq('id', drawingRaffle.id);
-        };
-        updateWinner();
-
-        setRaffles(prev => prev.map(r =>
-          r.id === drawingRaffle.id ? { ...r, status: 'drawn', winner: chosen.buyer.name, winningNumber: chosen.num } : r
-        ));
-      }
-    }, 1000);
-
-    const spinInterval = setInterval(() => {
-      setCurrentSpinNumber(Math.floor(Math.random() * 100));
-    }, 100);
-  };
-
-  const getRaffleSummary = (raffleId: string) => {
-    return sales.filter(s => s.raffleId === raffleId);
-  };
-
-  const getStatusBadge = (sale: any) => {
-    switch (sale.status) {
-      case 'confirmed':
-      case 'paid':
-        return <Badge className="bg-green-500 hover:bg-green-600 text-white gap-1"><CheckCircle className="w-3 h-3" /> PAGO</Badge>;
-      case 'paid_delayed': // Novo status
-        return <Badge className="bg-orange-500 hover:bg-orange-600 text-white gap-1"><AlertTriangle className="w-3 h-3" /> PAGO (ATRASO)</Badge>;
-      case 'cancelled':
-        return <Badge variant="destructive" className="gap-1"><XCircle className="w-3 h-3" /> CANCELADO</Badge>;
-      default: // pending
-        return null;
-    }
-  };
+  }, [router, supabase]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-muted/30">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
+  const statsCards = [
+    {
+      title: "Rifas Ativas",
+      value: stats.activeRaffles,
+      icon: Package,
+      color: "bg-blue-100 text-blue-600",
+    },
+    {
+      title: "Vendas Totais",
+      value: stats.totalSales,
+      icon: CheckCircle,
+      color: "bg-green-100 text-green-600",
+    },
+    {
+      title: "Receita Total",
+      value: `R$ ${stats.revenue.toFixed(2)}`,
+      icon: Wallet,
+      color: "bg-primary/20 text-primary",
+    },
+    {
+      title: "Sorteios",
+      value: stats.drawnRaffles,
+      icon: Trophy,
+      color: "bg-orange-100 text-orange-600",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-muted/30 pb-20">
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link href="/">
-              <div className="p-2 hover:bg-muted rounded-full transition-colors">
-                <ArrowLeft className="w-5 h-5" />
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div>
+        <h1 className="text-3xl font-black tracking-tight">Visão Geral</h1>
+        <p className="text-muted-foreground font-medium">
+
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {statsCards.map((stat, i) => (
+          <Card
+            key={i}
+            className="p-6 border-none shadow-sm flex flex-col gap-4 hover:shadow-md transition-all hover:-translate-y-1 duration-300 bg-white/80 backdrop-blur-sm"
+          >
+            <div
+              className={cn(
+                "h-12 w-12 rounded-2xl flex items-center justify-center shadow-inner",
+                stat.color
+              )}
+            >
+              <stat.icon className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.15em]">
+                {stat.title}
+              </p>
+              <p className="text-2xl font-black mt-1">{stat.value}</p>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Atividade Recente */}
+        <Card className="p-8 border-none shadow-sm space-y-8 bg-white/80 backdrop-blur-sm rounded-3xl">
+          <div className="flex items-center justify-between">
+            <h3 className="font-black text-xl flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-xl">
+                <TrendingUp className="w-6 h-6 text-primary" />
               </div>
-            </Link>
-            <h1 className="font-bold text-lg sm:text-xl">Painel RifaZap</h1>
+              Atividade Recente
+            </h3>
+            <a
+              href="/admin/vendas"
+              className="text-xs font-bold text-primary flex items-center gap-1 hover:underline transition-all"
+            >
+              Ver tudo <ArrowUpRight className="w-4 h-4" />
+            </a>
           </div>
-
-          <div className="flex items-center gap-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <Bell className="w-5 h-5" />
-                  {unreadCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80 p-0" align="end">
-                <div className="p-4 border-b font-bold">Notificações</div>
-                <div className="p-4 text-sm text-muted-foreground text-center">
-                  {notifications.length === 0 ? "Nenhuma notificação nova." : "..."}
-                </div>
-              </PopoverContent>
-            </Popover>
-
-            <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)}>
-              <Settings className="w-5 h-5" />
-            </Button>
-
-            <CreateRaffleDialog onCreate={handleCreateRaffle} />
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-6">
-        <Tabs defaultValue="raffles" onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-white p-1 h-12 rounded-xl shadow-sm border mb-6">
-            <TabsTrigger value="raffles" className="rounded-lg font-semibold">Minhas Rifas</TabsTrigger>
-            <TabsTrigger value="participants" className="rounded-lg font-semibold">Vendas</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="raffles" className="space-y-4">
-            {raffles.map((raffle: any) => (
-              <Card key={raffle.id} className="overflow-hidden border-none shadow-md hover:shadow-lg transition-all bg-white rounded-2xl">
-                <div className="flex flex-col lg:flex-row">
-                  <div className="relative w-full lg:w-64 h-48 lg:h-auto shrink-0 bg-slate-100">
-                    {raffle.imageUrl && (
-                      <Image src={raffle.imageUrl} alt={raffle.title} fill className="object-cover" />
-                    )}
-                    <div className="absolute top-3 left-3 flex flex-col gap-2">
-                      <Badge
-                        variant={raffle.status === 'active' ? 'default' : raffle.status === 'drawn' ? 'secondary' : 'outline'}
-                        className={`shadow-lg px-3 py-1 font-bold ${raffle.status === 'pending_payment' ? 'border-orange-500 text-orange-600 bg-orange-50' : ''}`}
-                      >
-                        {raffle.status === 'active' ? 'ATIVA' :
-                          raffle.status === 'drawn' ? 'SORTEADA' :
-                            raffle.status === 'pending_payment' ? 'PGTO PENDENTE' : 'ENCERRADA'}
-                      </Badge>
+          <div className="space-y-1">
+            {recentSales.length > 0 ? (
+              recentSales.map((sale) => (
+                <div
+                  key={sale.id}
+                  className="flex items-center justify-between p-4 hover:bg-slate-50 rounded-2xl transition-colors border-b last:border-0 border-slate-100"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-sm uppercase text-slate-500 shadow-sm">
+                      {sale.name.charAt(0)}
                     </div>
-                  </div>
-
-                  <div className="flex-1 p-6 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2">
-                      <CardTitle className="text-xl font-black">{raffle.title}</CardTitle>
-                      <div className="flex items-center gap-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                        <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {raffle.totalNumbers} Cotas</span>
-                        <span className="text-foreground">R$ {raffle.pricePerNumber?.toFixed(2)} / cada</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-4 border-t border-dashed">
-                      <Link href={`/rifa/${raffle.slug}`} target="_blank" className="w-full">
-                        <Button variant="outline" size="sm" className="w-full gap-2 text-[10px] font-bold h-10 border-2">
-                          <Eye className="w-3.5 h-3.5" /> VER PÚBLICA
-                        </Button>
-                      </Link>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditingRaffle(raffle)}
-                        className="gap-2 text-[10px] font-bold h-10 border-2"
-                      >
-                        <Pencil className="w-3.5 h-3.5" /> EDITAR
-                      </Button>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSummaryRaffle(raffle);
-                          // loadRaffleDetails(raffle.id); // Sales already loaded globally
-                        }}
-                        className="gap-2 text-[10px] font-bold h-10 border-2"
-                      >
-                        <FileText className="w-3.5 h-3.5" /> RESUMO
-                      </Button>
-
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => {
-                          setDrawingRaffle(raffle);
-                          // loadRaffleDetails(raffle.id);
-                          setDrawStep('idle');
-                        }}
-                        disabled={raffle.status === 'drawn'}
-                        className="gap-2 text-[10px] font-bold h-10 shadow-md bg-primary text-primary-foreground"
-                      >
-                        <Dices className="w-3.5 h-3.5" /> SORTEAR
-                      </Button>
-
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => shareWithImage(raffle)}
-                        className="gap-2 text-[10px] font-bold h-10 shadow-md bg-[#25D366] hover:bg-[#128C7E] text-white"
-                      >
-                        <MessageCircle className="w-3.5 h-3.5 fill-current" /> COMPARTILHAR
-                      </Button>
-                    </div>
-
-                    {raffle.status === 'pending_payment' && (
-                      <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 text-left">
-                          <Zap className="w-6 h-6 text-blue-600 fill-current" />
-                          <div>
-                            <p className="text-[10px] font-bold text-blue-700 uppercase leading-none mb-1">Pagamento Necessário</p>
-                            <p className="text-sm font-medium text-blue-800 leading-tight">Sua rifa está salva, mas falta pagar a taxa para ativar.</p>
-                          </div>
-                        </div>
-                        <Button
-                          className="w-full sm:w-auto bg-[#0052FF] hover:bg-[#0041CC] text-white font-black text-xs gap-2 px-6 h-12 shadow-lg transition-all active:scale-95 shrink-0"
-                          onClick={() => {
-                            const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${raffle.id}`;
-                            window.open(paymentUrl, '_blank');
-                          }}
-                        >
-                          <Zap className="w-4 h-4 fill-current" /> PAGAR TAXA
-                        </Button>
-                      </div>
-                    )}
-
-                    {raffle.status === 'drawn' && (
-                      <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                          <Trophy className="w-8 h-8 text-green-600" />
-                          <div>
-                            <p className="text-[10px] font-bold text-green-700 uppercase">Ganhador</p>
-                            <p className="font-black text-green-800 text-lg">{raffle.winner}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-6">
-                          <div className="text-right">
-                            <p className="text-[10px] font-bold text-green-700 uppercase">Número</p>
-                            <p className="font-black text-2xl text-green-800">{raffle.winningNumber}</p>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-white border-green-200 text-green-700 hover:bg-green-100 font-bold"
-                            onClick={() => {
-                              // Find the winning sale
-                              const winningSale = sales.find(s =>
-                                s.raffleId === raffle.id &&
-                                s.selectedNumbers.includes(raffle.winningNumber)
-                              );
-                              setViewingWinner({ raffle, sale: winningSale || { name: raffle.winner, whatsapp: 'Não encontrado', total: 0 } });
-                            }}
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            Ver Detalhes
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </TabsContent>
-
-          <TabsContent value="participants" className="space-y-4">
-            <div className="grid gap-3">
-              {sales.map((sale: any) => (
-                <Card key={sale.id} className="border-none shadow-sm p-4 hover:bg-white transition-colors">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-base">{sale.name}</p>
-                        <span className="text-xs text-muted-foreground font-medium">({sale.whatsapp})</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {sale.selectedNumbers?.map((n: number) => (
-                          <Badge key={n} variant="secondary" className="text-[9px] px-1.5 h-4 font-black">
-                            {n.toString().padStart(2, '0')}
-                          </Badge>
-                        ))}
-                      </div>
-                      <p className="text-[10px] text-muted-foreground pt-1">
-                        Rifa: {raffles.find(r => r.id === sale.raffleId)?.title}
+                    <div>
+                      <p className="font-bold text-base leading-tight">{sale.name}</p>
+                      <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                        Reservou {sale.numbersCount} {sale.numbersCount === 1 ? 'cota' : 'cotas'}
                       </p>
                     </div>
+                  </div>
+                  <div className="text-right">
+                    <span
+                      className={cn(
+                        "text-[10px] font-black px-3 py-1 rounded-full border shadow-sm uppercase tracking-wider",
+                        sale.status === "confirmed" ||
+                          sale.status === "paid" ||
+                          sale.status === "paid_delayed"
+                          ? "bg-green-50 text-green-700 border-green-100"
+                          : sale.status === "pending"
+                            ? "bg-orange-50 text-orange-700 border-orange-100"
+                            : "bg-red-50 text-red-700 border-red-100"
+                      )}
+                    >
+                      {sale.status === "confirmed" ||
+                        sale.status === "paid" ||
+                        sale.status === "paid_delayed"
+                        ? "PAGO"
+                        : sale.status === "pending"
+                          ? "PENDENTE"
+                          : "CANCELADO"}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-12 text-sm text-muted-foreground font-medium">
+                Nenhuma venda recente para exibir.
+              </div>
+            )}
+          </div>
+        </Card>
 
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 border-t sm:border-t-0 pt-4 sm:pt-0 mt-2 sm:mt-0">
-                      <div className="flex justify-between sm:block sm:text-right">
-                        <div>
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground sm:hidden">Valor Total</p>
-                          <p className="text-lg font-black text-foreground">R$ {sale.total.toFixed(2)}</p>
-                        </div>
-                        <div className="sm:mt-1">
-                          {sale.status !== 'pending' && getStatusBadge(sale)}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-2 w-full sm:w-auto">
-                        {sale.status === 'pending' && (() => {
-                          const created = new Date(sale.createdAt).getTime();
-                          const now = new Date().getTime();
-                          const diffMinutes = (now - created) / 1000 / 60;
-                          const isExpiredLocal = diffMinutes >= 10;
-
-                          return (
-                            <PendingSaleActions sale={sale} onConfirm={confirmPayment} onCancel={cancelReservation} />
-                          );
-                        })()}
-
-                        {sale.status === 'cancelled' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => confirmPayment(sale.id, true)}
-                            className="text-orange-600 border-orange-200 hover:bg-orange-50 font-bold h-8 w-full"
-                          >
-                            <AlertTriangle className="w-3 h-3 mr-1" /> Reviver (Atrasado)
-                          </Button>
-                        )}
-                      </div>
+        {/* Melhores Rifas */}
+        <Card className="p-8 border-none shadow-sm space-y-8 bg-white/80 backdrop-blur-sm rounded-3xl">
+          <div className="flex items-center justify-between">
+            <h3 className="font-black text-xl flex items-center gap-3">
+              <div className="p-2 bg-blue-50 rounded-xl">
+                <Users className="w-6 h-6 text-blue-600" />
+              </div>
+              Melhores Rifas
+            </h3>
+          </div>
+          <div className="space-y-8">
+            {topRaffles.length > 0 ? (
+              topRaffles.map((raffle) => (
+                <div key={raffle.id} className="group">
+                  <div className="flex justify-between items-end mb-3">
+                    <div className="space-y-1">
+                      <p className="font-black text-base truncate max-w-[200px] group-hover:text-primary transition-colors">
+                        {raffle.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground font-bold">
+                        {raffle.soldNumbers} de {raffle.totalNumbers} vendidos
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xl font-black text-slate-800">{raffle.progress}%</p>
                     </div>
                   </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs >
-      </div >
-
-      <NotificationSettingsDialog
-        open={showSettings}
-        onOpenChange={setShowSettings}
-      />
-
-      <EditRaffleDialog
-        isOpen={!!editingRaffle}
-        raffle={editingRaffle}
-        onClose={() => setEditingRaffle(null)}
-        onUpdate={handleUpdateRaffle}
-      />
-
-      <RaffleSummaryDialog
-        isOpen={!!summaryRaffle}
-        raffle={summaryRaffle}
-        sales={sales}
-        onOpenChange={(open) => !open && setSummaryRaffle(null)}
-      />
-
-      <DrawRaffleDialog
-        isOpen={!!drawingRaffle}
-        raffle={drawingRaffle}
-        sales={sales}
-        onOpenChange={(open) => !open && setDrawingRaffle(null)}
-        onDrawComplete={(winner) => {
-          // Refresh local state to show updated winner immediately
-          handleUpdateRaffle({
-            ...drawingRaffle,
-            status: 'drawn',
-            winner: winner.buyer.name,
-            winningNumber: winner.num
-          });
-        }}
-      />
-
-      <WinnerDetailsDialog
-        isOpen={!!viewingWinner}
-        onOpenChange={(open) => !open && setViewingWinner(null)}
-        winnerSale={viewingWinner?.sale}
-        raffle={viewingWinner?.raffle}
-      />
-    </div >
+                  <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner p-0.5">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all duration-1000 ease-out shadow-sm",
+                        raffle.progress >= 80 ? "bg-green-500" :
+                          raffle.progress >= 50 ? "bg-primary" : "bg-blue-500"
+                      )}
+                      style={{ width: `${raffle.progress}%` }}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-12 text-sm text-muted-foreground font-medium">
+                Nenhuma rifa com vendas confirmadas no momento.
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 }

@@ -310,7 +310,7 @@ export default function Home() {
             </p>
             <div className="pt-4">
               <Link href="/login">
-                <Button size="lg" className="h-20 px-12 text-2xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3 shadow-[0_0_30px_rgba(255,221,43,0.3)] transition-all hover:scale-105">
+                <Button size="lg" className="h-20 px-3 text-2xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3 shadow-[0_0_30px_rgba(255,221,43,0.3)] transition-all hover:scale-105">
                   CRIAR MINHA RIFA AGORA <Zap className="w-8 h-8 fill-current" />
                 </Button>
               </Link>
