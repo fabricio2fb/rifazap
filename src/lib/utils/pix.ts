@@ -23,22 +23,61 @@ function crc16(data: string): string {
 }
 
 export function generatePixBRCode(key: string, name: string, city: string, amount?: number): string {
+    // 1. Normalização da Chave PIX
+    let normalizedKey = key.replace(/\D/g, ''); // Remove tudo que não é número
+
+    // Inteligência para celular: Se tem 11 dígitos e o terceiro dígito é 9, é celular
+    if (normalizedKey.length === 11 && normalizedKey.charAt(2) === '9') {
+        normalizedKey = '+55' + normalizedKey;
+    }
+    // Se for e-mail ou chave aleatória, a lógica acima não se aplica (pois key.replace(/\D/g, '') limparia letras)
+    // Portanto, se a chave original tinha letras, usamos a original limpa de espaços
+    if (/[a-z]/i.test(key)) {
+        normalizedKey = key.trim();
+    }
+
+    // Função auxiliar para criar campos EMV: Tag + Tamanho + Valor
+    const emvField = (tag: string, value: string) => {
+        return tag + value.length.toString().padStart(2, '0') + value;
+    };
+
+    // Limpa o nome (remove acentos e caracteres especiais para compatibilidade bancária)
+    const cleanStr = (str: string) => {
+        return str.normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^A-Z0-9 ]/gi, "")
+            .toUpperCase()
+            .trim();
+    };
+
+    // Bancos preferem nomes reais ou o nome da loja sem caracteres estranhos
+    const merchantName = cleanStr(name).substring(0, 25) || 'ORGANIZADOR';
+    const merchantCity = cleanStr(city).substring(0, 15) || 'CIDADE';
+
+    // Merchant Account Info (Tag 26) para PIX
+    const gui = emvField('00', 'br.gov.bcb.pix');
+    const keyField = emvField('01', normalizedKey);
+    const merchantAccountInfo = emvField('26', gui + keyField);
+
     const parts = [
         '000201', // Payload Format Indicator
-        '26' + (32 + key.length).toString().padStart(2, '0') + '0014br.gov.bcb.pix01' + key.length.toString().padStart(2, '0') + key, // Merchant Account Information
-        '52040000', // Merchant Category Code
+        merchantAccountInfo,
+        '52040000', // Merchant Category Code (0000 = Generico)
         '5303986', // Transaction Currency (986 = BRL)
     ];
 
-    if (amount) {
+    if (amount && amount > 0) {
         const amountStr = amount.toFixed(2);
-        parts.push('54' + amountStr.length.toString().padStart(2, '0') + amountStr);
+        parts.push(emvField('54', amountStr));
     }
 
     parts.push('5802BR'); // Country Code
-    parts.push('59' + name.length.toString().padStart(2, '0') + name); // Merchant Name
-    parts.push('60' + city.length.toString().padStart(2, '0') + city); // Merchant City
-    parts.push('62070503***'); // Transaction Specific (No Transaction ID)
+    parts.push(emvField('59', merchantName));
+    parts.push(emvField('60', merchantCity));
+
+    // Tag 62 - Campo Adicional (Obrigatório TXID *** para estático)
+    const txid = emvField('05', '***');
+    parts.push(emvField('62', txid));
 
     const payload = parts.join('') + '6304';
     const crc = crc16(payload);
