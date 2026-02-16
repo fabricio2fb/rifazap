@@ -46,8 +46,14 @@ export function NumberGrid({
             )
             .subscribe();
 
+        // Atualizar periodicamente para liberar números expirados visualmente
+        const interval = setInterval(() => {
+            fetchReservedNumbers();
+        }, 30000); // 30 segundos
+
         return () => {
             supabase.removeChannel(channel);
+            clearInterval(interval);
         };
     }, [raffleId]);
 

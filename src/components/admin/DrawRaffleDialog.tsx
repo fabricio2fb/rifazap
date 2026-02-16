@@ -106,11 +106,19 @@ export function DrawRaffleDialog({
         setCurrentSpinNumber(chosen.num);
 
         try {
-            await supabase.from('raffles').update({
-                status: 'drawn',
-                winner_number: chosen.num,
-                winner: chosen.buyer.name // Savin name for easy access
-            }).eq('id', raffle.id);
+            const res = await fetch(`/api/admin/raffles/${raffle.id}/draw`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    winnerNumber: chosen.num,
+                    winnerName: chosen.buyer.name
+                }),
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Erro ao salvar ganhador');
+            }
 
             onDrawComplete(chosen);
         } catch (error) {

@@ -59,78 +59,19 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
       return;
     }
 
-    setLoading(true);
-
     try {
-      // 1. Check or Create Customer
-      // Normalize phone number (simple logic, improves later)
-      const phone = formData.whatsapp.replace(/\D/g, '');
+      const res = await fetch(`/api/raffle/${raffle.slug}/purchase`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.whatsapp.replace(/\D/g, ''),
+          numbers: selectedNumbers
+        })
+      });
 
-      let customerId = null;
-
-      // Try to find customer
-      const { data: existingCustomer } = await supabase
-        .from('customers')
-        .select('id, name')
-        .eq('phone', phone)
-        .single();
-
-      if (existingCustomer) {
-        customerId = existingCustomer.id;
-        // UPDATE NAME IF DIFFERENT
-        // This fixes the issue where a user is stuck with an old name (e.g. "BIA")
-        if (existingCustomer.name !== formData.name) {
-          await supabase
-            .from('customers')
-            .update({ name: formData.name })
-            .eq('id', customerId);
-        }
-      } else {
-        // Create new customer
-        const { data: newCustomer, error: createError } = await supabase
-          .from('customers')
-          .insert([{ name: formData.name, phone: phone }])
-          .select()
-          .single();
-
-        if (createError) throw new Error("Erro ao cadastrar cliente: " + createError.message);
-        customerId = newCustomer.id;
-      }
-
-      // 2. Create Purchase (Pending)
-      const { data: purchase, error: purchaseError } = await supabase
-        .from('purchases')
-        .insert([{
-          raffle_id: raffle.id,
-          customer_id: customerId,
-          numbers: selectedNumbers,
-          total_amount: total,
-          status: 'pending' // Reservado
-        }])
-        .select()
-        .single();
-
-      if (purchaseError) throw new Error("Erro ao criar reserva: " + purchaseError.message);
-
-      // 3. Insert Reserved Numbers (Optional normalized table, but good for checks)
-      // Note: In a real prod app closer to metal, we'd use a transaction or RPC.
-      // Here we rely on the implementation simplicity requested.
-      const reservations = selectedNumbers.map(num => ({
-        raffle_id: raffle.id,
-        number: num,
-        customer_id: customerId,
-        purchase_id: purchase.id,
-        status: 'reserved'
-      }));
-
-      const { error: reservedError } = await supabase
-        .from('reserved_numbers')
-        .insert(reservations);
-
-      if (reservedError) {
-        // Rollback purchase if possible, or just log. For now, proceeding as critical part is purchase.
-        console.error("Error reserving individual numbers", reservedError);
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao processar reserva');
 
       // Success!
       setStep('payment');

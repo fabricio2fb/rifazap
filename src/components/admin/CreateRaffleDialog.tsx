@@ -130,10 +130,15 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
         status: 'pending_payment'
       };
 
-      // Insert into DB to get the ID
-      const { data, error } = await supabase.from('raffles').insert(raffleData).select().single();
+      // Insert into DB via Secure API
+      const res = await fetch('/api/admin/raffles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(raffleData)
+      });
 
-      if (error) throw error;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao criar rifa');
 
       setPendingRaffle(data);
       setStep('payment');

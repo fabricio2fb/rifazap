@@ -139,10 +139,18 @@ export default function VendasPage() {
     };
 
     const loadSales = async () => {
-        const { data } = await supabase
+        const { data, error, status } = await supabase
             .from("purchases")
             .select("*, customers(*)")
             .order("created_at", { ascending: false });
+
+        if (status === 401) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                router.push("/login");
+                return;
+            }
+        }
 
         if (data) {
             const mapped = data.map((p) => ({
@@ -153,7 +161,7 @@ export default function VendasPage() {
                 selectedNumbers: p.numbers,
                 status: p.status,
                 createdAt: p.created_at,
-                expiresAt: p.expires_at, // Certifique-se que esta coluna existe
+                expiresAt: p.expires_at,
                 total: p.total_amount,
             }));
             setSales(mapped);
@@ -161,45 +169,45 @@ export default function VendasPage() {
     };
 
     const confirmPayment = async (saleId: string, isLate = false) => {
-        const status = isLate ? "paid_delayed" : "confirmed";
-        const { error } = await supabase
-            .from("purchases")
-            .update({ status: status, confirmed_at: new Date() })
-            .eq("id", saleId);
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/admin/purchases/${saleId}/confirm`, {
+                method: 'PATCH',
+            });
+            const data = await res.json();
 
-        if (error) {
+            if (!res.ok) throw new Error(data.error || 'Erro ao confirmar');
+
+            await loadSales();
+            toast({ title: "Sucesso!", description: isLate ? "Confirmado com atraso" : "Pagamento confirmado" });
+        } catch (error: any) {
             toast({ variant: "destructive", title: "Erro", description: error.message });
-            return;
+        } finally {
+            setLoading(false);
         }
-
-        // Atualiza os números reservados para status "paid" vinculados a esta compra
-        await supabase
-            .from("reserved_numbers")
-            .update({ status: "paid" })
-            .eq("purchase_id", saleId);
-
-        await loadSales();
-        toast({ title: "Sucesso!", description: isLate ? "Confirmado com atraso" : "Pagamento confirmado" });
     };
 
     const cancelReservation = async (saleId: string) => {
-        const { error } = await supabase
-            .from("purchases")
-            .update({ status: "cancelled" })
-            .eq("id", saleId);
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/admin/purchases/${saleId}/cancel`, {
+                method: 'POST',
+            });
+            const data = await res.json();
 
-        if (error) {
+            if (!res.ok) throw new Error(data.error || 'Erro ao cancelar');
+
+            await loadSales();
+            toast({ title: "Reserva Cancelada", variant: "destructive" });
+        } catch (error: any) {
             toast({ variant: "destructive", title: "Erro", description: error.message });
-            return;
+        } finally {
+            setLoading(false);
         }
-
-        await supabase.from("reserved_numbers").delete().eq("purchase_id", saleId);
-        await loadSales();
-        toast({ title: "Reserva Cancelada", variant: "destructive" });
     };
     // --- LÓGICA DE TEMPO E FILTROS CORRIGIDA ---
     const nowTime = new Date().getTime();
-    const limit = 10 * 60 * 1000; // 10 minutos
+    const limit = 15 * 60 * 1000; // 15 minutos (Sincronizado com o sistema)
 
     const searchedSales = sales.filter(sale =>
         sale.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

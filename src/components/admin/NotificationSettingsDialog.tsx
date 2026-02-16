@@ -61,16 +61,17 @@ export function NotificationSettingsDialog({ open, onOpenChange }: NotificationS
 
     const handleSave = async () => {
         setLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        const res = await fetch('/api/admin/notifications/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(settings)
+        });
 
-        const { error } = await supabase
-            .from('notification_settings')
-            .upsert({ user_id: user.id, ...settings });
-
+        const data = await res.json();
         setLoading(false);
-        if (error) {
-            toast({ variant: "destructive", title: "Erro", description: "Falha ao salvar configurações." });
+
+        if (!res.ok) {
+            toast({ variant: "destructive", title: "Erro", description: data.error || "Falha ao salvar configurações." });
         } else {
             toast({ title: "Salvo!", description: "Preferências de notificação atualizadas." });
             onOpenChange(false);

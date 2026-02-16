@@ -100,15 +100,15 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
         updateData.image_edit_count = (raffle.imageEditCount || 0) + 1;
       }
 
-      // 3. Update in Database
-      const { data, error } = await supabase
-        .from('raffles')
-        .update(updateData)
-        .eq('id', raffle.id)
-        .select()
-        .single();
+      // 3. Update in Database via Secure API
+      const res = await fetch(`/api/admin/raffles/${raffle.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateData),
+      });
 
-      if (error) throw error;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao atualizar rifa');
 
       // 4. Map back to camelCase for the parent UI state
       const updatedRaffle = {

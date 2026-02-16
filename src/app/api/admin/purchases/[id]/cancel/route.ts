@@ -2,14 +2,14 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
-export async function PATCH(
+export async function POST(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     const id = (await params).id;
     const supabase = await createClient();
 
-    // Verificar autenticação do organizador
+    // 1. Verificar autenticação
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
         return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
@@ -28,28 +28,21 @@ export async function PATCH(
 
     // @ts-ignore - raffles is a single object because of the relationship
     if (purchase.raffles.organizer_id !== user.id) {
-        return NextResponse.json({ error: 'Sem permissão para confirmar esta venda' }, { status: 403 });
+        return NextResponse.json({ error: 'Sem permissão para cancelar esta venda' }, { status: 403 });
     }
 
-    // 3. Atualizar compra
-    const { error } = await supabase
+    // 3. Executar o cancelamento
+    const { error: updateError } = await supabase
         .from('purchases')
-        .update({
-            status: 'paid',
-            confirmed_at: new Date().toISOString(),
-            confirmed_by: user.id
-        })
+        .update({ status: 'cancelled' })
         .eq('id', id);
 
-    if (error) {
-        return NextResponse.json({ error: 'Erro ao atualizar compra' }, { status: 500 });
+    if (updateError) {
+        return NextResponse.json({ error: 'Erro ao cancelar no banco' }, { status: 500 });
     }
 
-    // Atualizar números reservados para status "paid"
-    await supabase
-        .from('reserved_numbers')
-        .update({ status: 'paid' })
-        .eq('purchase_id', id);
+    // Deletar números reservados
+    await supabase.from('reserved_numbers').delete().eq('purchase_id', id);
 
     return NextResponse.json({ success: true });
 }
