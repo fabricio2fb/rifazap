@@ -21,12 +21,14 @@ export default function VendasPage() {
     const [notifPermission, setNotifPermission] = useState<NotificationPermission>("default");
     const [notifSettings, setNotifSettings] = useState<any>({ new_reservation: true, browser_notifications: true });
     const [realtimeStatus, setRealtimeStatus] = useState("connecting");
+    const [isMounted, setIsMounted] = useState(false);
 
     const router = useRouter();
     const supabase = createClient();
     const { toast } = useToast();
 
     useEffect(() => {
+        setIsMounted(true);
         if (typeof window !== "undefined") {
             setNotifPermission(Notification.permission);
         }
@@ -230,7 +232,7 @@ export default function VendasPage() {
         }).length,
     };
 
-    if (loading) return <div className="flex justify-center p-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
+    if (loading || !isMounted) return <div className="flex justify-center p-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
 
     return (
         <div className="space-y-6 p-4 max-w-7xl mx-auto">

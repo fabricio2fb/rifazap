@@ -16,6 +16,7 @@ import { Raffle } from "@/lib/types";
 import { CheckCircle2, Copy, MessageCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/lib/supabase/client";
+import { generatePixBRCode } from "@/lib/utils/pix";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -23,26 +24,6 @@ interface CheckoutModalProps {
   selectedNumbers: number[];
   raffle: Raffle;
 }
-
-const PixQRCode = () => (
-  <svg viewBox="0 0 100 100" className="w-full h-full p-2" shapeRendering="crispEdges">
-    <rect width="100" height="100" fill="white" />
-    <path d="M10,10 h20 v20 h-20 z M15,15 h10 v10 h-10 z" fill="black" />
-    <path d="M70,10 h20 v20 h-20 z M75,15 h10 v10 h-10 z" fill="black" />
-    <path d="M10,70 h20 v20 h-20 z M15,75 h10 v10 h-10 z" fill="black" />
-    <rect x="40" y="10" width="10" height="10" fill="black" />
-    <rect x="10" y="40" width="10" height="10" fill="black" />
-    <rect x="40" y="40" width="20" height="20" fill="black" />
-    <rect x="70" y="40" width="10" height="10" fill="black" />
-    <rect x="40" y="70" width="10" height="10" fill="black" />
-    <rect x="70" y="70" width="10" height="10" fill="black" />
-    <rect x="80" y="80" width="10" height="10" fill="black" />
-    <rect x="55" y="15" width="5" height="5" fill="black" />
-    <rect x="15" y="55" width="5" height="5" fill="black" />
-    <rect x="80" y="55" width="5" height="5" fill="black" />
-    <rect x="55" y="80" width="5" height="5" fill="black" />
-  </svg>
-);
 
 export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: CheckoutModalProps) {
   const [step, setStep] = useState<'info' | 'payment'>('info');
@@ -52,6 +33,17 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
   const supabase = createClient();
 
   const total = selectedNumbers.length * raffle.pricePerNumber;
+
+  // Gera o código PIX Copia e Cola real
+  const pixCode = generatePixBRCode(
+    raffle.pixKey || '',
+    (raffle.title || 'Rifa').substring(0, 25),
+    'SAO PAULO',
+    total
+  );
+
+  // URL para a API de QR Code
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(pixCode)}`;
 
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,7 +231,7 @@ Nome: ${formData.name}`;
             </div>
             <div className="p-4 bg-muted rounded-xl flex justify-between items-center">
               <span className="font-medium">Total a pagar:</span>
-              <span className="text-xl font-bold">
+              <span className="text-xl font-bold" suppressHydrationWarning>
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
               </span>
             </div>
@@ -251,7 +243,8 @@ Nome: ${formData.name}`;
           <div className="flex flex-col items-center space-y-6 py-4 text-center">
             <div className="bg-white p-4 rounded-2xl border-2 border-primary overflow-hidden shadow-sm">
               <div className="w-48 h-48 bg-white flex items-center justify-center">
-                <PixQRCode />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={qrCodeUrl} alt="PIX QR Code" className="w-full h-full" />
               </div>
             </div>
 
