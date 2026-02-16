@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -29,8 +29,15 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
   const [step, setStep] = useState<'info' | 'payment'>('info');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: '', whatsapp: '' });
+  const [isMounted, setIsMounted] = useState(false);
   const { toast } = useToast();
   const supabase = createClient();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
 
   const total = selectedNumbers.length * raffle.pricePerNumber;
 
@@ -249,13 +256,35 @@ Nome: ${formData.name}`;
             </div>
 
             <div className="w-full space-y-3">
-              <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Chave Pix Copia e Cola</div>
-              <div className="flex items-center gap-2 bg-muted p-4 rounded-xl font-mono text-sm break-all border group">
-                {raffle.pixKey || "Chave não configurada"}
-                <Button variant="ghost" size="icon" onClick={copyPix} className="shrink-0 hover:bg-primary/20">
+              <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest">PIX Copia e Cola (Com Valor)</div>
+              <div className="flex items-center gap-2 bg-muted p-4 rounded-xl font-mono text-[10px] break-all border group relative">
+                <div className="flex-1 text-left">
+                  {pixCode}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    navigator.clipboard.writeText(pixCode);
+                    toast({ title: "Código Copiado!", description: "Valor e chave inclusos." });
+                  }}
+                  className="shrink-0 hover:bg-primary/20 bg-white shadow-sm h-8 w-8"
+                >
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
+
+              <Button
+                variant="link"
+                size="sm"
+                onClick={() => {
+                  navigator.clipboard.writeText(raffle.pixKey);
+                  toast({ title: "Chave Copiada!", description: "Somente a chave PIX." });
+                }}
+                className="text-xs text-muted-foreground hover:text-primary p-0 h-auto"
+              >
+                Copiar apenas a chave PIX
+              </Button>
             </div>
 
             <div className="bg-rifa-reserved/10 p-4 rounded-xl flex items-start gap-3 text-left border border-rifa-reserved/20">
