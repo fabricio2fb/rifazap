@@ -26,5 +26,14 @@ export async function GET(
         return NextResponse.json({ error: 'Rifa não encontrada' }, { status: 404 });
     }
 
+    // Filtra números expirados antes de retornar
+    const now = new Date().toISOString();
+    raffle.reserved_numbers = raffle.reserved_numbers.filter((rn: any) => {
+        // Se não tem expires_at (erro de dados), mantemos por segurança ou removemos?
+        // Geralmente status 'paid' não tem expires_at ou é infinito.
+        if (rn.status === 'paid') return true;
+        return rn.expires_at > now;
+    });
+
     return NextResponse.json(raffle);
 }

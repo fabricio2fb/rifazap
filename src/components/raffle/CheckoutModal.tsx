@@ -291,7 +291,7 @@ Nome: ${formData.name}`;
               <CheckCircle2 className="w-5 h-5 text-rifa-reserved shrink-0 mt-0.5" />
               <div className="text-sm">
                 <p className="font-bold text-rifa-reserved">Pagamento em Análise</p>
-                <p className="text-muted-foreground leading-snug">Seus números estão reservados por 10 minutos. Clique abaixo para enviar o comprovante agora.</p>
+                <p className="text-muted-foreground leading-snug">Seus números estão reservados por 15 minutos. Clique abaixo para enviar o comprovante agora.</p>
               </div>
             </div>
 

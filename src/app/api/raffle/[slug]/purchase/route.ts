@@ -42,16 +42,23 @@ export async function POST(
         return NextResponse.json({ error: 'Rifa não encontrada' }, { status: 404 });
     }
 
-    // 3. Verificar disponibilidade dos números
+    // 3. Verificar disponibilidade dos números (ignorando expirados)
+    const now = new Date().toISOString();
     const { data: existing } = await supabase
         .from('reserved_numbers')
-        .select('number')
+        .select('number, status, expires_at')
         .eq('raffle_id', raffle.id)
         .in('number', numbers);
 
-    if (existing && existing.length > 0) {
+    // Filtra para ver se algum dos que o usuário escolheu está REALMENTE ocupado
+    const trulyOccupied = (existing || []).filter(rn => {
+        if (rn.status === 'paid') return true;
+        return rn.expires_at > now;
+    });
+
+    if (trulyOccupied.length > 0) {
         return NextResponse.json(
-            { error: 'Alguns números já estão reservados' },
+            { error: 'Alguns números já estão reservados ou foram pagos' },
             { status: 400 }
         );
     }

@@ -54,14 +54,21 @@ export function NumberGrid({
     async function fetchReservedNumbers() {
         const { data } = await supabase
             .from('reserved_numbers')
-            .select('number, status')
+            .select('number, status, expires_at')
             .eq('raffle_id', raffleId);
 
-        // Mapear para o formato correto
-        const formattedData = (data || []).map(item => ({
-            number: item.number,
-            status: item.status as NumberStatus
-        }));
+        const now = new Date().toISOString();
+
+        // Mapear para o formato correto e filtrar expirados
+        const formattedData = (data || [])
+            .filter(item => {
+                if (item.status === 'paid') return true;
+                return item.expires_at > now;
+            })
+            .map(item => ({
+                number: item.number,
+                status: item.status as NumberStatus
+            }));
 
         setReservedNumbers(formattedData);
 
