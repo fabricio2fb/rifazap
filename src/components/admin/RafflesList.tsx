@@ -179,10 +179,13 @@ export function RafflesList({
                                                     body: JSON.stringify({ raffleId: raffle.id })
                                                 });
                                                 const data = await res.json();
-                                                if (!res.ok) throw new Error(data.error || 'Erro ao gerar pagamento');
+                                                if (!res.ok) {
+                                                    const msg = data.details ? `${data.error}: ${data.details}` : data.error;
+                                                    throw new Error(msg || 'Erro ao gerar pagamento');
+                                                }
                                                 window.open(data.init_point, '_blank');
                                             } catch (err: any) {
-                                                alert(err.message);
+                                                alert(`Erro no Mercado Pago: ${err.message}`);
                                             }
                                         }}
                                     >

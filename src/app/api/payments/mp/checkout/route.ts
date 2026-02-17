@@ -56,11 +56,11 @@ export async function POST(request: Request) {
                         }
                     ],
                     external_reference: raffle.id,
-                    notification_url: `https://socialrifa.com.br/api/webhooks/mercadopago`,
+                    notification_url: `https://www.socialrifa.com.br/api/webhooks/mercadopago`,
                     back_urls: {
-                        success: `https://socialrifa.com.br/admin/rifas?success=true`,
-                        failure: `https://socialrifa.com.br/admin/rifas?error=true`,
-                        pending: `https://socialrifa.com.br/admin/rifas?pending=true`,
+                        success: `https://www.socialrifa.com.br/admin/rifas?success=true`,
+                        failure: `https://www.socialrifa.com.br/admin/rifas?error=true`,
+                        pending: `https://www.socialrifa.com.br/admin/rifas?pending=true`,
                     },
                     auto_return: 'approved',
                 }
