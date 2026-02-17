@@ -44,6 +44,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>('');
+  const [pixData, setPixData] = useState<{ qr_code: string; qr_code_base64: string } | null>(null);
   const { toast } = useToast();
 
   const supabase = createClient();
@@ -286,54 +287,87 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             </div>
 
             <div className="w-full py-4 space-y-4">
-              <div className="text-sm text-muted-foreground font-medium">
-                Clique no botão abaixo para pagar a taxa de ativação via Mercado Pago.
-                A ativação será automática após a confirmação.
-              </div>
+              {!pixData ? (
+                <>
+                  <div className="text-sm text-muted-foreground font-medium">
+                    Clique no botão abaixo para gerar o PIX e pagar a taxa de ativação.
+                    A ativação será automática após a confirmação.
+                  </div>
 
-              <Button
-                className="w-full h-16 bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
-                disabled={loading}
-                onClick={async () => {
-                  try {
-                    setLoading(true);
-                    const res = await fetch('/api/payments/mp/checkout', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ raffleId: pendingRaffle?.id })
-                    });
-                    const data = await res.json();
-                    if (!res.ok) {
-                      const msg = data.details ? `${data.error}: ${data.details}` : data.error;
-                      throw new Error(msg || 'Erro ao gerar pagamento');
-                    }
+                  <Button
+                    className="w-full h-16 bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
+                    disabled={loading}
+                    onClick={async () => {
+                      try {
+                        setLoading(true);
+                        const res = await fetch('/api/payments/mp/checkout', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ raffleId: pendingRaffle?.id })
+                        });
+                        const data = await res.json();
+                        if (!res.ok) {
+                          const msg = data.details ? `${data.error}: ${data.details}` : data.error;
+                          throw new Error(msg || 'Erro ao gerar pagamento');
+                        }
 
-                    // Transparent/Modal Checkout
-                    if (typeof (window as any).MercadoPago !== 'undefined') {
-                      const mp = new (window as any).MercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY);
-                      mp.checkout({
-                        preference: {
-                          id: data.id
-                        },
-                        autoOpen: true
-                      });
-                    } else {
-                      // Fallback if SDK fails to load
-                      window.open(data.init_point, '_blank');
-                    }
-                  } catch (err: any) {
-                    toast({
-                      variant: "destructive",
-                      title: "Erro no Mercado Pago",
-                      description: err.message
-                    });
-                  } finally {
-                    setLoading(false);
-                  }
-                }}
-              >
-                {loading ? <Loader2 className="w-7 h-7 animate-spin" /> : <><Zap className="w-7 h-7 fill-current" /> PAGAR COM MERCADO PAGO</>}
-              </Button>
+                        // Display PIX data
+                        setPixData({
+                          qr_code: data.qr_code,
+                          qr_code_base64: data.qr_code_base64
+                        });
+                      } catch (err: any) {
+                        toast({
+                          variant: "destructive",
+                          title: "Erro no Mercado Pago",
+                          description: err.message
+                        });
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                  >
+                    {loading ? <Loader2 className="w-7 h-7 animate-spin" /> : <><Zap className="w-7 h-7 fill-current" /> GERAR PIX</>}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="text-sm font-bold text-center text-primary-foreground">
+                    Escaneie o QR Code ou copie o código PIX:
+                  </div>
+
+                  <div className="flex justify-center">
+                    <img
+                      src={`data:image/png;base64,${pixData.qr_code_base64}`}
+                      alt="QR Code PIX"
+                      className="w-64 h-64 border-4 border-primary rounded-xl"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-primary-foreground">Código PIX (Copia e Cola):</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={pixData.qr_code}
+                        readOnly
+                        className="font-mono text-xs"
+                      />
+                      <Button
+                        onClick={() => {
+                          navigator.clipboard.writeText(pixData.qr_code);
+                          toast({
+                            title: "Copiado!",
+                            description: "Código PIX copiado para a área de transferência."
+                          });
+                        }}
+                        className="shrink-0"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 text-left border border-blue-100">

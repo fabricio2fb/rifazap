@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 // Initialize Mercado Pago
 const client = new MercadoPagoConfig({
@@ -39,38 +39,33 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Configuração do Mercado Pago incompleta (Falta Access Token no Vercel)" }, { status: 500 });
         }
 
-        // 3. Create Mercado Pago Preference
-        const preference = new Preference(client);
+        // 3. Create Mercado Pago PIX Payment
+        const payment = new Payment(client);
 
         // Price: 0.20 as requested for testing
         try {
-            const response = await preference.create({
+            const paymentData = await payment.create({
                 body: {
-                    items: [
-                        {
-                            id: raffle.id,
-                            title: `Ativação de Rifa: ${raffle.title}`,
-                            quantity: 1,
-                            unit_price: 0.20,
-                            currency_id: 'BRL',
-                        }
-                    ],
+                    transaction_amount: 0.20,
+                    description: `Ativação de Rifa: ${raffle.title}`,
+                    payment_method_id: 'pix',
+                    payer: {
+                        email: user.email || 'noreply@socialrifa.com.br',
+                    },
                     external_reference: raffle.id,
                     notification_url: `https://www.socialrifa.com.br/api/webhooks/mercadopago`,
-                    back_urls: {
-                        success: `https://www.socialrifa.com.br/admin/rifas?success=true`,
-                        failure: `https://www.socialrifa.com.br/admin/rifas?error=true`,
-                        pending: `https://www.socialrifa.com.br/admin/rifas?pending=true`,
-                    },
-                    auto_return: 'approved',
                 }
             });
 
-            console.log(`[MP Checkout] Preference created for Raffle: ${raffleId}. ID: ${response.id}`);
+            console.log(`[MP Checkout] PIX Payment created for Raffle: ${raffleId}. Payment ID: ${paymentData.id}`);
+
+            // Extract PIX data
+            const pixData = paymentData.point_of_interaction?.transaction_data;
 
             return NextResponse.json({
-                id: response.id,
-                init_point: response.init_point
+                payment_id: paymentData.id,
+                qr_code: pixData?.qr_code || '',
+                qr_code_base64: pixData?.qr_code_base64 || '',
             });
         } catch (mpError: any) {
             console.error("[MP Checkout] Mercado Pago API Error:", mpError);
