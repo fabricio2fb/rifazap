@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 export const metadata: Metadata = {
-  title: 'RifaZap - Sua Rifa Online Profissional',
+  title: 'SocialRifa - Sua Rifa Online Profissional',
   description: 'Crie e compartilhe rifas profissionais com facilidade via WhatsApp.',
   icons: {
     icon: [

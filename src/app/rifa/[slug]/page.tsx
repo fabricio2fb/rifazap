@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const parseUTC = (d: string) => (!d ? "" : (d.includes('T') || d.includes('Z') ? d : d.replace(' ', 'T') + 'Z'));
   const date = new Date(parseUTC(raffle.draw_date)).toLocaleDateString('pt-BR');
   const description = `Cada número custa ${price}. Sorteio dia ${date}.`;
-  const url = `https://rifazap.vercel.app/rifa/${slug}`;
+  const url = `https://socialrifa.vercel.app/rifa/${slug}`;
 
   // Cloudinary Optimization for OG
   let ogImageUrl = `${url}/imagem`; // Default to dynamic image

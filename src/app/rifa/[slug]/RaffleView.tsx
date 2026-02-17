@@ -110,7 +110,7 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
     };
 
     const shareOnWhatsApp = () => {
-        const url = `https://rifazap.vercel.app/rifa/${initialRaffle.slug}`;
+        const url = `https://socialrifa.vercel.app/rifa/${initialRaffle.slug}`;
         const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
 
         // Force Brasilia time for share message
@@ -163,7 +163,7 @@ ${url}`;
             const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
                 timeZone: 'America/Sao_Paulo'
             });
-            const url = `https://rifazap.vercel.app/rifa/${initialRaffle.slug}`;
+            const url = `https://socialrifa.vercel.app/rifa/${initialRaffle.slug}`;
 
             const shareText = `🎟️ RIFA ATIVA
 
@@ -333,10 +333,10 @@ ${url}`;
                 <div className="pt-12 pb-8 text-center space-y-4">
                     <div className="flex items-center justify-center gap-2 text-muted-foreground/50">
                         <Zap className="w-4 h-4" />
-                        <span className="font-bold text-sm uppercase tracking-wider">RifaZap</span>
+                        <span className="font-bold text-sm uppercase tracking-wider">SocialRifa</span>
                     </div>
                     <p className="text-[10px] text-muted-foreground/60 max-w-xs mx-auto leading-relaxed">
-                        Esta rifa é de responsabilidade do organizador. A RifaZap fornece a tecnologia para realização do sorteio.
+                        Esta rifa é de responsabilidade do organizador. A SocialRifa fornece a tecnologia para realização do sorteio.
                     </p>
                 </div>
             </div>

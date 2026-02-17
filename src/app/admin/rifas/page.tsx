@@ -100,7 +100,7 @@ export default function RafflesPage() {
     };
 
     const shareOnWhatsApp = (raffle: any) => {
-        const url = `https://rifazap.vercel.app/rifa/${raffle.slug}`;
+        const url = `https://socialrifa.vercel.app/rifa/${raffle.slug}`;
         const price = new Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",

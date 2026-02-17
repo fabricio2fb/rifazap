@@ -142,7 +142,7 @@ export async function GET(
 {/* RODAPÉ */ }
 <div style={ { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'auto' } }>
     <div style={ { fontSize: '32px', fontWeight: 'bold', color: '#0052FF', marginBottom: '10px' } }>
-        Pagamento via site: rifazap.vercel.app
+        Pagamento via site: socialrifa.vercel.app
             </div>
             < div style = {{
     fontSize: '36px',

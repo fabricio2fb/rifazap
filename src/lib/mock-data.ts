@@ -6,7 +6,7 @@ export const MOCK_RAFFLES: Raffle[] = [
     id: '1',
     slug: 'iphone-15-pro-max-titanium',
     title: 'iPhone 15 Pro Max - Titanium 📱',
-    description: 'Concorra ao smartphone mais potente da Apple. Edição Titanium de 256GB. Sorteio garantido pela RifaZap!',
+    description: 'Concorra ao smartphone mais potente da Apple. Edição Titanium de 256GB. Sorteio garantido pela SocialRifa!',
     imageUrl: 'https://images.unsplash.com/photo-1522125670776-3c7abb882bc2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzbWFydHBob25lfGVufDB8fHx8MTc3MDE0MzE3NHww&ixlib=rb-4.1.0&q=80&w=1080',
     pricePerNumber: 1.00,
     totalNumbers: 100,
@@ -14,7 +14,7 @@ export const MOCK_RAFFLES: Raffle[] = [
     status: 'active',
     whatsappGroupLink: 'https://chat.whatsapp.com/exemplo-rifa',
     whatsappContact: '5511999999999',
-    pixKey: 'pix@rifazap.com',
+    pixKey: 'pix@socialrifa.com',
   },
   {
     id: '2',
@@ -28,7 +28,7 @@ export const MOCK_RAFFLES: Raffle[] = [
     status: 'active',
     whatsappGroupLink: 'https://chat.whatsapp.com/exemplo-cafe',
     whatsappContact: '5511999999999',
-    pixKey: 'contato@rifazap.com',
+    pixKey: 'contato@socialrifa.com',
   }
 ];
 

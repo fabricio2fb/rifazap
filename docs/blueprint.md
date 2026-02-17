@@ -1,4 +1,4 @@
-# **App Name**: RifaZap
+# **App Name**: SocialRifa
 
 ## Core Features:
 

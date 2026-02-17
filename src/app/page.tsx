@@ -43,7 +43,7 @@ export default function Home() {
         <div className="container flex h-16 items-center justify-between px-4 md:px-6 mx-auto">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-            <span className="text-xl md:text-2xl font-bold tracking-tighter">RifaZap</span>
+            <span className="text-xl md:text-2xl font-bold tracking-tighter">SocialRifa</span>
           </div>
           <div className="hidden md:flex items-center gap-4">
             <Link href="/customer/login">
@@ -306,7 +306,7 @@ export default function Home() {
           <div className="container mx-auto text-center space-y-8">
             <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight">Pronto para arrecadar?</h2>
             <p className="text-xl text-background/70 max-w-2xl mx-auto">
-              Junte-se a milhares de organizadores que já utilizam a RifaZap para profissionalizar seus sorteios.
+              Junte-se a milhares de organizadores que já utilizam a SocialRifa para profissionalizar seus sorteios.
             </p>
             <div className="pt-4">
               <Link href="/login">
@@ -325,7 +325,7 @@ export default function Home() {
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-              <span className="text-2xl font-bold tracking-tighter">RifaZap</span>
+              <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
               A plataforma definitiva para criar e gerenciar rifas profissionais. Simplicidade, segurança e resultados para você.
