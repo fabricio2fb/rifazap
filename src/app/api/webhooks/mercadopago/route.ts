@@ -1,8 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { MercadoPagoConfig, Payment } from 'mercadopago';
-import fs from 'fs';
-import path from 'path';
 
 // Initialize Mercado Pago
 const client = new MercadoPagoConfig({
@@ -12,13 +10,7 @@ const client = new MercadoPagoConfig({
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-
-        // 1. Log payload for debugging
-        const logFile = path.join(process.cwd(), 'mp_webhook_debug.log');
-        const logEntry = `\n--- ${new Date().toISOString()} ---\n${JSON.stringify(body, null, 2)}\n`;
-        fs.appendFileSync(logFile, logEntry);
-
-        console.log("[MP Webhook] Received:", body);
+        console.log("[MP Webhook] Received:", JSON.stringify(body, null, 2));
 
         // Mercado Pago sends 'action' and 'data.id'
         const { action, data } = body;
