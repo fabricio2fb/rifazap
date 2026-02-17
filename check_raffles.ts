@@ -12,15 +12,18 @@ async function checkRaffles() {
         .from('raffles')
         .select('id, title, status')
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
 
     if (error) {
         console.error('Error fetching raffles:', error);
         return;
     }
 
-    console.log('Recent Raffles:');
-    console.table(data);
+    console.log('--- RECENT RAFFLES ---');
+    data?.forEach(r => {
+        console.log(`ID: ${r.id} | Status: ${r.status} | Title: ${r.title}`);
+    });
+    console.log('--- END ---');
 }
 
 checkRaffles();

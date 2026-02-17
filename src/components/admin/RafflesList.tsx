@@ -165,18 +165,28 @@ export function RafflesList({
                                                 Pagamento Necessário
                                             </p>
                                             <p className="text-sm font-medium text-blue-800 leading-tight">
-                                                Sua rifa está salva, mas falta pagar a taxa para ativar.
+                                                Sua rifa está salva, mas falta pagar a taxa (R$ 0,20) para ativar.
                                             </p>
                                         </div>
                                     </div>
                                     <Button
-                                        className="w-full sm:w-auto bg-[#0052FF] hover:bg-[#0041CC] text-white font-black text-xs gap-2 px-6 h-12 shadow-lg transition-all active:scale-95 shrink-0"
-                                        onClick={() => {
-                                            const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${raffle.id}&external_reference=${raffle.id}`;
-                                            window.open(paymentUrl, "_blank");
+                                        className="w-full sm:w-auto bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xs gap-2 px-6 h-12 shadow-lg transition-all active:scale-95 shrink-0"
+                                        onClick={async () => {
+                                            try {
+                                                const res = await fetch('/api/payments/mp/checkout', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ raffleId: raffle.id })
+                                                });
+                                                const data = await res.json();
+                                                if (!res.ok) throw new Error(data.error || 'Erro ao gerar pagamento');
+                                                window.open(data.init_point, '_blank');
+                                            } catch (err: any) {
+                                                alert(err.message);
+                                            }
                                         }}
                                     >
-                                        <Zap className="w-4 h-4 fill-current" /> PAGAR TAXA
+                                        <Zap className="w-4 h-4 fill-current" /> PAGAR COM MERCADO PAGO
                                     </Button>
                                 </div>
                             )}

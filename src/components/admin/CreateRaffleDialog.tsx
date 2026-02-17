@@ -282,30 +282,49 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
           <div className="p-6 flex flex-col items-center space-y-6 text-center">
             <div className="w-full bg-primary/10 p-4 rounded-2xl flex flex-col items-center gap-1 border border-primary/20">
               <p className="text-sm font-bold text-primary-foreground uppercase tracking-widest">Valor da Taxa</p>
-              <p className="text-4xl font-black text-primary-foreground">R$ 9,90</p>
+              <p className="text-4xl font-black text-primary-foreground">R$ 0,20</p>
             </div>
 
             <div className="w-full py-4 space-y-4">
               <div className="text-sm text-muted-foreground font-medium">
-                Clique no botão abaixo para pagar a taxa de ativação via GGCheckout.
+                Clique no botão abaixo para pagar a taxa de ativação via Mercado Pago.
                 A ativação será automática após a confirmação.
               </div>
 
               <Button
-                className="w-full h-16 bg-[#0052FF] hover:bg-[#0041CC] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
-                onClick={() => {
-                  const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${pendingRaffle?.id}&external_reference=${pendingRaffle?.id}`;
-                  window.open(paymentUrl, '_blank');
+                className="w-full h-16 bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
+                disabled={loading}
+                onClick={async () => {
+                  try {
+                    setLoading(true);
+                    const res = await fetch('/api/payments/mp/checkout', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ raffleId: pendingRaffle?.id })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Erro ao gerar pagamento');
+
+                    window.open(data.init_point, '_blank');
+                  } catch (err: any) {
+                    toast({
+                      variant: "destructive",
+                      title: "Erro no pagamento",
+                      description: err.message
+                    });
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
               >
-                <Zap className="w-7 h-7 fill-current" /> PAGAR COM GGCHECKOUT
+                {loading ? <Loader2 className="w-7 h-7 animate-spin" /> : <><Zap className="w-7 h-7 fill-current" /> PAGAR COM MERCADO PAGO</>}
               </Button>
             </div>
 
             <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 text-left border border-blue-100">
               <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
               <p className="text-sm text-blue-800 leading-tight">
-                O pagamento é processado com segurança pelo GGCheckout. Após concluir, sua rifa aparecerá como Ativa no painel em instantes.
+                O pagamento é processado com segurança pelo Mercado Pago. Após concluir, sua rifa aparecerá como Ativa no painel em instantes.
               </p>
             </div>
 
