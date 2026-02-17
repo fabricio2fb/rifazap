@@ -3,6 +3,10 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import {
     Trophy,
     Zap,
@@ -12,7 +16,10 @@ import {
     Users,
     Eye,
     FileText,
+    Copy,
+    Loader2,
 } from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -50,6 +57,10 @@ export function RafflesList({
     onShareWithImage,
     onViewWinner,
 }: RafflesListProps) {
+    const [pixDialogOpen, setPixDialogOpen] = useState(false);
+    const [pixData, setPixData] = useState<{ qr_code: string; qr_code_base64: string } | null>(null);
+    const [loadingPix, setLoadingPix] = useState(false);
+    const { toast } = useToast();
     return (
         <div className="space-y-4">
             {raffles.map((raffle) => (
@@ -171,8 +182,10 @@ export function RafflesList({
                                     </div>
                                     <Button
                                         className="w-full sm:w-auto bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xs gap-2 px-6 h-12 shadow-lg transition-all active:scale-95 shrink-0"
+                                        disabled={loadingPix}
                                         onClick={async () => {
                                             try {
+                                                setLoadingPix(true);
                                                 const res = await fetch('/api/payments/mp/checkout', {
                                                     method: 'POST',
                                                     headers: { 'Content-Type': 'application/json' },
@@ -184,25 +197,24 @@ export function RafflesList({
                                                     throw new Error(msg || 'Erro ao gerar pagamento');
                                                 }
 
-                                                // Transparent/Modal Checkout
-                                                if (typeof (window as any).MercadoPago !== 'undefined') {
-                                                    const mp = new (window as any).MercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY);
-                                                    mp.checkout({
-                                                        preference: {
-                                                            id: data.id
-                                                        },
-                                                        autoOpen: true
-                                                    });
-                                                } else {
-                                                    // Fallback
-                                                    window.open(data.init_point, '_blank');
-                                                }
+                                                // Display PIX in dialog
+                                                setPixData({
+                                                    qr_code: data.qr_code,
+                                                    qr_code_base64: data.qr_code_base64
+                                                });
+                                                setPixDialogOpen(true);
                                             } catch (err: any) {
-                                                alert(`Erro no Mercado Pago: ${err.message}`);
+                                                toast({
+                                                    variant: "destructive",
+                                                    title: "Erro no Mercado Pago",
+                                                    description: err.message
+                                                });
+                                            } finally {
+                                                setLoadingPix(false);
                                             }
                                         }}
                                     >
-                                        <Zap className="w-4 h-4 fill-current" /> PAGAR COM MERCADO PAGO
+                                        {loadingPix ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />} GERAR PIX
                                     </Button>
                                 </div>
                             )}
