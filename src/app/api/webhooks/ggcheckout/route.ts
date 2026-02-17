@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -9,6 +9,7 @@ export async function POST(request: Request) {
         // Discover Raffle ID from multiple potential fields
         const raffleId =
             payload.external_id ||
+            payload.id ||
             payload.external_reference ||
             payload.id_rifa ||
             (payload.metadata && payload.metadata.raffle_id);
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
         const isSuccess = successStatuses.some(s => rawStatus.includes(s));
 
         if (isSuccess) {
-            const supabase = await createClient();
+            const supabase = await createAdminClient();
 
             const { data, error } = await supabase
                 .from('raffles')
