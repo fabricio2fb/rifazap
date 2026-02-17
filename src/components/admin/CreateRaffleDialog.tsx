@@ -308,7 +308,19 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
                       throw new Error(msg || 'Erro ao gerar pagamento');
                     }
 
-                    window.open(data.init_point, '_blank');
+                    // Transparent/Modal Checkout
+                    if (typeof (window as any).MercadoPago !== 'undefined') {
+                      const mp = new (window as any).MercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY);
+                      mp.checkout({
+                        preference: {
+                          id: data.id
+                        },
+                        autoOpen: true
+                      });
+                    } else {
+                      // Fallback if SDK fails to load
+                      window.open(data.init_point, '_blank');
+                    }
                   } catch (err: any) {
                     toast({
                       variant: "destructive",
