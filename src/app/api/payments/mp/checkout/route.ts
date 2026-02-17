@@ -34,41 +34,57 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Rifa não encontrada ou não autorizada" }, { status: 404 });
         }
 
+        if (!process.env.MP_ACCESS_TOKEN) {
+            console.error("[MP Checkout] Access Token is missing!");
+            return NextResponse.json({ error: "Configuração do Mercado Pago incompleta (Falta Access Token no Vercel)" }, { status: 500 });
+        }
+
         // 3. Create Mercado Pago Preference
         const preference = new Preference(client);
 
         // Price: 0.20 as requested for testing
-        const response = await preference.create({
-            body: {
-                items: [
-                    {
-                        id: raffle.id,
-                        title: `Ativação de Rifa: ${raffle.title}`,
-                        quantity: 1,
-                        unit_price: 0.20,
-                        currency_id: 'BRL',
-                    }
-                ],
-                external_reference: raffle.id,
-                notification_url: `https://socialrifa.vercel.app/api/webhooks/mercadopago`, // Use production URL for MP to find it
-                back_urls: {
-                    success: `https://socialrifa.vercel.app/admin/rifas?success=true`,
-                    failure: `https://socialrifa.vercel.app/admin/rifas?error=true`,
-                    pending: `https://socialrifa.vercel.app/admin/rifas?pending=true`,
-                },
-                auto_return: 'approved',
-            }
-        });
+        try {
+            const response = await preference.create({
+                body: {
+                    items: [
+                        {
+                            id: raffle.id,
+                            title: `Ativação de Rifa: ${raffle.title}`,
+                            quantity: 1,
+                            unit_price: 0.20,
+                            currency_id: 'BRL',
+                        }
+                    ],
+                    external_reference: raffle.id,
+                    notification_url: `https://socialrifa.com.br/api/webhooks/mercadopago`,
+                    back_urls: {
+                        success: `https://socialrifa.com.br/admin/rifas?success=true`,
+                        failure: `https://socialrifa.com.br/admin/rifas?error=true`,
+                        pending: `https://socialrifa.com.br/admin/rifas?pending=true`,
+                    },
+                    auto_return: 'approved',
+                }
+            });
 
-        console.log(`[MP Checkout] Preference created for Raffle: ${raffleId}. ID: ${response.id}`);
+            console.log(`[MP Checkout] Preference created for Raffle: ${raffleId}. ID: ${response.id}`);
 
-        return NextResponse.json({
-            id: response.id,
-            init_point: response.init_point
-        });
+            return NextResponse.json({
+                id: response.id,
+                init_point: response.init_point
+            });
+        } catch (mpError: any) {
+            console.error("[MP Checkout] Mercado Pago API Error:", mpError);
+            return NextResponse.json({
+                error: "Erro na API do Mercado Pago",
+                details: mpError.message || "Erro desconhecido na API"
+            }, { status: 502 });
+        }
 
     } catch (error: any) {
-        console.error("[MP Checkout] Error:", error);
-        return NextResponse.json({ error: "Erro ao gerar checkout" }, { status: 500 });
+        console.error("[MP Checkout] Internal Error:", error);
+        return NextResponse.json({
+            error: "Erro interno ao gerar checkout",
+            message: error.message
+        }, { status: 500 });
     }
 }
