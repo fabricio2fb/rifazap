@@ -1,5 +1,4 @@
 
-import Script from 'next/script';
 import type { Metadata } from 'next';
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase';
@@ -37,7 +36,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-        <Script src="https://sdk.mercadopago.com/js/v2" strategy="beforeInteractive" />
       </head>
       <body className="font-body antialiased min-h-screen bg-background text-foreground">
         <FirebaseClientProvider>
