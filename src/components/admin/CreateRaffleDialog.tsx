@@ -294,7 +294,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
               <Button
                 className="w-full h-16 bg-[#0052FF] hover:bg-[#0041CC] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
                 onClick={() => {
-                  const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${pendingRaffle?.id}`;
+                  const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${pendingRaffle?.id}&external_reference=${pendingRaffle?.id}`;
                   window.open(paymentUrl, '_blank');
                 }}
               >

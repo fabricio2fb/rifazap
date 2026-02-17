@@ -172,7 +172,7 @@ export function RafflesList({
                                     <Button
                                         className="w-full sm:w-auto bg-[#0052FF] hover:bg-[#0041CC] text-white font-black text-xs gap-2 px-6 h-12 shadow-lg transition-all active:scale-95 shrink-0"
                                         onClick={() => {
-                                            const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${raffle.id}`;
+                                            const paymentUrl = `https://www.ggcheckout.com/checkout/v2/fhcawWP8XX2R59jn4gcW?external_id=${raffle.id}&external_reference=${raffle.id}`;
                                             window.open(paymentUrl, "_blank");
                                         }}
                                     >

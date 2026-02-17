@@ -1,18 +1,27 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import fs from 'fs';
+import path from 'path';
 
 export async function POST(request: Request) {
     try {
         const payload = await request.json();
+
+        // Permanent log for debugging
+        const logFile = path.join(process.cwd(), 'webhook_debug.log');
+        const logEntry = `\n--- ${new Date().toISOString()} ---\n${JSON.stringify(payload, null, 2)}\n`;
+        fs.appendFileSync(logFile, logEntry);
+
         console.log("GGCheckout Webhook Received:", JSON.stringify(payload, null, 2));
 
         // Discover Raffle ID from multiple potential fields
         const raffleId =
             payload.external_id ||
-            payload.id ||
+            payload.raffle_id ||
             payload.external_reference ||
+            payload.id ||
             payload.id_rifa ||
-            (payload.metadata && payload.metadata.raffle_id);
+            (payload.metadata && (payload.metadata.raffle_id || payload.metadata.external_id));
 
         // Discover status and normalize to lowercase
         const rawStatus = String(payload.status || payload.payment_status || payload.event || "").toLowerCase();
