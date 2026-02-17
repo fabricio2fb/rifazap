@@ -139,6 +139,9 @@ export default function VendasPage() {
     };
 
     const loadSales = async () => {
+        // 1. Gatilho de Limpeza Proativa no Banco (para liberar números)
+        fetch('/api/admin/purchases/cleanup', { method: 'POST' }).catch(e => console.error("Cleanup error:", e));
+
         const { data, error, status } = await supabase
             .from("purchases")
             .select("*, customers(*)")

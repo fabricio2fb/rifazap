@@ -37,11 +37,20 @@ export function NumberGrid({
                     event: '*',
                     schema: 'public',
                     table: 'reserved_numbers',
-                    filter: `raffle_id=eq.${raffleId}`
+                    // Não usamos o filter raffle_id no DELETE porque o payload old pode vir incompleto
                 },
                 (payload) => {
-                    console.log('Mudança detectada:', payload);
-                    fetchReservedNumbers(); // Simples re-fetch para garantir consistência
+                    // Se for DELETE, re-fetch sempre (o payload.old pode não ter o raffle_id)
+                    if (payload.eventType === 'DELETE') {
+                        fetchReservedNumbers();
+                        return;
+                    }
+
+                    // Para outros eventos, verifica o raffle_id
+                    const data = (payload.new as any);
+                    if (data && data.raffle_id === raffleId) {
+                        fetchReservedNumbers();
+                    }
                 }
             )
             .subscribe();
@@ -49,7 +58,7 @@ export function NumberGrid({
         // Atualizar periodicamente para liberar números expirados visualmente
         const interval = setInterval(() => {
             fetchReservedNumbers();
-        }, 30000); // 30 segundos
+        }, 15000); // 15 segundos para ser mais rápido
 
         return () => {
             supabase.removeChannel(channel);
@@ -63,13 +72,17 @@ export function NumberGrid({
             .select('number, status, expires_at')
             .eq('raffle_id', raffleId);
 
-        const now = new Date().toISOString();
+        const now = Date.now();
 
         // Mapear para o formato correto e filtrar expirados
         const formattedData = (data || [])
             .filter(item => {
                 if (item.status === 'paid') return true;
-                return item.expires_at > now;
+                if (!item.expires_at) return false;
+
+                // Comparação robusta de datas
+                const expiresAt = new Date(item.expires_at).getTime();
+                return expiresAt > now;
             })
             .map(item => ({
                 number: item.number,

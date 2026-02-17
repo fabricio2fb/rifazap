@@ -62,8 +62,8 @@ export function PendingSaleActions({ sale, timeDrift, onConfirm, onCancel }: any
     // 2. ESTADO: CANCELADO -> Apenas botão de Reviver
     if (sale.status === "cancelled") {
         return (
-            <Button size="sm" onClick={() => onConfirm(sale.id, true)} className="bg-blue-600 w-full text-[10px] h-9 text-white font-black shadow-lg shadow-blue-200/50 hover:bg-blue-700">
-                <Timer className="w-4 h-4 mr-2" /> REVIVER (ATRASADO)
+            <Button size="sm" onClick={() => onConfirm(sale.id, true)} className="bg-amber-500 w-full text-[10px] h-9 text-white font-black shadow-lg shadow-amber-200/50 hover:bg-amber-600">
+                <Timer className="w-4 h-4 mr-2" /> PAGO C ATRASO
             </Button>
         );
     }
@@ -85,27 +85,34 @@ export function PendingSaleActions({ sale, timeDrift, onConfirm, onCancel }: any
             </Badge>
 
             <div className="flex flex-col gap-2">
-                <Button
-                    size="sm"
-                    onClick={() => onConfirm(sale.id, isExpired)}
-                    className={cn(
-                        "text-[11px] h-9 text-white font-black transition-all shadow-md active:scale-95",
-                        isExpired
-                            ? "bg-amber-500 hover:bg-amber-600 shadow-amber-200"
-                            : "bg-green-600 hover:bg-green-700 shadow-green-200"
-                    )}
-                >
-                    {isExpired ? "CONFIRMAR PAGO C/ ATRASO" : "CONFIRMAR PAGAMENTO"}
-                </Button>
+                {isExpired ? (
+                    <Button
+                        size="sm"
+                        onClick={() => onConfirm(sale.id, true)}
+                        className="text-[11px] h-9 text-white font-black bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 active:scale-95"
+                    >
+                        CONFIRMAR PAGO C/ ATRASO
+                    </Button>
+                ) : (
+                    <>
+                        <Button
+                            size="sm"
+                            onClick={() => onConfirm(sale.id, false)}
+                            className="text-[11px] h-9 text-white font-black bg-green-600 hover:bg-green-700 shadow-md shadow-green-200 active:scale-95"
+                        >
+                            CONFIRMAR PAGAMENTO
+                        </Button>
 
-                <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => onCancel(sale.id)}
-                    className="text-[11px] h-9 text-red-500 hover:bg-red-50 font-bold"
-                >
-                    <XCircle className="w-4 h-4 mr-2" /> CANCELAR RESERVA
-                </Button>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => onCancel(sale.id)}
+                            className="text-[11px] h-9 text-red-500 hover:bg-red-50 font-bold"
+                        >
+                            <XCircle className="w-4 h-4 mr-2" /> CANCELAR RESERVA
+                        </Button>
+                    </>
+                )}
             </div>
         </div>
     );
