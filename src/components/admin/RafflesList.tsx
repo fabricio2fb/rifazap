@@ -176,7 +176,7 @@ export function RafflesList({
                                                 Pagamento Necessário
                                             </p>
                                             <p className="text-sm font-medium text-blue-800 leading-tight">
-                                                Sua rifa está salva, mas falta pagar a taxa (R$ 0,20) para ativar.
+                                                Sua rifa está salva, mas falta pagar a taxa (R$ 9,90) para ativar.
                                             </p>
                                         </div>
                                     </div>

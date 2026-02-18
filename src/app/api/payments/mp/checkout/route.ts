@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         try {
             const paymentData = await payment.create({
                 body: {
-                    transaction_amount: 0.20,
+                    transaction_amount: 9.90,
                     description: `Ativação de Rifa: ${raffle.title}`,
                     payment_method_id: 'pix',
                     payer: {
