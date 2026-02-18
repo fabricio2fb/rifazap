@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Página Principal -->
+  <url>
+    <loc>https://www.socialrifa.com.br/</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Login / Cadastro -->
+  <url>
+    <loc>https://www.socialrifa.com.br/login</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Área do Organizador -->
+  <url>
+    <loc>https://www.socialrifa.com.br/customer/login</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Criar Rifa -->
+  <url>
+    <loc>https://www.socialrifa.com.br/criar-rifa</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Meus Números -->
+  <url>
+    <loc>https://www.socialrifa.com.br/meus-numeros</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Termos de Uso -->
+  <url>
+    <loc>https://www.socialrifa.com.br/termos-de-uso</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Política de Privacidade -->
+  <url>
+    <loc>https://www.socialrifa.com.br/privacidade</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Suporte / Contato -->
+  <url>
+    <loc>https://www.socialrifa.com.br/suporte</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

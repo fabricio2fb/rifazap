@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /customer/
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://www.socialrifa.com.br/sitemap.xml
