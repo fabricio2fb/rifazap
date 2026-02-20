@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   ArrowRight,
   Zap,
@@ -16,15 +17,23 @@ import {
   Trophy,
   MousePointer2,
   QrCode,
-  Loader2
+  Loader2,
+  Coins,
+  ExternalLink,
+  HelpCircle,
+  Wifi,
+  BatteryMedium,
+  Signal
 } from "lucide-react";
 import Link from "next/link";
-
 import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [animationStep, setAnimationStep] = useState(0);
@@ -37,62 +46,56 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6 mx-auto">
+        <div className="container flex h-16 items-center justify-between px-6 mx-auto">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-            <span className="text-xl md:text-2xl font-bold tracking-tighter">SocialRifa</span>
+            <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
           </div>
-          <div className="hidden md:flex items-center gap-4">
-            <Link href="/customer/login">
-              <Button variant="outline" className="font-bold border-2">Meus Números</Button>
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="#exemplo" className="text-sm font-bold hover:text-primary-foreground transition-colors">Exemplo</Link>
+            <Link href="#beneficios" className="text-sm font-bold hover:text-primary-foreground transition-colors">Benefícios</Link>
+            <Link href="#preços" className="text-sm font-bold hover:text-primary-foreground transition-colors">Preços</Link>
+            <Link href="#faq" className="text-sm font-bold hover:text-primary-foreground transition-colors">Dúvidas</Link>
+            <Link href="/login">
+              <Button variant="outline" className="font-bold border-2">Acessar Painel</Button>
             </Link>
             <Link href="/login">
               <Button className="font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">Começar Agora</Button>
             </Link>
           </div>
-
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <div className="flex flex-col gap-6 mt-8">
-                <Link href="/customer/login" className="w-full">
-                  <Button variant="outline" className="w-full font-bold border-2 h-12 text-lg">Meus Números</Button>
-                </Link>
-                <Link href="/login" className="w-full">
-                  <Button className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-12 text-lg">Começar Agora</Button>
-                </Link>
-              </div>
-            </SheetContent>
-          </Sheet>
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-6 w-6" />
+          </Button>
         </div>
       </nav>
 
-      <main className="flex-1 w-full">
+      <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative bg-primary py-12 md:py-20 px-4 md:px-6 overflow-hidden">
+        <section className="relative bg-primary py-20 px-6 overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-          <div className="container relative mx-auto text-center space-y-6 md:space-y-8">
-            <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider text-primary-foreground animate-bounce">
-              <Zap className="w-3 h-3 md:w-4 md:h-4" />
+          <div className="container relative mx-auto text-center space-y-8">
+            <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider text-primary-foreground animate-bounce">
+              <Zap className="w-4 h-4" />
               Plataforma #1 para Rifas Digitais
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight tracking-tight px-2">
-              Sua Rifa no WhatsApp <br className="hidden sm:block" /> <span className="text-white">em 60 Segundos</span>
+            <h1 className="text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight tracking-tight">
+              Sua Rifa no WhatsApp <br /> <span className="text-white">em 60 Segundos</span>
             </h1>
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-primary-foreground/90 font-medium px-4">
-              A maneira mais simples, rápida e profissional de organizar sorteios, gerenciar pagamentos via PIX e crescer sua audiência.
+            <p className="max-w-2xl mx-auto text-xl text-primary-foreground/90 font-medium">
+              A maneira mais simples, rápida e profissional de organizar sorteios, gerenciar pagamentos via PIX e arrecadar muito mais.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 w-full px-4 sm:px-0">
-              <Link href="/login" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto h-14 md:h-16 px-6 md:px-10 text-lg md:text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
-                  Criar Minha Rifa <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+              <Link href="/login">
+                <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
+                  Criar Minha Rifa <ArrowRight className="w-6 h-6" />
+                </Button>
+              </Link>
+              <Link href="/rifa/rifa-exemplo-pc-gamer">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
+                  Ver Demonstração
                 </Button>
               </Link>
             </div>
@@ -104,33 +107,185 @@ export default function Home() {
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div className="space-y-1">
-                <p className="text-4xl font-black text-primary-foreground">+10k</p>
-                <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Rifas Criadas</p>
+                <p className="text-4xl font-black text-primary-foreground">+12.400</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Rifas Criadas</p>
               </div>
               <div className="space-y-1">
-                <p className="text-4xl font-black text-primary-foreground">R$ 2M+</p>
-                <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Em Prêmios</p>
+                <p className="text-4xl font-black text-primary-foreground">R$ 4.2M+</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Arrecadados</p>
               </div>
               <div className="space-y-1">
                 <p className="text-4xl font-black text-primary-foreground">100%</p>
-                <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Seguro (PIX)</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Seguro via PIX</p>
               </div>
               <div className="space-y-1">
-                <p className="text-4xl font-black text-primary-foreground">24/7</p>
-                <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Suporte</p>
+                <p className="text-4xl font-black text-primary-foreground">+45k</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Compradores Felizes</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Benefits Section with Animated Preview */}
+        {/* Example Section - Preview Real */}
+        <section id="exemplo" className="py-24 bg-white border-b overflow-hidden">
+          <div className="container mx-auto px-6">
+            <div className="flex flex-col lg:flex-row items-center gap-16">
+              <div className="flex-1 space-y-8 text-center lg:text-left">
+                <div className="space-y-4">
+                  <Badge className="bg-primary/20 text-primary-foreground font-black px-4 py-1.5 rounded-full text-xs uppercase tracking-widest">Veja na Prática</Badge>
+                  <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9]">Preview real da <br /><span className="text-primary-foreground">página de rifa</span></h2>
+                  <p className="text-lg text-muted-foreground font-medium max-w-xl">
+                    Nada de artes estáticas. Seus clientes acessam um sistema dinâmico, rápido e visualmente incrível, otimizado para fechar a venda no ato.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <Link href="/rifa/rifa-exemplo-pc-gamer">
+                    <Button size="lg" className="h-16 px-8 rounded-2xl text-lg font-black gap-3 shadow-xl hover:scale-105 transition-transform">
+                      ABRIR EXEMPLO COMPLETO <ExternalLink className="w-5 h-5" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Smartphone Frame com Preview Real */}
+              <div className="flex-1 relative group">
+                <div className="absolute -inset-10 bg-primary/20 rounded-[4rem] blur-[80px] group-hover:bg-primary/30 transition-all duration-700" />
+
+                {/* Frame do Smartphone (iPhone Style) */}
+                <div className="relative bg-slate-900 rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border-[12px] border-slate-900 overflow-hidden w-full max-w-[360px] mx-auto transform hover:-translate-y-4 transition-all duration-500 h-[720px] flex flex-col ring-4 ring-slate-800">
+                  {/* Dynamic Island */}
+                  <div className="bg-black h-7 w-32 mx-auto rounded-full absolute top-3 left-1/2 -translate-x-1/2 z-40 flex items-center justify-around px-4">
+                    <div className="h-2 w-2 rounded-full bg-slate-800" />
+                    <div className="h-1.5 w-8 rounded-full bg-slate-800" />
+                  </div>
+
+                  {/* Status Bar */}
+                  <div className="h-10 w-full flex items-center justify-between px-8 pt-4 pb-2 bg-white z-30">
+                    <span className="text-xs font-bold text-slate-900">09:41</span>
+                    <div className="flex items-center gap-1.5">
+                      <Signal className="w-3.5 h-3.5" />
+                      <Wifi className="w-3.5 h-3.5" />
+                      <BatteryMedium className="w-4 h-4" />
+                    </div>
+                  </div>
+
+                  {/* Conteúdo Realista da Rifa */}
+                  <div className="flex-1 overflow-y-auto no-scrollbar bg-white">
+                    {/* Header Image */}
+                    <div className="relative aspect-video w-full overflow-hidden">
+                      <Image
+                        src="/pcgamer.jpg"
+                        alt="PC Gamer"
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-green-500 text-white border-none font-black text-[10px] uppercase tracking-widest px-3 py-1 shadow-lg">ATIVA</Badge>
+                      </div>
+                    </div>
+
+                    <div className="p-5 space-y-6">
+                      {/* Info Principal */}
+                      <div className="space-y-2">
+                        <h4 className="font-black text-xl leading-tight text-slate-900">PC Gamer RTX 4090 + Monitor 4K</h4>
+                        <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                          O setup dos sonhos com Intel i9, RTX 4090 e monitor 4K 240Hz. Cada cota apenas R$ 1,00!
+                        </p>
+                      </div>
+
+                      {/* Grid de Stats */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                            <Trophy className="w-5 h-5 text-primary-foreground" />
+                          </div>
+                          <div className="leading-none">
+                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Cota</p>
+                            <p className="font-black text-sm text-slate-900">R$ 1,00</p>
+                          </div>
+                        </div>
+                        <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-xl bg-green-100 flex items-center justify-center">
+                            <CheckCircle2 className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div className="leading-none">
+                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Sorteio</p>
+                            <p className="font-black text-xs text-slate-900">15/01/25</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Progresso */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                          <span>Vendas</span>
+                          <span className="text-primary-foreground">64% Completo</span>
+                        </div>
+                        <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-primary" style={{ width: '64%' }} />
+                        </div>
+                      </div>
+
+                      {/* Grade de Números Realista */}
+                      <div className="space-y-3 pt-2">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-black text-xs uppercase tracking-widest">Escolha sua cota</h5>
+                          <span className="text-[10px] font-bold text-muted-foreground">Ver todos</span>
+                        </div>
+                        <div className="grid grid-cols-5 gap-2 pb-24">
+                          {[...Array(25)].map((_, i) => {
+                            const num = i + 1;
+                            const status = [2, 5, 12, 18, 22].includes(i) ? 'paid' : [8, 14, 20].includes(i) ? 'reserved' : 'available';
+                            const isSelected = num === 9;
+                            return (
+                              <div
+                                key={i}
+                                className={cn(
+                                  "aspect-square rounded-xl flex items-center justify-center text-[11px] font-black border transition-all duration-300",
+                                  status === 'available' && !isSelected && "bg-slate-50 text-slate-400 border-slate-100",
+                                  status === 'reserved' && "bg-amber-100 text-amber-600 border-amber-200",
+                                  status === 'paid' && "bg-slate-200 text-slate-100 border-transparent opacity-40",
+                                  isSelected && "bg-primary text-primary-foreground border-primary shadow-[0_5px_15px_rgba(255,221,43,0.4)] scale-110 z-10"
+                                )}
+                              >
+                                {num.toString().padStart(2, '0')}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Botão de Checkout Flutuante Simulado */}
+                  <div className="absolute bottom-6 left-4 right-4 z-40 animate-bounce">
+                    <div className="w-full h-16 rounded-[1.25rem] bg-slate-900 flex items-center justify-between px-6 border-2 border-slate-800 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+                      <div className="text-left">
+                        <p className="text-[10px] font-black uppercase text-slate-400">01 Número Selecionado</p>
+                        <p className="font-black text-white text-base">COMPRAR AGORA</p>
+                      </div>
+                      <div className="bg-primary p-2 rounded-lg">
+                        <ArrowRight className="w-5 h-5 text-primary-foreground" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Home Indicator */}
+                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 w-24 bg-slate-300 rounded-full z-40" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits Section */}
         <section id="beneficios" className="py-24 bg-muted/30">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
-                <div className="space-y-4">
-                  <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">Como funciona para seu cliente?</h2>
-                  <p className="text-lg text-muted-foreground font-medium">Simples, intuitivo e feito para converter mais vendas pelo celular.</p>
+                <div className="space-y-4 text-center lg:text-left">
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">Venda mais com menos esforço</h2>
+                  <p className="text-lg text-muted-foreground font-medium">Nossa interface foi desenhada para facilitar a compra em apenas 3 cliques no celular.</p>
                 </div>
 
                 <div className="space-y-6">
@@ -138,25 +293,25 @@ export default function Home() {
                     {
                       icon: <Smartphone className="h-6 w-6 text-primary-foreground" />,
                       title: "Escolha dos Números",
-                      desc: "Interface limpa onde o cliente seleciona os números da sorte em segundos.",
+                      desc: "Grade interativa onde o cliente vê na hora o que está livre ou ocupado.",
                       active: animationStep === 0
                     },
                     {
                       icon: <Users className="h-6 w-6 text-primary-foreground" />,
-                      title: "Cadastro Rápido",
-                      desc: "Apenas nome e WhatsApp. Sem formulários chatos ou senhas complicadas.",
+                      title: "Cadastro Instantâneo",
+                      desc: "Sem senhas. O cliente só coloca Nome e WhatsApp e já vai para o pagamento.",
                       active: animationStep === 1
                     },
                     {
                       icon: <ShieldCheck className="h-6 w-6 text-primary-foreground" />,
-                      title: "Pagamento Facilitado",
-                      desc: "Geração de PIX Copia e Cola automático para garantir a reserva na hora.",
+                      title: "PIX Automático",
+                      desc: "Geramos o código copia e cola na hora. Você recebe direto na sua conta.",
                       active: animationStep === 2
                     },
                     {
                       icon: <CheckCircle2 className="h-6 w-6 text-primary-foreground" />,
-                      title: "Participação Confirmada",
-                      desc: "Comprovante enviado direto para o seu WhatsApp para validação rápida.",
+                      title: "Baixa em 1 Segundo",
+                      desc: "O cliente te envia o comprovante no WhatsApp e você confirma com um clique.",
                       active: animationStep === 3
                     }
                   ].map((benefit, i) => (
@@ -173,194 +328,297 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Visual Preview (Animated Flow) */}
-              <div className="relative aspect-square bg-white rounded-[3rem] shadow-2xl border-[12px] border-slate-900 overflow-hidden flex flex-col">
-                {/* Mobile App Header Mockup */}
+              {/* Visual Preview Interativo - Tamanho Aumentado */}
+              <div className="relative bg-white rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-[12px] border-slate-900 overflow-hidden flex flex-col w-full max-w-[420px] mx-auto h-[740px]">
                 <div className="bg-slate-900 h-6 w-32 mx-auto rounded-b-2xl absolute top-0 left-1/2 -translate-x-1/2 z-20" />
-
-                <div className="p-8 pt-12 flex-1 flex flex-col">
-                  {/* Step 0: Grid Selection */}
+                <div className="p-8 pt-16 flex-1 flex flex-col h-full">
                   {animationStep === 0 && (
-                    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+                    <div className="space-y-8 animate-in fade-in zoom-in duration-500 flex-1 flex flex-col">
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
-                          <h3 className="font-bold text-xl">iPhone 15 Pro Max</h3>
-                          <p className="text-xs text-muted-foreground">Selecione suas cotas</p>
+                          <h3 className="font-black text-2xl">iPhone 15 Pro</h3>
+                          <p className="text-sm font-bold text-muted-foreground">Escolha suas cotas</p>
                         </div>
-                        <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary-foreground">
-                          <Trophy className="w-5 h-5" />
+                        <div className="h-12 w-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary-foreground">
+                          <Trophy className="w-6 h-6" />
                         </div>
                       </div>
-
-                      <div className="grid grid-cols-5 gap-3 relative">
+                      <div className="grid grid-cols-5 gap-4 relative">
                         {[...Array(20)].map((_, i) => (
-                          <div
-                            key={i}
-                            className={`
-                              aspect-square rounded-xl flex items-center justify-center text-xs font-bold border transition-all duration-300
-                              ${i === 8 ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-110' : 'bg-muted/30 text-muted-foreground border-border'}
-                              ${[2, 5, 12, 18].includes(i) ? 'bg-slate-200 opacity-40' : ''}
-                            `}
-                          >
+                          <div key={i} className={`aspect-square rounded-xl flex items-center justify-center text-sm font-black border ${i === 8 ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-110' : 'bg-muted/30 text-muted-foreground border-border'} ${[2, 5, 12, 18].includes(i) ? 'bg-slate-200 opacity-40' : ''}`}>
                             {(i + 1).toString().padStart(2, '0')}
                           </div>
                         ))}
                         <div className="absolute top-[45%] left-[55%] animate-bounce">
-                          <MousePointer2 className="w-8 h-8 text-slate-900 fill-white drop-shadow-lg" />
+                          <MousePointer2 className="w-10 h-10 text-slate-900 fill-white drop-shadow-xl" />
                         </div>
                       </div>
-
                       <div className="mt-auto">
-                        <div className="w-full h-14 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg">
-                          RESERVAR 01 NÚMERO
-                        </div>
+                        <div className="w-full h-16 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-lg shadow-xl">RESERVAR 01 NÚMERO</div>
                       </div>
                     </div>
                   )}
-
-                  {/* Step 1: Form Filling */}
                   {animationStep === 1 && (
-                    <div className="space-y-6 animate-in slide-in-from-right duration-500 h-full flex flex-col justify-center">
-                      <div className="text-center space-y-2">
-                        <Users className="w-12 h-12 mx-auto text-primary-foreground" />
-                        <h3 className="font-bold text-2xl">Quase lá!</h3>
-                        <p className="text-sm text-muted-foreground">Preencha para garantir sua reserva</p>
+                    <div className="space-y-8 animate-in slide-in-from-right duration-500 h-full flex flex-col justify-center">
+                      <div className="text-center space-y-3">
+                        <Users className="w-16 h-16 mx-auto text-primary-foreground" />
+                        <h3 className="font-black text-3xl">Quase lá!</h3>
+                        <p className="text-base text-muted-foreground font-bold">Preencha para garantir sua reserva</p>
                       </div>
-
-                      <div className="space-y-4">
+                      <div className="space-y-6">
                         <div className="space-y-2">
-                          <div className="h-4 w-20 bg-muted rounded animate-pulse" />
-                          <div className="h-12 w-full bg-muted/30 border-2 border-primary rounded-xl flex items-center px-4 font-bold text-sm">
-                            João da Silva|
-                          </div>
+                          <div className="h-5 w-24 bg-muted rounded animate-pulse" />
+                          <div className="h-14 w-full bg-muted/30 border-2 border-primary rounded-2xl flex items-center px-4 font-black text-lg">João da Silva|</div>
                         </div>
                         <div className="space-y-2">
-                          <div className="h-4 w-20 bg-muted rounded animate-pulse" />
-                          <div className="h-12 w-full bg-muted/30 border rounded-xl flex items-center px-4 text-muted-foreground text-sm">
-                            (11) 99999-9999
-                          </div>
+                          <div className="h-5 w-24 bg-muted rounded animate-pulse" />
+                          <div className="h-14 w-full bg-muted/30 border rounded-2xl flex items-center px-4 text-muted-foreground text-lg">(11) 99999-9999</div>
                         </div>
                       </div>
-
-                      <Button className="w-full h-14 rounded-2xl bg-primary text-primary-foreground font-black text-lg">
-                        CONFIRMAR RESERVA
-                      </Button>
+                      <Button className="w-full h-16 rounded-2xl bg-primary text-primary-foreground font-black text-xl shadow-xl">CONFIRMAR RESERVA</Button>
                     </div>
                   )}
-
-                  {/* Step 2: PIX Payment */}
                   {animationStep === 2 && (
-                    <div className="space-y-6 animate-in slide-in-from-right duration-500 h-full flex flex-col items-center justify-center">
-                      <div className="text-center space-y-1">
-                        <h3 className="font-bold text-2xl">Pagamento PIX</h3>
-                        <p className="text-sm text-muted-foreground">Copie a chave e pague no seu banco</p>
+                    <div className="space-y-8 animate-in slide-in-from-right duration-500 h-full flex flex-col items-center justify-center">
+                      <div className="text-center space-y-2">
+                        <h3 className="font-black text-3xl">Pagamento PIX</h3>
+                        <p className="text-base text-muted-foreground font-bold">Copie a chave e pague no seu banco</p>
                       </div>
-
-                      <div className="p-4 bg-white border-2 border-primary rounded-3xl shadow-xl">
-                        <QrCode className="w-32 h-32 text-slate-900" />
+                      <div className="p-6 bg-white border-2 border-primary rounded-[2.5rem] shadow-2xl">
+                        <QrCode className="w-40 h-40 text-slate-900" />
                       </div>
-
-                      <div className="w-full space-y-3">
-                        <div className="w-full h-12 bg-muted rounded-xl flex items-center justify-between px-4 font-mono text-xs">
-                          00020126330014BR.GOV.BCB...
-                          <Loader2 className="w-4 h-4 animate-spin text-primary-foreground" />
+                      <div className="w-full space-y-4">
+                        <div className="w-full h-14 bg-muted rounded-2xl flex items-center justify-between px-4 font-mono text-sm overflow-hidden">
+                          00020126330014BR.GOV...
+                          <Loader2 className="w-5 h-5 animate-spin text-primary-foreground" />
                         </div>
-                        <Button className="w-full h-14 rounded-2xl bg-primary text-primary-foreground font-black text-lg">
-                          COPIAR CÓDIGO PIX
-                        </Button>
+                        <Button className="w-full h-16 rounded-2xl bg-primary text-primary-foreground font-black text-xl shadow-xl">COPIAR CÓDIGO PIX</Button>
                       </div>
                     </div>
                   )}
-
-                  {/* Step 3: Success & Share */}
                   {animationStep === 3 && (
-                    <div className="space-y-8 animate-in zoom-in duration-500 h-full flex flex-col items-center justify-center text-center">
-                      <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center shadow-2xl animate-bounce">
-                        <CheckCircle2 className="w-14 h-14 text-white" />
+                    <div className="space-y-10 animate-in zoom-in duration-500 h-full flex flex-col items-center justify-center text-center">
+                      <div className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center shadow-[0_20px_40px_rgba(34,197,94,0.3)] animate-bounce">
+                        <CheckCircle2 className="w-20 h-20 text-white" />
                       </div>
-
-                      <div className="space-y-2">
-                        <h3 className="font-black text-3xl text-slate-900">SUCESSO!</h3>
-                        <p className="text-muted-foreground font-medium px-4">Sua reserva do número 09 foi confirmada. Boa sorte!</p>
+                      <div className="space-y-3">
+                        <h3 className="font-black text-4xl text-slate-900">SUCESSO!</h3>
+                        <p className="text-lg text-muted-foreground font-black px-6">Sua reserva do número 09 foi confirmada. Boa sorte!</p>
                       </div>
-
-                      <div className="w-full space-y-3 pt-4">
-                        <Button className="w-full h-16 rounded-2xl bg-[#25D366] text-white font-black text-lg gap-3 shadow-lg hover:bg-[#128C7E]">
-                          <MessageCircle className="w-6 h-6 fill-current" /> ENVIAR COMPROVANTE
+                      <div className="w-full space-y-4 pt-6">
+                        <Button className="w-full h-20 rounded-2xl bg-[#25D366] text-white font-black text-xl gap-3 shadow-xl hover:bg-[#128C7E]">
+                          <MessageCircle className="w-8 h-8 fill-current" /> ENVIAR COMPROVANTE
                         </Button>
-                        <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Clique acima para validar</p>
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Clique acima para validar sua cota</p>
                       </div>
                     </div>
                   )}
                 </div>
-
-                {/* Overlays */}
-                <div className="absolute inset-0 pointer-events-none border-[1px] border-white/20 rounded-[2.5rem]" />
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section id="preços" className="py-24 bg-white border-y">
+          <div className="container mx-auto px-6 text-center space-y-12">
+            <div className="space-y-4">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight">Preço Justo e Sem Surpresas</h2>
+              <p className="text-lg text-muted-foreground font-medium max-w-2xl mx-auto">Você só paga quando cria uma nova campanha. Sem mensalidades, sem comissões sobre suas vendas.</p>
+            </div>
+
+            <div className="max-w-md mx-auto">
+              <div className="bg-primary rounded-[2.5rem] p-1 shadow-2xl">
+                <div className="bg-white rounded-[2.2rem] p-10 space-y-8 relative overflow-hidden">
+                  <div className="absolute top-6 right-6">
+                    <div className="bg-primary/20 p-3 rounded-2xl">
+                      <Coins className="w-8 h-8 text-primary-foreground" />
+                    </div>
+                  </div>
+
+                  <div className="text-left space-y-2">
+                    <p className="text-sm font-black text-primary-foreground uppercase tracking-widest">Taxa de Publicação</p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-2xl font-bold">R$</span>
+                      <span className="text-6xl font-black tracking-tighter">9,90</span>
+                      <span className="text-muted-foreground font-bold">/ rifa</span>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-4 text-left">
+                    {[
+                      "Crie até 1.000 números",
+                      "Receba 100% do valor via PIX",
+                      "Painel de Gestão Completo",
+                      "Upload de fotos ilimitado",
+                      "Link exclusivo para WhatsApp",
+                      "Sorteador Automático Integrado"
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-3 font-bold text-sm">
+                        <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link href="/login" className="block w-full">
+                    <Button className="w-full h-16 rounded-2xl bg-primary text-primary-foreground font-black text-xl shadow-xl hover:scale-105 transition-transform">
+                      Começar Agora
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section id="faq" className="py-24 bg-white">
+          <div className="container mx-auto px-6 max-w-3xl space-y-12">
+            <div className="text-center space-y-4">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary-foreground mb-4">
+                <HelpCircle className="w-6 h-6" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight">Perguntas Frequentes</h2>
+              <p className="text-lg text-muted-foreground font-medium">Tire todas as suas dúvidas antes de começar.</p>
+            </div>
+
+            <Accordion type="single" collapsible className="w-full">
+              {[
+                {
+                  q: "Como recebo o dinheiro das minhas vendas?",
+                  a: "O dinheiro cai 100% na sua conta. No momento da criação da rifa, você insere sua chave PIX. No checkout, o cliente copia sua chave e paga no banco dele. O SocialRifa não retém nada das suas vendas."
+                },
+                {
+                  q: "As rifas online são permitidas?",
+                  a: "Sim, desde que respeitadas as normas vigentes. O SocialRifa é uma ferramenta de gestão de sorteios. Recomendamos que o organizador utilize a plataforma para rifas filantrópicas ou promocionais autorizadas."
+                },
+                {
+                  q: "Como funciona o sorteio automático?",
+                  a: "No seu painel, após as vendas serem confirmadas, você clica no botão 'Sortear'. O sistema gera um número aleatório de forma transparente apenas entre os números que já foram pagos, garantindo um ganhador legítimo."
+                },
+                {
+                  q: "Qual o limite de números por rifa?",
+                  a: "Atualmente, você pode criar rifas de 10 até 1.000 números. Isso garante uma experiênca de navegação rápida e fluida para quem está comprando no celular."
+                },
+                {
+                  q: "Tenho suporte caso precise de ajuda?",
+                  a: "Sim! Temos uma equipe de suporte humanizado via WhatsApp pronta para te ajudar a configurar sua primeira rifa ou tirar dúvidas técnicas."
+                }
+              ].map((faq, i) => (
+                <AccordionItem key={i} value={`item-${i}`} className="border-b-2 py-2">
+                  <AccordionTrigger className="text-left font-black text-lg hover:no-underline hover:text-primary-foreground">
+                    {faq.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground font-medium text-base leading-relaxed">
+                    {faq.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </section>
 
         {/* Final CTA Section */}
         <section className="py-24 px-6 bg-foreground text-background">
           <div className="container mx-auto text-center space-y-8">
-            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight">Pronto para arrecadar?</h2>
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight">Sua jornada de sucesso começa aqui.</h2>
             <p className="text-xl text-background/70 max-w-2xl mx-auto">
-              Junte-se a milhares de organizadores que já utilizam a SocialRifa para profissionalizar seus sorteios.
+              Pare de lutar com planilhas e cadernos. Profissionalize seus sorteios hoje mesmo com a SocialRifa.
             </p>
             <div className="pt-4">
               <Link href="/login">
                 <Button size="lg" className="h-20 px-3 text-2xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3 shadow-[0_0_30px_rgba(255,221,43,0.3)] transition-all hover:scale-105">
-                  CRIAR MINHA RIFA AGORA <Zap className="w-8 h-8 fill-current" />
+                  CRIAR MINHA PRIMEIRA RIFA <Zap className="w-8 h-8 fill-current" />
                 </Button>
               </Link>
             </div>
+            <p className="text-xs font-bold text-background/40 uppercase tracking-[0.3em]">Crie agora • Pague apenas R$ 9,90</p>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-muted py-16 px-6 border-t">
+      <footer className="bg-white py-20 px-6 border-t">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
               <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
             </div>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              A plataforma definitiva para criar e gerenciar rifas profissionais. Simplicidade, segurança e resultados para você.
+            <p className="text-muted-foreground text-sm leading-relaxed font-medium">
+              A maior e mais segura plataforma de gestão para rifas e sorteios digitais do Brasil.
             </p>
             <div className="flex gap-4">
-              <Button variant="ghost" size="icon" className="rounded-full bg-white shadow-sm"><Share2 className="h-4 w-4" /></Button>
-              <Button variant="ghost" size="icon" className="rounded-full bg-white shadow-sm"><MessageCircle className="h-4 w-4" /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-2xl bg-muted/30 shadow-sm hover:bg-primary/20"
+                onClick={async () => {
+                  if (navigator.share) {
+                    await navigator.share({
+                      title: "SocialRifa",
+                      text: "A plataforma #1 para rifas digitais no WhatsApp!",
+                      url: "https://www.socialrifa.com.br",
+                    });
+                  } else {
+                    await navigator.clipboard.writeText("https://www.socialrifa.com.br");
+                    alert("Link copiado!");
+                  }
+                }}
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-2xl bg-muted/30 shadow-sm hover:bg-primary/20"
+                onClick={() => {
+                  const texto = encodeURIComponent(
+                    "Conheça a SocialRifa — a forma mais fácil de criar rifas pelo WhatsApp! 🎟️\nhttps://www.socialrifa.com.br"
+                  );
+                  window.open(`https://wa.me/?text=${texto}`, "_blank");
+                }}
+              >
+                <MessageCircle className="h-4 w-4" />
+              </Button>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="font-bold uppercase tracking-wider text-sm">Plataforma</h4>
-            <ul className="space-y-3 text-muted-foreground text-sm font-medium">
-              <li><Link href="/login" className="hover:text-primary transition-colors">Área do Organizador</Link></li>
-              <li><Link href="/login" className="hover:text-primary transition-colors">Criar Rifa</Link></li>
-            </ul>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="font-bold uppercase tracking-wider text-sm">Legal</h4>
-            <ul className="space-y-3 text-muted-foreground text-sm font-medium">
-              <li><Link href="#" className="hover:text-primary transition-colors">Termos de Uso</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Privacidade</Link></li>
+          <div className="space-y-6">
+            <h4 className="font-black uppercase tracking-widest text-xs text-foreground">Plataforma</h4>
+            <ul className="space-y-4 text-muted-foreground text-sm font-bold">
+              <li><Link href="/login" className="hover:text-primary-foreground transition-colors">Área do Organizador</Link></li>
+              <li><Link href="/login" className="hover:text-primary-foreground transition-colors">Criar Nova Rifa</Link></li>
+              <li><Link href="#preços" className="hover:text-primary-foreground transition-colors">Preços</Link></li>
             </ul>
           </div>
 
           <div className="space-y-6">
-            <h4 className="font-bold uppercase tracking-wider text-sm">Suporte</h4>
-            <p className="text-sm text-muted-foreground">Precisa de ajuda? Fale com nossa equipe agora mesmo.</p>
-            <Button className="w-full bg-green-500 hover:bg-green-600 text-white font-bold h-14 gap-2 rounded-2xl shadow-lg">
-              <MessageCircle className="w-5 h-5 fill-current" /> Suporte via WhatsApp
+            <h4 className="font-black uppercase tracking-widest text-xs text-foreground">Legal</h4>
+            <ul className="space-y-4 text-muted-foreground text-sm font-bold">
+              <li><Link href="/termos" className="hover:text-primary-foreground transition-colors">Termos de Uso</Link></li>
+              <li><Link href="/privacidade" className="hover:text-primary-foreground transition-colors">Política de Privacidade</Link></li>
+              <li><Link href="/etica" className="hover:text-primary-foreground transition-colors">Código de Ética</Link></li>
+            </ul>
+          </div>
+
+          <div className="space-y-8">
+            <h4 className="font-black uppercase tracking-widest text-xs text-foreground">Suporte Especializado</h4>
+            <p className="text-sm text-muted-foreground font-medium">Precisa de ajuda ou parceria? Fale com nossa equipe agora.</p>
+            <Button
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-black h-16 gap-3 rounded-2xl shadow-xl transition-all hover:scale-105"
+              onClick={() => window.open("https://wa.me/SEU_NUMERO_AQUI", "_blank")}
+            >
+              <MessageCircle className="w-6 h-6 fill-current" /> Suporte WhatsApp
             </Button>
           </div>
         </div>
+        <div className="container mx-auto mt-20 pt-8 border-t text-center space-y-2">
+          <p className="text-xs font-bold text-muted-foreground tracking-widest">© 2025 SOCIALRIFA - TECNOLOGIA PARA SORTEIOS. TODOS OS DIREITOS RESERVADOS.</p>
+          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Orgulhosamente desenvolvido para organizadores brasileiros.</p>
+        </div>
       </footer>
     </div>
-  );
-}
+  );  // <- fecha o return(
+} 
