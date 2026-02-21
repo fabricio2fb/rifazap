@@ -6,7 +6,7 @@ import { NumberGrid } from "@/components/campanha/NumberGrid";
 import { CheckoutModal } from "@/components/campanha/CheckoutModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Calendar, Trophy, CheckCircle, Info, Ticket, Zap } from "lucide-react";
+import { MessageCircle, Calendar, Trophy, CheckCircle, Info, Ticket, Zap, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/lib/supabase/client";
@@ -110,7 +110,7 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
     };
 
     const shareOnWhatsApp = () => {
-        const url = `https://socialrifa.vercel.app/campanha/${initialRaffle.slug}`;
+        const url = `https://ticketon.com.br/campanha/${initialRaffle.slug}`;
         const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
 
         // Force Brasilia time for share message
@@ -163,7 +163,7 @@ ${url}`;
             const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
                 timeZone: 'America/Sao_Paulo'
             });
-            const url = `https://socialrifa.vercel.app/campanha/${initialRaffle.slug}`;
+            const url = `https://ticketon.com.br/campanha/${initialRaffle.slug}`;
 
             const shareText = `🎟️ CAMPANHA ATIVA
 
@@ -216,11 +216,11 @@ ${url}`;
                         alt={initialRaffle.title}
                         fill
                         className="object-cover"
-                        priority
+                        priority // Add priority to resolve LCP warning
                     />
                 )}
                 <div className="absolute top-4 left-4">
-                    <Badge className="bg-rifa-available text-white border-none px-3 py-1 text-sm font-bold uppercase tracking-wider">
+                    <Badge className="bg-campanha-available text-white border-none px-3 py-1 text-sm font-bold uppercase tracking-wider">
                         {initialRaffle.status === 'active' ? 'Ativa' : initialRaffle.status}
                     </Badge>
                 </div>
@@ -308,15 +308,15 @@ ${url}`;
 
                     <div className="flex flex-wrap gap-4 text-xs font-semibold uppercase">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3 h-3 rounded-sm bg-rifa-available" />
-                            <span>Livre</span>
+                            <div className="w-3 h-3 rounded-sm bg-campanha-available" />
+                            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Livre</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-3 h-3 rounded-sm bg-rifa-reserved" />
-                            <span>Reservado</span>
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-sm bg-campanha-reserved" />
+                            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Reservado</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-3 h-3 rounded-sm bg-rifa-paid" />
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-sm bg-campanha-paid" />
                             <span>Pago</span>
                         </div>
                     </div>
@@ -338,6 +338,20 @@ ${url}`;
                     <p className="text-[10px] text-muted-foreground/60 max-w-xs mx-auto leading-relaxed">
                         Esta campanha é de responsabilidade do organizador. A TicketOn fornece a tecnologia para realização do evento.
                     </p>
+                    <div className="pt-2">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-muted-foreground hover:text-red-500 text-[10px] uppercase font-bold tracking-wider opacity-70 hover:opacity-100 transition-opacity"
+                            onClick={() => {
+                                const message = `*Denúncia da Campanha: ${initialRaffle.title}*\n\nLink da campanha: https://ticketon.com.br/campanha/${initialRaffle.slug}\n\nMotivo da denúncia: `;
+                                window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(message)}`, '_blank');
+                            }}
+                        >
+                            <AlertCircle className="w-3 h-3 mr-1.5" />
+                            Denunciar Campanha
+                        </Button>
+                    </div>
                 </div>
             </div>
 

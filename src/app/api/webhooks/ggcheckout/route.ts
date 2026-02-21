@@ -4,6 +4,14 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
     try {
         const payload = await request.json();
+        const url = new URL(request.url);
+        const token = url.searchParams.get('token');
+        const validToken = process.env.GGCHECKOUT_WEBHOOK_SECRET || 'sec_ggchk_9a8b7c6d5e4f3g2h1';
+
+        if (token !== validToken) {
+            console.error("[Webhook] Invalid security token.");
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
 
         console.log("GGCheckout Webhook Received:", payload);
 

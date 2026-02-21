@@ -16,7 +16,7 @@ export async function PATCH(
         return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // 2. Verificar se o usuário é o dono da rifa
+    // 2. Verificar se o usuário é o dono da campanha
     const { data: raffle, error: fetchError } = await supabase
         .from('raffles')
         .select('organizer_id')
@@ -24,11 +24,11 @@ export async function PATCH(
         .single();
 
     if (fetchError || !raffle) {
-        return NextResponse.json({ error: 'Rifa não encontrada' }, { status: 404 });
+        return NextResponse.json({ error: 'Campanha não encontrada' }, { status: 404 });
     }
 
     if (raffle.organizer_id !== user.id) {
-        return NextResponse.json({ error: 'Sem permissão para editar esta rifa' }, { status: 403 });
+        return NextResponse.json({ error: 'Sem permissão para editar esta campanha' }, { status: 403 });
     }
 
     // 3. Executar o update
@@ -54,7 +54,7 @@ export async function PATCH(
         .single();
 
     if (updateError) {
-        return NextResponse.json({ error: 'Erro ao atualizar rifa' }, { status: 500 });
+        return NextResponse.json({ error: 'Erro ao atualizar campanha' }, { status: 500 });
     }
 
     return NextResponse.json(updated);

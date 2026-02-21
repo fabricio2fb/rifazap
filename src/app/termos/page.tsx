@@ -7,80 +7,59 @@ import Link from "next/link";
 const sections = [
     {
         id: "01",
-        title: "Aceitação dos Termos",
+        title: "Aceitação dos Termos e Natureza do Serviço",
         icon: <CheckCircle2 className="w-5 h-5" />,
-        content: `Ao acessar ou utilizar a plataforma SocialRifa, você concorda integralmente com estes Termos de Uso. Se não concordar com qualquer parte destes termos, solicitamos que não utilize nossos serviços.
+        content: `Ao acessar a TicketOn, você concorda integrante com estes Termos de Uso. A TicketOn é uma plataforma em formato SaaS (Software as a Service) que fornece exclusivamente tecnologia para organização e gestão digital de campanhas online. 
 
-O uso continuado da plataforma após quaisquer alterações nos Termos de Uso constituirá sua aceitação dessas alterações. Recomendamos que você revise periodicamente esta página.`
+Na descrição da nossa atividade, ressaltamos que somos focados na tecnologia: fornecemos painéis e links gerados automaticamente. Não atuamos como promotores de campanhas.`
     },
     {
         id: "02",
-        title: "Descrição do Serviço",
+        title: "Limitações da Plataforma",
         icon: <Zap className="w-5 h-5" />,
-        content: `A TicketOn é uma plataforma digital de gestão de campanhas online que permite a organizadores criar, divulgar e gerenciar arrecadações com pagamentos via PIX.
+        content: `A TicketOn fornece apenas tecnologia para a gestão digital. A plataforma não realiza sorteios, concursos ou ações promocionais próprias. 
 
-Nossos serviços incluem: criação de páginas de campanhas personalizadas, geração automática de chaves PIX para pagamento, painel de gestão de participantes, ferramenta de registro e apuração integrada e link exclusivo para compartilhamento via WhatsApp.
+Ademais, a TicketOn não intermedia pagamentos entre usuários. Nossa infraestrutura apenas facilita a exibição das chaves de pagamento, mas não atua como processadora de transações financeiras. 
 
-A TicketOn não realiza sorteios, não intermedia valores de campanhas e não é responsável por prêmios ou resultados promovidos por terceiros. A plataforma oferece exclusivamente tecnologia para organização e gestão digital.`
+A plataforma não recebe, retém ou transaciona valores monetários vinculados aos números ou metas das campanhas criadas por terceiros. A TicketOn não participa da relação financeira entre o criador e os participantes.`
     },
     {
         id: "03",
-        title: "Responsabilidade do Organizador",
+        title: "Responsabilidade Exclusiva do Criador",
         icon: <AlertCircle className="w-5 h-5" />,
-        content: `O organizador é o único responsável pela legalidade, condução e resultado da campanha. Ao criar uma campanha na plataforma, o organizador declara que:
+        content: `Toda a responsabilidade sobre a veracidade das informações, as promessas efetuadas, a realização de eventuais apurações, as entregas e a distribuição de bens ou prêmios é exclusivamente do criador (organizador) da campanha.
 
-— A campanha é realizada para fins filantrópicos, promocionais ou conforme autorização legal vigente.
-— Todas as informações fornecidas sobre os benefícios/metas são verdadeiras e serão cumpridas integralmente.
-— A apuração da campanha será realizada na data informada e o resultado será comunicado a todos os participantes.
-— Não utilizará a plataforma para fins fraudulentos, ilegais ou que causem dano a terceiros.
-
-A TicketOn reserva-se o direito de suspender ou encerrar campanhas que violem estas diretrizes, sem aviso prévio.`
+Os participantes devem contatar diretamente o organizador para a resolução de dúvidas, cobranças ou exigências relativas ao cumprimento do que foi anunciado.`
     },
     {
         id: "04",
-        title: "Pagamentos e Taxas",
-        icon: <FileText className="w-5 h-5" />,
-        content: `A TicketOn cobra uma taxa de licenciamento ou serviço fixo de R$ 9,90 por campanha criada. Este valor é cobrado no momento da criação da campanha e não é reembolsável.
+        title: "Atividades Proibidas e Suspensão",
+        icon: <Shield className="w-5 h-5" />,
+        content: `É terminantemente proibido utilizar a infraestrutura da TicketOn para atividades ilegais, jogos de azar não autorizados, fraudes, lavagem de capital ou qualquer tipo de prática enganosa. 
 
-Os pagamentos dos participantes são realizados diretamente ao organizador via PIX. A TicketOn não intermedia, retém ou processa os valores das vendas — o dinheiro vai 100% para a conta do organizador.
-
-A TicketOn não se responsabiliza por transações realizadas fora da plataforma ou por pagamentos não confirmados pelo organizador.`
+A TicketOn detém o direito irrevogável de suspender, bloquear ou remover integralmente contas e campanhas que, a seu exclusivo critério, violem estas regras ou apresentem indícios de irregularidade, sem a necessidade de aviso prévio.`
     },
     {
         id: "05",
-        title: "Privacidade e Dados",
-        icon: <Shield className="w-5 h-5" />,
-        content: `Coletamos apenas os dados necessários para o funcionamento da plataforma: nome, número de WhatsApp e dados de pagamento dos participantes.
-
-Esses dados são compartilhados com o organizador da campanha para fins de gestão e confirmação de pagamentos. Não vendemos, alugamos ou compartilhamos seus dados com terceiros para fins comerciais.
-
-Ao utilizar a plataforma, você consente com a coleta e uso dos seus dados conforme descrito em nossa Política de Privacidade.`
+        title: "Registro de Logs e Conformidade",
+        icon: <FileText className="w-5 h-5" />,
+        content: `A plataforma registra e mantém logs de acesso, horários de criação, IPs de registro e vinculação de dispositivos para fins estritos de segurança da comunidade. Caso requisitado por uma autoridade policial ou judicial competente, a plataforma cooperará plenamente, fornecendo todas as informações e registros logs de campanhas suspeitas.`
     },
     {
         id: "06",
-        title: "Limitação de Responsabilidade",
+        title: "Limitação de Responsabilidade e Isenção de Disputas",
         icon: <AlertCircle className="w-5 h-5" />,
-        content: `A TicketOn não se responsabiliza por: danos diretos ou indiretos resultantes do uso ou incapacidade de uso da plataforma, não cumprimento de metas ou entrega de benefícios por parte dos organizadores, perda de dados por falhas técnicas fora de nosso controle, ou ações fraudulentas praticadas por organizadores ou participantes.
+        content: `Em máxima extensão permitida pelas leis brasileiras aplicáveis, a TicketOn será eximida de qualquer responsabilidade de danos diretos, indiretos ou consequenciais sofridos por falhas no sistema, ação de terceiros ou expectativa não atendida.
 
-Nossa responsabilidade total perante qualquer reclamação está limitada ao valor pago pelo organizador pela publicação da campanha.`
+Em caso de disputa ou litígio entre o criador de uma campanha e os seus participantes ou compradores, a TicketOn e seus operadores legais estão totalmente isentos de qualquer culpa, demanda ou responsabilização. A cobrança legal deve ser feita entre as partes envolvidas diretamente na promessa do evento.`
     },
     {
         id: "07",
-        title: "Suspensão e Encerramento",
-        icon: <Shield className="w-5 h-5" />,
-        content: `A TicketOn pode suspender ou encerrar sua conta e campanhas a qualquer momento, sem aviso prévio, caso identifique violações destes Termos de Uso, atividades fraudulentas, solicitações de autoridades competentes ou inatividade prolongada.
+        title: "Canal de Denúncia",
+        icon: <MessageCircle className="w-5 h-5" />,
+        content: `A TicketOn leva a segurança do nosso ambiente com absoluta seriedade. Disponibilizamos um canal de denúncia para relatar campanhas que violem as nossas diretrizes, apresentem forte indício de fraude ou descumpram o Código de Defesa do Consumidor.
 
-O organizador pode encerrar sua conta a qualquer momento entrando em contato com nosso suporte via WhatsApp.`
-    },
-    {
-        id: "08",
-        title: "Alterações nos Termos",
-        icon: <FileText className="w-5 h-5" />,
-        content: `Reservamo-nos o direito de modificar estes Termos de Uso a qualquer momento. Alterações significativas serão comunicadas via e-mail ou notificação na plataforma com antecedência mínima de 7 dias.
-
-O uso continuado da plataforma após a entrada em vigor das alterações constitui aceitação dos novos termos.
-
-Estes Termos de Uso são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias.`
+Para realizar uma denúncia de uma campanha suspeita, utilize o botão de "Denunciar Campanha" localizado no rodapé do anúncio da própria ação ou envie um e-mail com as provas e o link da página para denuncia@ticketon.com.br.`
     }
 ];
 

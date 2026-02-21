@@ -1,4 +1,4 @@
-import type {Config} from 'tailwindcss';
+import type { Config } from 'tailwindcss';
 
 export default {
   darkMode: ['class'],
@@ -48,10 +48,10 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        rifa: {
-          available: 'hsl(var(--rifa-available))',
-          reserved: 'hsl(var(--rifa-reserved))',
-          paid: 'hsl(var(--rifa-paid))',
+        campanha: {
+          available: 'hsl(var(--campanha-available))',
+          reserved: 'hsl(var(--campanha-reserved))',
+          paid: 'hsl(var(--campanha-paid))',
         },
         chart: {
           '1': 'hsl(var(--chart-1))',

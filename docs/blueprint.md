@@ -1,4 +1,4 @@
-# **App Name**: SocialRifa
+# **App Name**: TicketOn
 
 ## Core Features:
 

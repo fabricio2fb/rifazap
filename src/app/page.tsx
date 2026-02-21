@@ -139,7 +139,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link href="/campanha/rifa-exemplo-pc-gamer">
+                  <Link href="/campanha/campanha-exemplo-pc-gamer">
                     <Button size="lg" className="h-16 px-8 rounded-2xl text-lg font-black gap-3 shadow-xl hover:scale-105 transition-transform">
                       ABRIR EXEMPLO COMPLETO <ExternalLink className="w-5 h-5" />
                     </Button>

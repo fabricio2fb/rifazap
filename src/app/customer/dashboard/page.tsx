@@ -88,7 +88,7 @@ export default function CustomerDashboard() {
 
                     {purchases.length === 0 ? (
                         <div className="text-center py-12 text-muted-foreground">
-                            Você ainda não participou de nenhuma rifa.
+                            Você ainda não participou de nenhuma campanha.
                         </div>
                     ) : (
                         <div className="grid gap-4">
@@ -96,10 +96,10 @@ export default function CustomerDashboard() {
                                 <Card key={purchase.id} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex flex-col md:flex-row">
                                         <div className="bg-slate-100 p-6 flex flex-col justify-center gap-2 min-w-[200px]">
-                                            <span className="text-xs font-bold uppercase text-muted-foreground">Rifa</span>
+                                            <span className="text-xs font-bold uppercase text-muted-foreground">Campanha</span>
                                             <p className="font-bold text-lg leading-tight">
                                                 {/* Fallback if raffle data structure varies */}
-                                                {purchase.raffle?.title || 'Rifa sem título'}
+                                                {purchase.raffle?.title || 'Campanha sem título'}
                                             </p>
                                             {purchase.raffle?.draw_date && (
                                                 <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">

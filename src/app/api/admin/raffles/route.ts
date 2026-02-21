@@ -12,7 +12,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // 2. Preparar dados da rifa
+    // 2. Preparar dados da campanha
     // Forçamos o organizer_id para ser o ID do usuário logado (Segurança!)
     const raffleData = {
         ...body,
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         .single();
 
     if (error) {
-        return NextResponse.json({ error: 'Erro ao criar rifa: ' + error.message }, { status: 500 });
+        return NextResponse.json({ error: 'Erro ao criar campanha: ' + error.message }, { status: 500 });
     }
 
     return NextResponse.json(data);

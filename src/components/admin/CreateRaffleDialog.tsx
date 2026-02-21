@@ -11,6 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone, Copy, CheckCircle2, Loader2, ArrowRight, Zap, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Checkbox } from '@/components/ui/checkbox';
+import Link from 'next/link';
 
 interface CreateRaffleDialogProps {
   onCreate?: (raffle: any) => void;
@@ -271,6 +273,24 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
                 <LinkIcon className="w-4 h-4" /> Link do Grupo (WhatsApp)
               </Label>
               <Input id="whatsappGroupLink" name="whatsappGroupLink" placeholder="https://chat.whatsapp.com/..." className="h-12 border-green-100" />
+            </div>
+
+            <div className="grid gap-2 bg-muted/30 p-4 rounded-xl border border-border">
+              <div className="flex items-start space-x-3">
+                <Checkbox id="terms" name="terms" required className="mt-1" />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Eu aceito os Termos de Uso
+                  </label>
+                  <p className="text-[11px] text-muted-foreground">
+                    Declaro que sou o único responsável legal por essa campanha e concordo com os{' '}
+                    <Link href="/termos" target="_blank" className="font-bold underline text-primary-foreground">Termos de Uso</Link>.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="pt-4 sticky bottom-0 bg-white pb-2">
