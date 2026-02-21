@@ -17,34 +17,34 @@ O uso continuado da plataforma após quaisquer alterações nos Termos de Uso co
         id: "02",
         title: "Descrição do Serviço",
         icon: <Zap className="w-5 h-5" />,
-        content: `A SocialRifa é uma plataforma digital de gestão de sorteios e rifas que permite a organizadores criar, divulgar e gerenciar campanhas de arrecadação com pagamentos via PIX.
+        content: `A TicketOn é uma plataforma digital de gestão de campanhas online que permite a organizadores criar, divulgar e gerenciar arrecadações com pagamentos via PIX.
 
-Nossos serviços incluem: criação de páginas de rifa personalizadas, geração automática de chaves PIX para pagamento, painel de gestão de participantes, sorteador automático integrado e link exclusivo para compartilhamento via WhatsApp.
+Nossos serviços incluem: criação de páginas de campanhas personalizadas, geração automática de chaves PIX para pagamento, painel de gestão de participantes, ferramenta de registro e apuração integrada e link exclusivo para compartilhamento via WhatsApp.
 
-A SocialRifa atua exclusivamente como ferramenta tecnológica de gestão, não sendo responsável pela condução ou premiação dos sorteios.`
+A TicketOn não realiza sorteios, não intermedia valores de campanhas e não é responsável por prêmios ou resultados promovidos por terceiros. A plataforma oferece exclusivamente tecnologia para organização e gestão digital.`
     },
     {
         id: "03",
         title: "Responsabilidade do Organizador",
         icon: <AlertCircle className="w-5 h-5" />,
-        content: `O organizador é o único responsável pela legalidade, condução e resultado do sorteio. Ao criar uma rifa na plataforma, o organizador declara que:
+        content: `O organizador é o único responsável pela legalidade, condução e resultado da campanha. Ao criar uma campanha na plataforma, o organizador declara que:
 
-— O sorteio é realizado para fins filantrópicos, promocionais ou conforme autorização legal vigente.
-— Todas as informações fornecidas sobre o prêmio são verdadeiras e o prêmio será entregue ao ganhador.
-— O sorteio será realizado na data informada e o resultado será comunicado a todos os participantes.
+— A campanha é realizada para fins filantrópicos, promocionais ou conforme autorização legal vigente.
+— Todas as informações fornecidas sobre os benefícios/metas são verdadeiras e serão cumpridas integralmente.
+— A apuração da campanha será realizada na data informada e o resultado será comunicado a todos os participantes.
 — Não utilizará a plataforma para fins fraudulentos, ilegais ou que causem dano a terceiros.
 
-A SocialRifa reserva-se o direito de suspender ou encerrar campanhas que violem estas diretrizes, sem aviso prévio.`
+A TicketOn reserva-se o direito de suspender ou encerrar campanhas que violem estas diretrizes, sem aviso prévio.`
     },
     {
         id: "04",
         title: "Pagamentos e Taxas",
         icon: <FileText className="w-5 h-5" />,
-        content: `A SocialRifa cobra uma taxa de publicação de R$ 9,90 por rifa criada. Este valor é cobrado no momento da criação da campanha e não é reembolsável.
+        content: `A TicketOn cobra uma taxa de licenciamento ou serviço fixo de R$ 9,90 por campanha criada. Este valor é cobrado no momento da criação da campanha e não é reembolsável.
 
-Os pagamentos dos participantes são realizados diretamente ao organizador via PIX. A SocialRifa não intermedia, retém ou processa os valores das vendas — o dinheiro vai 100% para a conta do organizador.
+Os pagamentos dos participantes são realizados diretamente ao organizador via PIX. A TicketOn não intermedia, retém ou processa os valores das vendas — o dinheiro vai 100% para a conta do organizador.
 
-A SocialRifa não se responsabiliza por transações realizadas fora da plataforma ou por pagamentos não confirmados pelo organizador.`
+A TicketOn não se responsabiliza por transações realizadas fora da plataforma ou por pagamentos não confirmados pelo organizador.`
     },
     {
         id: "05",
@@ -52,7 +52,7 @@ A SocialRifa não se responsabiliza por transações realizadas fora da platafor
         icon: <Shield className="w-5 h-5" />,
         content: `Coletamos apenas os dados necessários para o funcionamento da plataforma: nome, número de WhatsApp e dados de pagamento dos participantes.
 
-Esses dados são compartilhados com o organizador da rifa para fins de gestão e confirmação de pagamentos. Não vendemos, alugamos ou compartilhamos seus dados com terceiros para fins comerciais.
+Esses dados são compartilhados com o organizador da campanha para fins de gestão e confirmação de pagamentos. Não vendemos, alugamos ou compartilhamos seus dados com terceiros para fins comerciais.
 
 Ao utilizar a plataforma, você consente com a coleta e uso dos seus dados conforme descrito em nossa Política de Privacidade.`
     },
@@ -60,15 +60,15 @@ Ao utilizar a plataforma, você consente com a coleta e uso dos seus dados confo
         id: "06",
         title: "Limitação de Responsabilidade",
         icon: <AlertCircle className="w-5 h-5" />,
-        content: `A SocialRifa não se responsabiliza por: danos diretos ou indiretos resultantes do uso ou incapacidade de uso da plataforma, não entrega de prêmios por parte dos organizadores, perda de dados por falhas técnicas fora de nosso controle, ou ações fraudulentas praticadas por organizadores ou participantes.
+        content: `A TicketOn não se responsabiliza por: danos diretos ou indiretos resultantes do uso ou incapacidade de uso da plataforma, não cumprimento de metas ou entrega de benefícios por parte dos organizadores, perda de dados por falhas técnicas fora de nosso controle, ou ações fraudulentas praticadas por organizadores ou participantes.
 
-Nossa responsabilidade total perante qualquer reclamação está limitada ao valor pago pelo organizador pela publicação da rifa.`
+Nossa responsabilidade total perante qualquer reclamação está limitada ao valor pago pelo organizador pela publicação da campanha.`
     },
     {
         id: "07",
         title: "Suspensão e Encerramento",
         icon: <Shield className="w-5 h-5" />,
-        content: `A SocialRifa pode suspender ou encerrar sua conta e campanhas a qualquer momento, sem aviso prévio, caso identifique violações destes Termos de Uso, atividades fraudulentas, solicitações de autoridades competentes ou inatividade prolongada.
+        content: `A TicketOn pode suspender ou encerrar sua conta e campanhas a qualquer momento, sem aviso prévio, caso identifique violações destes Termos de Uso, atividades fraudulentas, solicitações de autoridades competentes ou inatividade prolongada.
 
 O organizador pode encerrar sua conta a qualquer momento entrando em contato com nosso suporte via WhatsApp.`
     },
@@ -92,7 +92,7 @@ export default function TermosPage() {
                 <div className="container flex h-16 items-center justify-between px-6 mx-auto">
                     <Link href="/" className="flex items-center gap-2">
                         <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-                        <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
+                        <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
                     </Link>
                     <Link href="/">
                         <Button variant="outline" className="font-bold border-2 gap-2">
@@ -131,7 +131,7 @@ export default function TermosPage() {
                         <div>
                             <p className="font-black text-sm uppercase tracking-widest text-primary-foreground mb-1">Resumo Simples</p>
                             <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                                A SocialRifa é uma ferramenta. Você organiza e é responsável pela sua rifa. Nós cuidamos da tecnologia. O dinheiro vai direto pra você via PIX. Nossa taxa é de R$ 9,90 por campanha publicada.
+                                A TicketOn é uma plataforma digital. Você organiza e é responsável pela sua campanha. Nós fornecemos a tecnologia. O dinheiro vai direto pra você via PIX. A taxa da plataforma é de R$ 9,90 por campanha ativada.
                             </p>
                         </div>
                     </div>
@@ -161,7 +161,7 @@ export default function TermosPage() {
                     {/* Last Updated */}
                     <div className="text-center py-8 space-y-2">
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                            SocialRifa — Termos de Uso • Versão 1.0 • Janeiro 2025
+                            TicketOn — Termos de Uso • Versão 1.1
                         </p>
                         <p className="text-xs text-muted-foreground">
                             Dúvidas? Entre em contato com nosso suporte via WhatsApp.
@@ -185,14 +185,14 @@ export default function TermosPage() {
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-primary-foreground fill-primary" />
-                        <span className="text-xl font-bold tracking-tighter">SocialRifa</span>
+                        <span className="text-xl font-bold tracking-tighter">TicketOn</span>
                     </div>
                     <div className="flex gap-6 text-sm font-bold text-muted-foreground">
                         <Link href="/termos" className="text-primary-foreground">Termos de Uso</Link>
                         <Link href="/privacidade" className="hover:text-primary-foreground transition-colors">Privacidade</Link>
                         <Link href="/etica" className="hover:text-primary-foreground transition-colors">Código de Ética</Link>
                     </div>
-                    <p className="text-xs font-bold text-muted-foreground">© 2025 RIFAZAP</p>
+                    <p className="text-xs font-bold text-muted-foreground">© 2026 TicketOn</p>
                 </div>
             </footer>
         </div>

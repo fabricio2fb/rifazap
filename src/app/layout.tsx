@@ -1,13 +1,10 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
-import { FirebaseClientProvider } from '@/firebase';
 import { Toaster } from '@/components/ui/toaster';
-import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 export const metadata: Metadata = {
-  title: 'SocialRifa - Sua Rifa Online Profissional',
-  description: 'Crie e compartilhe rifas profissionais com facilidade via WhatsApp.',
+  title: 'TicketOn - Gestão de Campanhas Digitais',
+  description: 'Crie e gerencie campanhas digitais com facilidade e profissionalismo.',
   icons: {
     icon: [
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
@@ -38,11 +35,8 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased min-h-screen bg-background text-foreground">
-        <FirebaseClientProvider>
-          {children}
-          <FirebaseErrorListener />
-          <Toaster />
-        </FirebaseClientProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

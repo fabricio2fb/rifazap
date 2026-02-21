@@ -20,13 +20,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .eq('slug', slug)
     .single();
 
-  if (!raffle) return { title: "Rifa não encontrada" };
+  if (!raffle) return { title: "Campanha não encontrada" };
 
   const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.ticket_price);
   const parseUTC = (d: string) => (!d ? "" : (d.includes('T') || d.includes('Z') ? d : d.replace(' ', 'T') + 'Z'));
   const date = new Date(parseUTC(raffle.draw_date)).toLocaleDateString('pt-BR');
-  const description = `Cada número custa ${price}. Sorteio dia ${date}.`;
-  const url = `https://socialrifa.vercel.app/rifa/${slug}`;
+  const description = `Cada ticket custa ${price}. Resultado dia ${date}.`;
+  const url = `https://socialrifa.vercel.app/campanha/${slug}`;
 
   // Cloudinary Optimization for OG
   let ogImageUrl = `${url}/imagem`; // Default to dynamic image
@@ -75,7 +75,7 @@ export default async function PublicRafflePage({ params }: Props) {
   if (!raffleData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-background">
-        <h1 className="text-2xl font-bold mb-2">Rifa não encontrada</h1>
+        <h1 className="text-2xl font-bold mb-2">Campanha não encontrada</h1>
         <p className="text-muted-foreground mb-6">Verifique se o link está correto.</p>
         <Link href="/">
           <Button>Voltar para Início</Button>
@@ -94,9 +94,9 @@ export default async function PublicRafflePage({ params }: Props) {
         <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-6">
           <Info className="w-8 h-8 text-orange-600" />
         </div>
-        <h1 className="text-2xl font-bold mb-2">Rifa em Ativação</h1>
+        <h1 className="text-2xl font-bold mb-2">Campanha em Ativação</h1>
         <p className="text-muted-foreground mb-6 max-w-sm">
-          Esta rifa foi criada mas está aguardando o pagamento da taxa de publicação para ser aberta ao público. <b>Se você é o organizador, acesse o painel para pagar.</b>
+          Esta campanha foi criada mas está aguardando o pagamento da taxa de publicação para ser aberta ao público. <b>Se você é o organizador, acesse o painel para pagar.</b>
         </p>
         <Link href="/">
           <Button variant="outline">Voltar para Início</Button>

@@ -65,7 +65,7 @@ export function WinnerDetailsDialog({
                                     <Ticket className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">Cota Sorteada</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">Ticket Sorteado</p>
                                     <p className="font-black text-lg text-blue-700">{raffle.winningNumber}</p>
                                 </div>
                             </div>

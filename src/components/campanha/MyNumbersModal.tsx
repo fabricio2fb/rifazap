@@ -70,9 +70,9 @@ export function MyNumbersModal({ isOpen, onClose, raffleId }: MyNumbersModalProp
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md overflow-hidden flex flex-col max-h-[90vh]">
                 <DialogHeader className="p-6 pb-2">
-                    <DialogTitle className="text-2xl font-black">Meus Números</DialogTitle>
+                    <DialogTitle className="text-2xl font-black">Meus Tickets</DialogTitle>
                     <DialogDescription className="text-base font-medium">
-                        Digite seu WhatsApp para encontrar seus números comprados.
+                        Digite seu WhatsApp para encontrar seus tickets comprados.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -108,8 +108,8 @@ export function MyNumbersModal({ isOpen, onClose, raffleId }: MyNumbersModalProp
                                             <Badge
                                                 variant={purchase.status === "confirmed" ? "default" : "secondary"}
                                                 className={`font-bold ${purchase.status === "confirmed"
-                                                        ? "bg-green-500 hover:bg-green-600"
-                                                        : "bg-orange-500 hover:bg-orange-600"
+                                                    ? "bg-green-500 hover:bg-green-600"
+                                                    : "bg-orange-500 hover:bg-orange-600"
                                                     } text-white`}
                                             >
                                                 {purchase.status === "confirmed" ? "PAGO" : "PENDENTE"}
@@ -132,7 +132,7 @@ export function MyNumbersModal({ isOpen, onClose, raffleId }: MyNumbersModalProp
                                 <div className="py-12 text-center space-y-3">
                                     <Ticket className="w-12 h-12 text-muted-foreground/30 mx-auto" />
                                     <p className="text-muted-foreground font-medium">
-                                        Nenhum número encontrado para este telefone.
+                                        Nenhum ticket encontrado para este telefone.
                                     </p>
                                 </div>
                             )}

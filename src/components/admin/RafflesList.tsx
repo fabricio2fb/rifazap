@@ -95,7 +95,7 @@ export function RafflesList({
                                     {raffle.status === "active"
                                         ? "ATIVA"
                                         : raffle.status === "drawn"
-                                            ? "SORTEADA"
+                                            ? "CONCLUÍDA"
                                             : raffle.status === "pending_payment"
                                                 ? "PGTO PENDENTE"
                                                 : "ENCERRADA"}
@@ -110,7 +110,7 @@ export function RafflesList({
                                 </CardTitle>
                                 <div className="flex items-center gap-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                                     <span className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full">
-                                        <Users className="w-3.5 h-3.5" /> {raffle.totalNumbers} Cotas
+                                        <Users className="w-3.5 h-3.5" /> {raffle.totalNumbers} Tickets
                                     </span>
                                     <span className="text-foreground bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
                                         R$ {raffle.pricePerNumber?.toFixed(2)} / cada
@@ -119,7 +119,7 @@ export function RafflesList({
                             </div>
 
                             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-6 border-t border-dashed border-slate-200">
-                                <Link href={`/rifa/${raffle.slug}`} target="_blank" className="w-full">
+                                <Link href={`/campanha/${raffle.slug}`} target="_blank" className="w-full">
                                     <Button
                                         variant="outline"
                                         size="sm"
@@ -154,7 +154,7 @@ export function RafflesList({
                                     disabled={raffle.status === "drawn"}
                                     className="gap-2 text-[10px] font-black h-11 shadow-lg bg-slate-900 hover:bg-black text-white rounded-2xl transition-all uppercase tracking-wider disabled:opacity-50"
                                 >
-                                    <Dices className="w-3.5 h-3.5" /> SORTEAR
+                                    <Dices className="w-3.5 h-3.5" /> CONCLUIR
                                 </Button>
 
                                 <Button
@@ -176,7 +176,7 @@ export function RafflesList({
                                                 Pagamento Necessário
                                             </p>
                                             <p className="text-sm font-medium text-blue-800 leading-tight">
-                                                Sua rifa está salva, mas falta pagar a taxa (R$ 9,90) para ativar.
+                                                Sua campanha está salva, mas falta pagar a taxa (R$ 9,90) para ativar.
                                             </p>
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@ export function RafflesList({
                                         onClick={async () => {
                                             try {
                                                 setLoadingPix(true);
-                                                const res = await fetch('/api/payments/mp/checkout', {
+                                                const res = await fetch('/api/payments/ggcheckout', {
                                                     method: 'POST',
                                                     headers: { 'Content-Type': 'application/json' },
                                                     body: JSON.stringify({ raffleId: raffle.id })
@@ -197,16 +197,14 @@ export function RafflesList({
                                                     throw new Error(msg || 'Erro ao gerar pagamento');
                                                 }
 
-                                                // Display PIX in dialog
-                                                setPixData({
-                                                    qr_code: data.qr_code,
-                                                    qr_code_base64: data.qr_code_base64
-                                                });
-                                                setPixDialogOpen(true);
+                                                // Redirect to GGCheckout URL
+                                                if (data.checkout_url) {
+                                                    window.location.href = data.checkout_url;
+                                                }
                                             } catch (err: any) {
                                                 toast({
                                                     variant: "destructive",
-                                                    title: "Erro no Mercado Pago",
+                                                    title: "Erro no Pagamento",
                                                     description: err.message
                                                 });
                                             } finally {
@@ -214,7 +212,7 @@ export function RafflesList({
                                             }
                                         }}
                                     >
-                                        {loadingPix ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />} GERAR PIX
+                                        {loadingPix ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />} PAGAR ATIVAÇÃO
                                     </Button>
                                 </div>
                             )}

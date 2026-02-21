@@ -26,7 +26,7 @@ export async function GET(
         .single();
 
     if (error || !raffle) {
-        return NextResponse.json({ error: 'Rifa não encontrada' }, { status: 404 });
+        return NextResponse.json({ error: 'Campanha não encontrada' }, { status: 404 });
     }
 
     // 1. Limpeza Proativa: Remove reservas expiradas do banco (dispara Realtime)

@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const navItems = [
         { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-        { label: "Minhas Rifas", href: "/admin/rifas", icon: Package },
+        { label: "Minhas Campanhas", href: "/admin/campanhas", icon: Package },
         { label: "Vendas", href: "/admin/vendas", icon: Wallet },
     ];
 
@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <div className="bg-primary p-1.5 rounded-lg group-hover:scale-110 transition-transform">
                                 <Zap className="w-5 h-5 text-primary-foreground fill-current" />
                             </div>
-                            <span className="font-black text-xl tracking-tighter">SocialRifa</span>
+                            <span className="font-black text-xl tracking-tighter">TicketOn</span>
                         </Link>
                         <nav className="flex items-center ml-8 gap-1">
                             {navItems.map((item) => (

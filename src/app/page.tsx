@@ -52,7 +52,7 @@ export default function Home() {
         <div className="container flex h-16 items-center justify-between px-6 mx-auto">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-            <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
+            <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <Link href="#exemplo" className="text-sm font-bold hover:text-primary-foreground transition-colors">Exemplo</Link>
@@ -79,21 +79,21 @@ export default function Home() {
           <div className="container relative mx-auto text-center space-y-8">
             <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider text-primary-foreground animate-bounce">
               <Zap className="w-4 h-4" />
-              Plataforma #1 para Rifas Digitais
+              Plataforma #1 para Campanhas Digitais
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight tracking-tight">
-              Sua Rifa no WhatsApp <br /> <span className="text-white">em 60 Segundos</span>
+              Sua Campanha no WhatsApp <br /> <span className="text-white">em 60 Segundos</span>
             </h1>
             <p className="max-w-2xl mx-auto text-xl text-primary-foreground/90 font-medium">
-              A maneira mais simples, rápida e profissional de organizar sorteios, gerenciar pagamentos via PIX e arrecadar muito mais.
+              A maneira mais simples, rápida e profissional de organizar campanhas online, gerenciar pagamentos via PIX e arrecadar muito mais.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
               <Link href="/login">
                 <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
-                  Criar Minha Rifa <ArrowRight className="w-6 h-6" />
+                  Criar Minha Campanha <ArrowRight className="w-6 h-6" />
                 </Button>
               </Link>
-              <Link href="/rifa/rifa-exemplo-pc-gamer">
+              <Link href="/campanha/rifa-exemplo-pc-gamer">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
                   Ver Demonstração
                 </Button>
@@ -108,7 +108,7 @@ export default function Home() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div className="space-y-1">
                 <p className="text-4xl font-black text-primary-foreground">+12.400</p>
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Rifas Criadas</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Campanhas Criadas</p>
               </div>
               <div className="space-y-1">
                 <p className="text-4xl font-black text-primary-foreground">R$ 4.2M+</p>
@@ -133,13 +133,13 @@ export default function Home() {
               <div className="flex-1 space-y-8 text-center lg:text-left">
                 <div className="space-y-4">
                   <Badge className="bg-primary/20 text-primary-foreground font-black px-4 py-1.5 rounded-full text-xs uppercase tracking-widest">Veja na Prática</Badge>
-                  <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9]">Preview real da <br /><span className="text-primary-foreground">página de rifa</span></h2>
+                  <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9]">Preview real da <br /><span className="text-primary-foreground">página de campanha</span></h2>
                   <p className="text-lg text-muted-foreground font-medium max-w-xl">
                     Nada de artes estáticas. Seus clientes acessam um sistema dinâmico, rápido e visualmente incrível, otimizado para fechar a venda no ato.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link href="/rifa/rifa-exemplo-pc-gamer">
+                  <Link href="/campanha/rifa-exemplo-pc-gamer">
                     <Button size="lg" className="h-16 px-8 rounded-2xl text-lg font-black gap-3 shadow-xl hover:scale-105 transition-transform">
                       ABRIR EXEMPLO COMPLETO <ExternalLink className="w-5 h-5" />
                     </Button>
@@ -169,7 +169,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Conteúdo Realista da Rifa */}
+                  {/* Conteúdo Realista da Campanha */}
                   <div className="flex-1 overflow-y-auto no-scrollbar bg-white">
                     {/* Header Image */}
                     <div className="relative aspect-video w-full overflow-hidden">
@@ -187,9 +187,9 @@ export default function Home() {
                     <div className="p-5 space-y-6">
                       {/* Info Principal */}
                       <div className="space-y-2">
-                        <h4 className="font-black text-xl leading-tight text-slate-900">PC Gamer RTX 4090 + Monitor 4K</h4>
+                        <h4 className="font-black text-xl leading-tight text-slate-900">Apoie nosso Projeto + PC Gamer</h4>
                         <p className="text-xs text-muted-foreground font-medium leading-relaxed">
-                          O setup dos sonhos com Intel i9, RTX 4090 e monitor 4K 240Hz. Cada cota apenas R$ 1,00!
+                          Participe e ganhe recompensas incríveis. Cada ticket apenas R$ 1,00!
                         </p>
                       </div>
 
@@ -200,7 +200,7 @@ export default function Home() {
                             <Trophy className="w-5 h-5 text-primary-foreground" />
                           </div>
                           <div className="leading-none">
-                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Cota</p>
+                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Ticket</p>
                             <p className="font-black text-sm text-slate-900">R$ 1,00</p>
                           </div>
                         </div>
@@ -209,7 +209,7 @@ export default function Home() {
                             <CheckCircle2 className="w-5 h-5 text-green-600" />
                           </div>
                           <div className="leading-none">
-                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Sorteio</p>
+                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Resultado</p>
                             <p className="font-black text-xs text-slate-900">15/01/25</p>
                           </div>
                         </div>
@@ -226,10 +226,10 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Grade de Números Realista */}
+                      {/* Grade de Tickets Realista */}
                       <div className="space-y-3 pt-2">
                         <div className="flex items-center justify-between">
-                          <h5 className="font-black text-xs uppercase tracking-widest">Escolha sua cota</h5>
+                          <h5 className="font-black text-xs uppercase tracking-widest">Escolha seu Ticket</h5>
                           <span className="text-[10px] font-bold text-muted-foreground">Ver todos</span>
                         </div>
                         <div className="grid grid-cols-5 gap-2 pb-24">
@@ -261,7 +261,7 @@ export default function Home() {
                   <div className="absolute bottom-6 left-4 right-4 z-40 animate-bounce">
                     <div className="w-full h-16 rounded-[1.25rem] bg-slate-900 flex items-center justify-between px-6 border-2 border-slate-800 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
                       <div className="text-left">
-                        <p className="text-[10px] font-black uppercase text-slate-400">01 Número Selecionado</p>
+                        <p className="text-[10px] font-black uppercase text-slate-400">01 Ticket Selecionado</p>
                         <p className="font-black text-white text-base">COMPRAR AGORA</p>
                       </div>
                       <div className="bg-primary p-2 rounded-lg">
@@ -292,7 +292,7 @@ export default function Home() {
                   {[
                     {
                       icon: <Smartphone className="h-6 w-6 text-primary-foreground" />,
-                      title: "Escolha dos Números",
+                      title: "Escolha dos Tickets",
                       desc: "Grade interativa onde o cliente vê na hora o que está livre ou ocupado.",
                       active: animationStep === 0
                     },
@@ -337,7 +337,7 @@ export default function Home() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
                           <h3 className="font-black text-2xl">iPhone 15 Pro</h3>
-                          <p className="text-sm font-bold text-muted-foreground">Escolha suas cotas</p>
+                          <p className="text-sm font-bold text-muted-foreground">Escolha seus tickets</p>
                         </div>
                         <div className="h-12 w-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary-foreground">
                           <Trophy className="w-6 h-6" />
@@ -354,7 +354,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="mt-auto">
-                        <div className="w-full h-16 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-lg shadow-xl">RESERVAR 01 NÚMERO</div>
+                        <div className="w-full h-16 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-lg shadow-xl">RESERVAR 01 TICKET</div>
                       </div>
                     </div>
                   )}
@@ -403,13 +403,13 @@ export default function Home() {
                       </div>
                       <div className="space-y-3">
                         <h3 className="font-black text-4xl text-slate-900">SUCESSO!</h3>
-                        <p className="text-lg text-muted-foreground font-black px-6">Sua reserva do número 09 foi confirmada. Boa sorte!</p>
+                        <p className="text-lg text-muted-foreground font-black px-6">Sua reserva do ticket 09 foi confirmada. Boa sorte!</p>
                       </div>
                       <div className="w-full space-y-4 pt-6">
                         <Button className="w-full h-20 rounded-2xl bg-[#25D366] text-white font-black text-xl gap-3 shadow-xl hover:bg-[#128C7E]">
                           <MessageCircle className="w-8 h-8 fill-current" /> ENVIAR COMPROVANTE
                         </Button>
-                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Clique acima para validar sua cota</p>
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Clique acima para validar seu ticket</p>
                       </div>
                     </div>
                   )}
@@ -437,22 +437,22 @@ export default function Home() {
                   </div>
 
                   <div className="text-left space-y-2">
-                    <p className="text-sm font-black text-primary-foreground uppercase tracking-widest">Taxa de Publicação</p>
+                    <p className="text-sm font-black text-primary-foreground uppercase tracking-widest">Taxa de Utilização</p>
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-bold">R$</span>
                       <span className="text-6xl font-black tracking-tighter">9,90</span>
-                      <span className="text-muted-foreground font-bold">/ rifa</span>
+                      <span className="text-muted-foreground font-bold">/ campanha</span>
                     </div>
                   </div>
 
                   <ul className="space-y-4 text-left">
                     {[
-                      "Crie até 1.000 números",
+                      "Crie até 1.000 tickets",
                       "Receba 100% do valor via PIX",
                       "Painel de Gestão Completo",
                       "Upload de fotos ilimitado",
                       "Link exclusivo para WhatsApp",
-                      "Sorteador Automático Integrado"
+                      "Ferramenta de Apuração Integrada"
                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3 font-bold text-sm">
                         <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
@@ -487,23 +487,23 @@ export default function Home() {
               {[
                 {
                   q: "Como recebo o dinheiro das minhas vendas?",
-                  a: "O dinheiro cai 100% na sua conta. No momento da criação da rifa, você insere sua chave PIX. No checkout, o cliente copia sua chave e paga no banco dele. O SocialRifa não retém nada das suas vendas."
+                  a: "O dinheiro cai 100% na sua conta. No momento da criação da campanha, você insere sua chave PIX. No checkout, o cliente copia sua chave e paga no banco dele. A TicketOn não retém nada das suas vendas."
                 },
                 {
-                  q: "As rifas online são permitidas?",
-                  a: "Sim, desde que respeitadas as normas vigentes. O SocialRifa é uma ferramenta de gestão de sorteios. Recomendamos que o organizador utilize a plataforma para rifas filantrópicas ou promocionais autorizadas."
+                  q: "As campanhas online são permitidas?",
+                  a: "Sim, desde que respeitadas as normas vigentes. A TicketOn é uma ferramenta de gestão. Recomendamos que o organizador utilize a plataforma para campanhas filantrópicas ou promocionais."
                 },
                 {
-                  q: "Como funciona o sorteio automático?",
-                  a: "No seu painel, após as vendas serem confirmadas, você clica no botão 'Sortear'. O sistema gera um número aleatório de forma transparente apenas entre os números que já foram pagos, garantindo um ganhador legítimo."
+                  q: "Como funciona a apuração dos resultados?",
+                  a: "No seu painel, após as vendas serem confirmadas, você clica no botão de registro e uma ferramenta gera um resultado de forma transparente apenas entre os tickets que já foram pagos, ajudando a identificar os participantes de forma justa."
                 },
                 {
-                  q: "Qual o limite de números por rifa?",
-                  a: "Atualmente, você pode criar rifas de 10 até 1.000 números. Isso garante uma experiênca de navegação rápida e fluida para quem está comprando no celular."
+                  q: "Qual o limite de tickets por campanha?",
+                  a: "Atualmente, você pode criar campanhas de 10 até 1.000 tickets. Isso garante uma experiênca de navegação rápida e fluida para quem está acessando no celular."
                 },
                 {
                   q: "Tenho suporte caso precise de ajuda?",
-                  a: "Sim! Temos uma equipe de suporte humanizado via WhatsApp pronta para te ajudar a configurar sua primeira rifa ou tirar dúvidas técnicas."
+                  a: "Sim! Temos uma equipe de suporte humanizado via WhatsApp pronta para te ajudar a configurar sua primeira campanha ou tirar dúvidas técnicas."
                 }
               ].map((faq, i) => (
                 <AccordionItem key={i} value={`item-${i}`} className="border-b-2 py-2">
@@ -524,12 +524,12 @@ export default function Home() {
           <div className="container mx-auto text-center space-y-8">
             <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight">Sua jornada de sucesso começa aqui.</h2>
             <p className="text-xl text-background/70 max-w-2xl mx-auto">
-              Pare de lutar com planilhas e cadernos. Profissionalize seus sorteios hoje mesmo com a SocialRifa.
+              Pare de lutar com planilhas e cadernos. Profissionalize sua gestão hoje mesmo com a TicketOn.
             </p>
             <div className="pt-4">
               <Link href="/login">
                 <Button size="lg" className="h-20 px-3 text-2xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl gap-3 shadow-[0_0_30px_rgba(255,221,43,0.3)] transition-all hover:scale-105">
-                  CRIAR MINHA PRIMEIRA RIFA <Zap className="w-8 h-8 fill-current" />
+                  CRIAR MINHA PRIMEIRA CAMPANHA <Zap className="w-8 h-8 fill-current" />
                 </Button>
               </Link>
             </div>
@@ -544,10 +544,10 @@ export default function Home() {
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-              <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
+              <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed font-medium">
-              A maior e mais segura plataforma de gestão para rifas e sorteios digitais do Brasil.
+              A maior e mais segura plataforma de infraestrutura e gestão para campanhas digitais do Brasil.
             </p>
             <div className="flex gap-4">
               <Button
@@ -557,12 +557,12 @@ export default function Home() {
                 onClick={async () => {
                   if (navigator.share) {
                     await navigator.share({
-                      title: "SocialRifa",
-                      text: "A plataforma #1 para rifas digitais no WhatsApp!",
-                      url: "https://www.socialrifa.com.br",
+                      title: "TicketOn",
+                      text: "A plataforma #1 para gestão de campanhas digitais!",
+                      url: "https://www.ticketon.com.br",
                     });
                   } else {
-                    await navigator.clipboard.writeText("https://www.socialrifa.com.br");
+                    await navigator.clipboard.writeText("https://www.ticketon.com.br");
                     alert("Link copiado!");
                   }
                 }}
@@ -575,7 +575,7 @@ export default function Home() {
                 className="rounded-2xl bg-muted/30 shadow-sm hover:bg-primary/20"
                 onClick={() => {
                   const texto = encodeURIComponent(
-                    "Conheça a SocialRifa — a forma mais fácil de criar rifas pelo WhatsApp! 🎟️\nhttps://www.socialrifa.com.br"
+                    "Conheça a TicketOn — a forma mais fácil de gerenciar campanhas de forma online e automatizada!\nhttps://www.ticketon.com.br"
                   );
                   window.open(`https://wa.me/?text=${texto}`, "_blank");
                 }}
@@ -589,7 +589,7 @@ export default function Home() {
             <h4 className="font-black uppercase tracking-widest text-xs text-foreground">Plataforma</h4>
             <ul className="space-y-4 text-muted-foreground text-sm font-bold">
               <li><Link href="/login" className="hover:text-primary-foreground transition-colors">Área do Organizador</Link></li>
-              <li><Link href="/login" className="hover:text-primary-foreground transition-colors">Criar Nova Rifa</Link></li>
+              <li><Link href="/login" className="hover:text-primary-foreground transition-colors">Criar Nova Campanha</Link></li>
               <li><Link href="#preços" className="hover:text-primary-foreground transition-colors">Preços</Link></li>
             </ul>
           </div>
@@ -615,8 +615,8 @@ export default function Home() {
           </div>
         </div>
         <div className="container mx-auto mt-20 pt-8 border-t text-center space-y-2">
-          <p className="text-xs font-bold text-muted-foreground tracking-widest">© 2025 SOCIALRIFA - TECNOLOGIA PARA SORTEIOS. TODOS OS DIREITOS RESERVADOS.</p>
-          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Orgulhosamente desenvolvido para organizadores brasileiros.</p>
+          <p className="text-xs font-bold text-muted-foreground tracking-widest">© 2026 TICKETON - TECNOLOGIA PARA GESTÃO. TODOS OS DIREITOS RESERVADOS.</p>
+          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Orgulhosamente desenvolvido para inovadores digitais.</p>
         </div>
       </footer>
     </div>

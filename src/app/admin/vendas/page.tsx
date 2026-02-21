@@ -142,17 +142,21 @@ export default function VendasPage() {
         // 1. Gatilho de Limpeza Proativa no Banco (para liberar números)
         fetch('/api/admin/purchases/cleanup', { method: 'POST' }).catch(e => console.error("Cleanup error:", e));
 
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            router.push("/login");
+            return;
+        }
+
         const { data, error, status } = await supabase
             .from("purchases")
-            .select("*, customers(*)")
+            .select("*, customers(*), raffles!inner(*)")
+            .eq("raffles.organizer_id", user.id)
             .order("created_at", { ascending: false });
 
         if (status === 401) {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                router.push("/login");
-                return;
-            }
+            router.push("/login");
+            return;
         }
 
         if (data) {

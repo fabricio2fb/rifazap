@@ -92,9 +92,9 @@ export default function LoginPage() {
               <Zap className="h-7 w-7 text-primary-foreground fill-current" />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold">SocialRifa</CardTitle>
+          <CardTitle className="text-3xl font-bold">TicketOn</CardTitle>
           <CardDescription>
-            Gerencie suas rifas de forma profissional e rápida.
+            Gerencie suas campanhas de forma profissional e rápida.
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -44,7 +44,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>('');
-  const [pixData, setPixData] = useState<{ qr_code: string; qr_code_base64: string } | null>(null);
+
   const { toast } = useToast();
 
   const supabase = createClient();
@@ -139,7 +139,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Erro ao criar rifa');
+      if (!res.ok) throw new Error(data.error || 'Erro ao criar campanha');
 
       setPendingRaffle(data);
       setStep('payment');
@@ -167,7 +167,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
     }}>
       <DialogTrigger asChild>
         <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 gap-2 shadow-lg">
-          <Plus className="w-5 h-5" /> Criar Nova Rifa
+          <Plus className="w-5 h-5" /> Criar Nova Campanha
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-0 gap-0">
@@ -177,7 +177,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
           </DialogTitle>
           {step === 'payment' && (
             <DialogDescription className="text-base font-medium text-foreground/80 mt-2">
-              Sua rifa foi salva como rascunho! Para ativá-la e torná-la pública, realize o pagamento da taxa de publicação.
+              Sua campanha foi salva como rascunho! Para ativá-la e torná-la pública, realize o pagamento da taxa de publicação.
             </DialogDescription>
           )}
         </DialogHeader>
@@ -237,20 +237,20 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="price" className="font-semibold">Valor da Cota</Label>
+                <Label htmlFor="price" className="font-semibold">Valor do Ticket</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-3.5 text-sm font-bold text-muted-foreground">R$</span>
                   <input name="price" type="number" step="0.01" placeholder="10,00" required className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="total" className="font-semibold">Qtd. Números</Label>
+                <Label htmlFor="total" className="font-semibold">Qtd. Tickets</Label>
                 <Input id="total" name="total" type="number" placeholder="100" required className="h-12 text-base" />
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="date" className="font-semibold">Data Prevista do Sorteio</Label>
+              <Label htmlFor="date" className="font-semibold">Data Prevista do Resultado</Label>
               <Input id="date" name="date" type="date" required className="h-12 text-base" />
             </div>
 
@@ -287,104 +287,65 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             </div>
 
             <div className="w-full py-4 space-y-4">
-              {!pixData ? (
-                <>
-                  <div className="text-sm text-muted-foreground font-medium">
-                    Clique no botão abaixo para gerar o PIX e pagar a taxa de ativação.
-                    A ativação será automática após a confirmação.
-                  </div>
+              <div className="w-full py-4 space-y-4">
+                <div className="text-sm text-muted-foreground font-medium">
+                  Clique no botão abaixo para ir para o pagamento da taxa de ativação.
+                  A ativação será automática após a confirmação.
+                </div>
 
-                  <Button
-                    className="w-full h-16 bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
-                    disabled={loading}
-                    onClick={async () => {
-                      try {
-                        setLoading(true);
-                        const res = await fetch('/api/payments/mp/checkout', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ raffleId: pendingRaffle?.id })
-                        });
-                        const data = await res.json();
-                        if (!res.ok) {
-                          const msg = data.details ? `${data.error}: ${data.details}` : data.error;
-                          throw new Error(msg || 'Erro ao gerar pagamento');
-                        }
-
-                        // Display PIX data
-                        setPixData({
-                          qr_code: data.qr_code,
-                          qr_code_base64: data.qr_code_base64
-                        });
-                      } catch (err: any) {
-                        toast({
-                          variant: "destructive",
-                          title: "Erro no Mercado Pago",
-                          description: err.message
-                        });
-                      } finally {
-                        setLoading(false);
+                <Button
+                  className="w-full h-16 bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
+                  disabled={loading}
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      const res = await fetch('/api/payments/ggcheckout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ raffleId: pendingRaffle?.id })
+                      });
+                      const data = await res.json();
+                      if (!res.ok) {
+                        const msg = data.details ? `${data.error}: ${data.details}` : data.error;
+                        throw new Error(msg || 'Erro ao gerar pagamento');
                       }
-                    }}
-                  >
-                    {loading ? <Loader2 className="w-7 h-7 animate-spin" /> : <><Zap className="w-7 h-7 fill-current" /> GERAR PIX</>}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="text-sm font-bold text-center text-primary-foreground">
-                    Escaneie o QR Code ou copie o código PIX:
-                  </div>
 
-                  <div className="flex justify-center">
-                    <img
-                      src={`data:image/png;base64,${pixData.qr_code_base64}`}
-                      alt="QR Code PIX"
-                      className="w-64 h-64 border-4 border-primary rounded-xl"
-                    />
-                  </div>
+                      // Redirect to GGCheckout URL
+                      if (data.checkout_url) {
+                        window.location.href = data.checkout_url;
+                      }
+                    } catch (err: any) {
+                      toast({
+                        variant: "destructive",
+                        title: "Erro no Pagamento",
+                        description: err.message
+                      });
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 fill-current" />}
+                  IR PARA PAGAMENTO
+                </Button>
+              </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-primary-foreground">Código PIX (Copia e Cola):</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        value={pixData.qr_code}
-                        readOnly
-                        className="font-mono text-xs"
-                      />
-                      <Button
-                        onClick={() => {
-                          navigator.clipboard.writeText(pixData.qr_code);
-                          toast({
-                            title: "Copiado!",
-                            description: "Código PIX copiado para a área de transferência."
-                          });
-                        }}
-                        className="shrink-0"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+              <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 text-left border border-blue-100">
+                <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                <p className="text-sm text-blue-800 leading-tight">
+                  O pagamento é processado com segurança pelo GGCheckout. Após concluir, sua campanha aparecerá como Ativa no painel em instantes.
+                </p>
+              </div>
 
-            <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 text-left border border-blue-100">
-              <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-              <p className="text-sm text-blue-800 leading-tight">
-                O pagamento é processado com segurança pelo Mercado Pago. Após concluir, sua rifa aparecerá como Ativa no painel em instantes.
-              </p>
-            </div>
-
-            <div className="w-full pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setOpen(false)}
-                className="w-full h-12 text-muted-foreground font-bold border-2"
-              >
-                Concluir e pagar depois
-              </Button>
+              <div className="w-full pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  className="w-full h-12 text-muted-foreground font-bold border-2"
+                >
+                  Concluir e pagar depois
+                </Button>
+              </div>
             </div>
           </div>
         )}

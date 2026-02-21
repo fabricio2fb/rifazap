@@ -31,7 +31,7 @@ export async function POST(
         customer = newCustomer;
     }
 
-    // 2. Buscar rifa
+    // 2. Buscar campanha
     const { data: raffle } = await supabase
         .from('raffles')
         .select('id, ticket_price')
@@ -39,7 +39,7 @@ export async function POST(
         .single();
 
     if (!raffle) {
-        return NextResponse.json({ error: 'Rifa não encontrada' }, { status: 404 });
+        return NextResponse.json({ error: 'Campanha não encontrada' }, { status: 404 });
     }
 
     // 3. Verificar disponibilidade dos números (ignorando expirados)

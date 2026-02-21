@@ -30,7 +30,7 @@ export default function RafflePurchase({ raffle }: { raffle: any }) {
         setLoading(true);
 
         try {
-            const response = await fetch(`/api/raffle/${raffle.slug}/purchase`, {
+            const response = await fetch(`/api/campanha_api/${raffle.slug}/purchase`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

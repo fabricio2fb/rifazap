@@ -82,7 +82,7 @@ export default function SalesList({ sales, raffles, timeDrift, onConfirm, onCanc
                                         <Phone className="w-4 h-4" /> {sale.whatsapp}
                                     </div>
                                     <div className="flex items-center gap-2.5 bg-slate-100/50 px-3 py-1.5 rounded-full w-fit border border-slate-200/50 text-slate-700">
-                                        <Ticket className="w-4 h-4 text-slate-400" /> {raffle?.title || "Rifa não encontrada"}
+                                        <Ticket className="w-4 h-4 text-slate-400" /> {raffle?.title || "Campanha não encontrada"}
                                     </div>
                                     <div className="flex items-center gap-2.5 bg-slate-100/50 px-3 py-1.5 rounded-full w-fit border border-slate-200/50">
                                         <Calendar className="w-4 h-4 text-slate-400" />

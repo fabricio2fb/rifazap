@@ -2,7 +2,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 
 /**
- * Remove reservas expiradas do banco de dados para uma rifa específica.
+ * Remove reservas expiradas do banco de dados para uma campanha específica.
  * Isso dispara eventos de Realtime que atualizam o grid para todos os usuários.
  */
 export async function cleanupExpiredReservations(raffleId: string) {
@@ -36,6 +36,6 @@ export async function cleanupExpiredReservations(raffleId: string) {
                 .eq('status', 'pending'); // Só cancela se ainda estiver pendente
         }
 
-        console.log(`[Cleanup] ${ids.length} reservas removidas e ${purchaseIds.length} compras canceladas para a rifa ${raffleId}`);
+        console.log(`[Cleanup] ${ids.length} reservas removidas e ${purchaseIds.length} compras canceladas para a campanha ${raffleId}`);
     }
 }

@@ -2,8 +2,8 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
-import { NumberGrid } from "@/components/raffle/NumberGrid";
-import { CheckoutModal } from "@/components/raffle/CheckoutModal";
+import { NumberGrid } from "@/components/campanha/NumberGrid";
+import { CheckoutModal } from "@/components/campanha/CheckoutModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Calendar, Trophy, CheckCircle, Info, Ticket, Zap } from "lucide-react";
@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/lib/supabase/client";
 
-import { MyNumbersModal } from "@/components/raffle/MyNumbersModal";
+import { MyNumbersModal } from "@/components/campanha/MyNumbersModal";
 
 export default function RaffleView({ initialRaffle, initialParticipants }: { initialRaffle: any, initialParticipants: any[] }) {
     const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
@@ -47,7 +47,7 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
 
                         toast({
                             title: "Nova reserva!",
-                            description: "Alguém acabou de reservar números nesta rifa.",
+                            description: "Alguém acabou de reservar tickets nesta campanha.",
                         });
                     } else if (payload.eventType === 'UPDATE') {
                         setParticipants(prev => prev.map(p => {
@@ -110,7 +110,7 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
     };
 
     const shareOnWhatsApp = () => {
-        const url = `https://socialrifa.vercel.app/rifa/${initialRaffle.slug}`;
+        const url = `https://socialrifa.vercel.app/campanha/${initialRaffle.slug}`;
         const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
 
         // Force Brasilia time for share message
@@ -118,13 +118,13 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
             timeZone: 'America/Sao_Paulo'
         });
 
-        const text = `🎟️ RIFA ATIVA
+        const text = `🎟️ CAMPANHA ATIVA
 
 Prêmio: ${initialRaffle.title}
-Valor por número: ${price}
-Sorteio: ${date}
+Valor do ticket: ${price}
+Resultado: ${date}
 
-👉 Garanta o seu número:
+👉 Garanta o seu ticket:
 ${url}`;
 
         const encodedText = encodeURIComponent(text);
@@ -139,7 +139,7 @@ ${url}`;
 
         try {
             const slugEncoded = encodeURIComponent(initialRaffle.slug);
-            const response = await fetch(`/api/rifa/${slugEncoded}/imagem?t=${Date.now()}`);
+            const response = await fetch(`/api/campanha/${slugEncoded}/imagem?t=${Date.now()}`);
 
             if (!response.ok) {
                 const contentType = response.headers.get('content-type');
@@ -163,22 +163,22 @@ ${url}`;
             const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', {
                 timeZone: 'America/Sao_Paulo'
             });
-            const url = `https://socialrifa.vercel.app/rifa/${initialRaffle.slug}`;
+            const url = `https://socialrifa.vercel.app/campanha/${initialRaffle.slug}`;
 
-            const shareText = `🎟️ RIFA ATIVA
+            const shareText = `🎟️ CAMPANHA ATIVA
 
 Prêmio: ${initialRaffle.title}
-Valor por número: ${price}
-Sorteio: ${date}
+Valor do ticket: ${price}
+Resultado: ${date}
 
-👉 Garanta o seu número:
+👉 Garanta o seu ticket:
 ${url}`;
 
             // Direct Download + WhatsApp Redirect Flow
             const downloadUrl = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = downloadUrl;
-            a.download = `status-rifa.png`;
+            a.download = `status-campanha.png`;
             document.body.appendChild(a);
             a.click();
 
@@ -249,7 +249,7 @@ ${url}`;
                             <Calendar className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-xs text-muted-foreground uppercase font-semibold">Sorteio</p>
+                            <p className="text-xs text-muted-foreground uppercase font-semibold">Resultado</p>
                             <p className="font-bold text-sm">
                                 {new Date(initialRaffle.drawDate.includes('Z') ? initialRaffle.drawDate : initialRaffle.drawDate.replace(' ', 'T') + 'Z').toLocaleDateString('pt-BR')}
                             </p>
@@ -259,7 +259,7 @@ ${url}`;
 
                 <div className="space-y-2">
                     <div className="flex justify-between text-sm font-medium">
-                        <span>Progresso da Rifa</span>
+                        <span>Progresso da Campanha</span>
                         <span>{Math.round(progressPercent)}% Vendido</span>
                     </div>
                     <Progress value={progressPercent} className="h-2" />
@@ -296,14 +296,14 @@ ${url}`;
                         className="w-full gap-2 border-blue-200 text-blue-600 hover:bg-blue-50 font-bold h-12 rounded-xl"
                         onClick={() => setIsMyNumbersOpen(true)}
                     >
-                        <Ticket className="w-4 h-4" /> Meus Números
+                        <Ticket className="w-4 h-4" /> Meus Tickets
                     </Button>
                 </div>
 
                 <div className="pt-4 space-y-4">
                     <h2 className="text-lg font-bold flex items-center gap-2">
                         <Info className="w-5 h-5 text-primary-foreground/50" />
-                        Selecione seus números
+                        Selecione seus tickets
                     </h2>
 
                     <div className="flex flex-wrap gap-4 text-xs font-semibold uppercase">
@@ -333,10 +333,10 @@ ${url}`;
                 <div className="pt-12 pb-8 text-center space-y-4">
                     <div className="flex items-center justify-center gap-2 text-muted-foreground/50">
                         <Zap className="w-4 h-4" />
-                        <span className="font-bold text-sm uppercase tracking-wider">SocialRifa</span>
+                        <span className="font-bold text-sm uppercase tracking-wider">TicketOn</span>
                     </div>
                     <p className="text-[10px] text-muted-foreground/60 max-w-xs mx-auto leading-relaxed">
-                        Esta rifa é de responsabilidade do organizador. A SocialRifa fornece a tecnologia para realização do sorteio.
+                        Esta campanha é de responsabilidade do organizador. A TicketOn fornece a tecnologia para realização do evento.
                     </p>
                 </div>
             </div>
@@ -348,7 +348,7 @@ ${url}`;
                         className="w-full h-16 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl flex items-center justify-between px-6 border-4 border-white"
                     >
                         <div className="text-left">
-                            <p className="text-xs opacity-70 font-semibold uppercase">{selectedNumbers.length} números selecionados</p>
+                            <p className="text-xs opacity-70 font-semibold uppercase">{selectedNumbers.length} tickets selecionados</p>
                             <p className="text-xl font-bold">Quero esses!</p>
                         </div>
                         <div className="bg-white/20 p-2 rounded-lg">

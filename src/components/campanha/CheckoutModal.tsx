@@ -44,7 +44,7 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
   // Gera o código PIX Copia e Cola real
   const pixCode = generatePixBRCode(
     raffle.pixKey || '',
-    (raffle.title || 'Rifa').substring(0, 25),
+    (raffle.title || 'Campanha').substring(0, 25),
     'SAO PAULO',
     total
   );
@@ -60,7 +60,7 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
     }
 
     try {
-      const res = await fetch(`/api/raffle/${raffle.slug}/purchase`, {
+      const res = await fetch(`/api/campanha_api/${raffle.slug}/purchase`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,7 +97,7 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
 
   const sendProofToOrganizer = () => {
     const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
-    const text = `Olá! Acabei de reservar os números: *${selectedNumbers.join(', ')}* na rifa *${raffle.title}*. 
+    const text = `Olá! Acabei de reservar os tickets: *${selectedNumbers.join(', ')}* na campanha *${raffle.title}*. 
     
 Segue o comprovante do PIX no valor de *${price}*.
 Nome: ${formData.name}`;
@@ -119,10 +119,10 @@ Nome: ${formData.name}`;
     const url = window.location.href;
     const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(raffle.pricePerNumber);
 
-    const text = `🎉 *Já estou participando dessa rifa!*
+    const text = `🎉 *Já estou participando dessa campanha!*
 
 *Prêmio:* ${raffle.title}
-*Cada número:* ${price}
+*Cada ticket:* ${price}
 
 👉 *Garanta o seu também:* ${url}`;
 
@@ -148,8 +148,8 @@ Nome: ${formData.name}`;
           </DialogTitle>
           <DialogDescription>
             {step === 'info'
-              ? `Você selecionou ${selectedNumbers.length} números: ${selectedNumbers.join(', ')}`
-              : 'Faça o Pix para garantir seus números'}
+              ? `Você selecionou ${selectedNumbers.length} tickets: ${selectedNumbers.join(', ')}`
+              : 'Faça o Pix para garantir seus tickets'}
           </DialogDescription>
         </DialogHeader>
 
@@ -228,11 +228,11 @@ Nome: ${formData.name}`;
               </Button>
             </div>
 
-            <div className="bg-rifa-reserved/10 p-4 rounded-xl flex items-start gap-3 text-left border border-rifa-reserved/20">
-              <CheckCircle2 className="w-5 h-5 text-rifa-reserved shrink-0 mt-0.5" />
+            <div className="bg-campanha-reserved/10 p-4 rounded-xl flex items-start gap-3 text-left border border-campanha-reserved/20">
+              <CheckCircle2 className="w-5 h-5 text-campanha-reserved shrink-0 mt-0.5" />
               <div className="text-sm">
-                <p className="font-bold text-rifa-reserved">Pagamento em Análise</p>
-                <p className="text-muted-foreground leading-snug">Seus números estão reservados por 15 minutos. Clique abaixo para enviar o comprovante agora.</p>
+                <p className="font-bold text-campanha-reserved">Pagamento em Análise</p>
+                <p className="text-muted-foreground leading-snug">Seus tickets estão reservados por 15 minutos. Clique abaixo para enviar o comprovante agora.</p>
               </div>
             </div>
 

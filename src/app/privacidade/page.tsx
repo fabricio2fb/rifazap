@@ -13,7 +13,7 @@ const sections = [
 
 Dados do Organizador: nome completo, endereço de e-mail, número de WhatsApp e chave PIX para recebimento.
 
-Dados do Participante: nome completo e número de WhatsApp, informados no momento da reserva de números.
+Dados do Participante: nome completo e número de WhatsApp, informados no momento do registro de participantes.
 
 Dados de Uso: informações técnicas como endereço IP, tipo de dispositivo, navegador utilizado e páginas acessadas, coletadas automaticamente para fins de segurança e melhoria da plataforma.`
     },
@@ -24,7 +24,7 @@ Dados de Uso: informações técnicas como endereço IP, tipo de dispositivo, na
         content: `Utilizamos seus dados exclusivamente para:
 
 — Criar e gerenciar sua conta na plataforma.
-— Permitir que o organizador gerencie os participantes da sua rifa.
+— Permitir que o organizador gerencie os participantes da sua campanha.
 — Enviar notificações relacionadas às suas campanhas ativas.
 — Garantir a segurança e prevenir fraudes na plataforma.
 — Cumprir obrigações legais e regulatórias.
@@ -37,7 +37,7 @@ Não utilizamos seus dados para fins de marketing de terceiros, nem vendemos, al
         icon: <UserCheck className="w-5 h-5" />,
         content: `Seus dados podem ser compartilhados nas seguintes situações:
 
-Com o Organizador: os dados do participante (nome e WhatsApp) são compartilhados com o organizador da rifa para que ele possa confirmar pagamentos e comunicar o resultado do sorteio.
+Com o Organizador: os dados do participante (nome e WhatsApp) são compartilhados com o organizador da campanha para que ele possa confirmar pagamentos e comunicar o resultado da apuração.
 
 Com Prestadores de Serviço: podemos compartilhar dados com fornecedores de tecnologia que nos auxiliam na operação da plataforma, sempre sob contratos de confidencialidade.
 
@@ -96,7 +96,7 @@ Você pode solicitar a exclusão antecipada dos seus dados entrando em contato c
         id: "08",
         title: "Menores de Idade",
         icon: <UserCheck className="w-5 h-5" />,
-        content: `A plataforma SocialRifa não é destinada a menores de 18 anos. Não coletamos intencionalmente dados de menores de idade.
+        content: `A plataforma TicketOn não é destinada a menores de 18 anos. Não coletamos intencionalmente dados de menores de idade.
 
 Caso identifiquemos que um menor forneceu dados sem o consentimento dos responsáveis, removeremos essas informações imediatamente.
 
@@ -122,7 +122,7 @@ export default function PrivacidadePage() {
                 <div className="container flex h-16 items-center justify-between px-6 mx-auto">
                     <Link href="/" className="flex items-center gap-2">
                         <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-                        <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
+                        <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
                     </Link>
                     <Link href="/">
                         <Button variant="outline" className="font-bold border-2 gap-2">
@@ -213,7 +213,7 @@ export default function PrivacidadePage() {
                     {/* Version */}
                     <div className="text-center py-8 space-y-2">
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                            SocialRifa — Política de Privacidade • Versão 1.0 • Janeiro 2025
+                            TicketOn — Política de Privacidade • Versão 1.1
                         </p>
                         <p className="text-xs text-muted-foreground">
                             Em conformidade com a Lei nº 13.709/2018 (LGPD).
@@ -227,14 +227,14 @@ export default function PrivacidadePage() {
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-primary-foreground fill-primary" />
-                        <span className="text-xl font-bold tracking-tighter">SocialRifa</span>
+                        <span className="text-xl font-bold tracking-tighter">TicketOn</span>
                     </div>
                     <div className="flex gap-6 text-sm font-bold text-muted-foreground">
                         <Link href="/termos" className="hover:text-primary-foreground transition-colors">Termos de Uso</Link>
                         <Link href="/privacidade" className="text-primary-foreground">Privacidade</Link>
                         <Link href="/etica" className="hover:text-primary-foreground transition-colors">Código de Ética</Link>
                     </div>
-                    <p className="text-xs font-bold text-muted-foreground">© 2025 RIFAZAP</p>
+                    <p className="text-xs font-bold text-muted-foreground">© 2026 TicketOn</p>
                 </div>
             </footer>
         </div>

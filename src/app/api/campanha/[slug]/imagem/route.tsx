@@ -26,7 +26,7 @@ export async function GET(
             .single();
 
         if (raffleError || !raffle) {
-            return new Response(JSON.stringify({ error: 'Rifa não encontrada' }), {
+            return new Response(JSON.stringify({ error: 'Campanha não encontrada' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -130,14 +130,14 @@ export async function GET(
                         <div style={{ display: 'flex', flex: 1, backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '15px 20px', border: '1px solid #E5E7EB', alignItems: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <div style={{ display: 'flex', fontSize: '32px', marginRight: '15px' }}>🏆</div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>Valor da Cota</span>
+                                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>Valor do Ticket</span>
                                 <span style={{ fontSize: '24px', fontWeight: '900', color: '#111827' }}>{price}</span>
                             </div>
                         </div>
                         <div style={{ display: 'flex', flex: 1, backgroundColor: '#FFFFFF', borderRadius: '16px', padding: '15px 20px', border: '1px solid #E5E7EB', alignItems: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <div style={{ display: 'flex', fontSize: '32px', marginRight: '15px' }}>📅</div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>Sorteio Dia</span>
+                                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>Resultado</span>
                                 <span style={{ fontSize: '24px', fontWeight: '900', color: '#111827' }}>{drawDateFormatted}</span>
                             </div>
                         </div>
@@ -162,7 +162,7 @@ export async function GET(
                     {/* PROGRESS BAR */}
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: '30px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '18px', fontWeight: '900', color: '#374151' }}>
-                            <span style={{ letterSpacing: '1px' }}>PROGRESSO DA RIFA</span>
+                            <span style={{ letterSpacing: '1px' }}>PROGRESSO DA CAMPANHA</span>
                             <span style={{ color: '#F97316' }}>{percentageSold}% VENDIDO</span>
                         </div>
                         <div style={{ display: 'flex', width: '100%', height: '16px', backgroundColor: '#E5E7EB', borderRadius: '8px', overflow: 'hidden', border: '1px solid #D1D5DB' }}>
@@ -225,7 +225,7 @@ export async function GET(
                             PARTICIPE AGORA MESMO
                         </div>
                         <div style={{ display: 'flex', fontSize: '20px', fontWeight: 'bold', color: '#1A1A1A', marginBottom: '8px' }}>
-                            SORTEIO DIA: {drawDateFormatted}
+                            RESULTADO: {drawDateFormatted}
                         </div>
                         <div style={{ display: 'flex', fontSize: '16px', fontWeight: 'bold', color: '#4B5563' }}>
                             COMPRA SEGURA • PAGAMENTO VIA SITE

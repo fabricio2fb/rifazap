@@ -46,7 +46,7 @@ export function RaffleSummaryDialog({
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">Resumo da Rifa</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold">Resumo da Campanha</DialogTitle>
                 </DialogHeader>
 
                 <div className="grid gap-4 py-4">
@@ -87,7 +87,7 @@ export function RaffleSummaryDialog({
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Cotas Vendidas
+                                    Tickets Vendidos
                                 </CardTitle>
                                 <Ticket className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
@@ -122,7 +122,7 @@ export function RaffleSummaryDialog({
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Data do Sorteio
+                                    Data do Resultado
                                 </CardTitle>
                                 <Calendar className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>

@@ -39,7 +39,7 @@ export default function AdminDashboard() {
         return;
       }
 
-      // Buscar rifas
+      // Buscar campanhas
       const { data: raffles } = await supabase
         .from("raffles")
         .select("*")
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
           }))
         );
 
-        // Top rifas (por progresso de vendas CONFIRMADAS)
+        // Top campanhas (por progresso de vendas CONFIRMADAS)
         const raffleStats = raffles.map((raffle) => {
           // Filtrar apenas vendas confirmadas desta rifa específica
           const raffleConfirmedSales = sales.filter((s) => s.raffle_id === raffle.id && isConfirmed(s));
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
 
   const statsCards = [
     {
-      title: "Rifas Ativas",
+      title: "Campanhas Ativas",
       value: stats.activeRaffles,
       icon: Package,
       color: "bg-blue-100 text-blue-600",
@@ -250,14 +250,14 @@ export default function AdminDashboard() {
           </div>
         </Card>
 
-        {/* Melhores Rifas */}
+        {/* Melhores Campanhas */}
         <Card className="p-8 border-none shadow-sm space-y-8 bg-white/80 backdrop-blur-sm rounded-3xl">
           <div className="flex items-center justify-between">
             <h3 className="font-black text-xl flex items-center gap-3">
               <div className="p-2 bg-blue-50 rounded-xl">
                 <Users className="w-6 h-6 text-blue-600" />
               </div>
-              Melhores Rifas
+              Melhores Campanhas
             </h3>
           </div>
           <div className="space-y-8">
@@ -291,7 +291,7 @@ export default function AdminDashboard() {
               ))
             ) : (
               <div className="text-center py-12 text-sm text-muted-foreground font-medium">
-                Nenhuma rifa com vendas confirmadas no momento.
+                Nenhuma campanha com vendas confirmadas no momento.
               </div>
             )}
           </div>

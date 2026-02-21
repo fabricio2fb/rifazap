@@ -14,15 +14,15 @@ const principles = [
 — Todas as taxas e condições são informadas antes de qualquer pagamento.
 — Não existem cobranças ocultas ou surpresas no uso da plataforma.
 — Comunicamos mudanças de regras com antecedência e clareza.
-— Nosso modelo de negócio é simples: você paga R$ 9,90 por rifa e fica com 100% das vendas.`
+— Nosso modelo de negócio é simples: você paga R$ 9,90 por campanha e fica com 100% das vendas.`
     },
     {
         id: "02",
         title: "Compromisso com o Organizador",
         icon: <Users className="w-5 h-5" />,
-        content: `O organizador é o coração da SocialRifa. Nos comprometemos a:
+        content: `O organizador é o coração da TicketOn. Nos comprometemos a:
 
-— Oferecer ferramentas que realmente facilitem a gestão das suas rifas.
+— Oferecer ferramentas que realmente facilitem a gestão das suas campanhas.
 — Garantir que o dinheiro chegue 100% na sua conta, sem intermediações.
 — Prover suporte humanizado e ágil sempre que precisar.
 — Ouvir feedbacks e melhorar continuamente com base nas suas necessidades.`
@@ -31,11 +31,11 @@ const principles = [
         id: "03",
         title: "Proteção ao Participante",
         icon: <Shield className="w-5 h-5" />,
-        content: `Quem compra uma cota merece respeito e segurança. Exigimos que os organizadores:
+        content: `Quem adquire um acesso merece respeito e segurança. Exigimos que os organizadores:
 
-— Entreguem o prêmio prometido ao ganhador sem condições extras.
-— Realizem o sorteio na data informada ou comuniquem qualquer alteração com antecedência.
-— Sejam honestos sobre o prêmio, não utilizando imagens ou descrições enganosas.
+— Entreguem a meta/benefício prometido sem condições extras.
+— Realizem o evento de conclusão na data informada ou comuniquem qualquer alteração com antecedência.
+— Sejam honestos sobre os benefícios, não utilizando imagens ou descrições enganosas.
 — Confirmem os pagamentos de forma justa, sem discriminação.
 
 Denúncias de organizadores que descumpram essas regras serão investigadas e podem resultar em suspensão da conta.`
@@ -44,9 +44,9 @@ Denúncias de organizadores que descumpram essas regras serão investigadas e po
         id: "04",
         title: "Uso Responsável da Plataforma",
         icon: <Scale className="w-5 h-5" />,
-        content: `A SocialRifa é uma ferramenta de gestão de sorteios. Esperamos que todos os usuários:
+        content: `A TicketOn é uma ferramenta de gestão digital. Esperamos que todos os usuários:
 
-— Utilizem a plataforma apenas para rifas legítimas, filantrópicas ou promocionais autorizadas.
+— Utilizem a plataforma apenas para campanhas legítimas, filantrópicas ou promocionais autorizadas.
 — Não criem campanhas com fins de lavagem de dinheiro, fraude ou qualquer atividade ilícita.
 — Respeitem os participantes e mantenham uma comunicação ética e transparente.
 — Não utilizem a plataforma para coletar dados de terceiros sem consentimento.`
@@ -55,10 +55,10 @@ Denúncias de organizadores que descumpram essas regras serão investigadas e po
         id: "05",
         title: "O que Não Toleramos",
         icon: <Ban className="w-5 h-5" />,
-        content: `A SocialRifa tem tolerância zero com:
+        content: `A TicketOn tem tolerância zero com:
 
-— Rifas fraudulentas: organizar sorteios sem intenção de entregar o prêmio.
-— Prêmios falsos: usar imagens ou descrições enganosas para atrair participantes.
+— Campanhas fraudulentas: organizar eventos de arrecadação sem intenção de cumprir as metas ou benefícios.
+— Benefícios falsos: usar imagens ou descrições enganosas para atrair participantes.
 — Discriminação: tratar participantes de forma diferente por raça, gênero, religião ou qualquer outro fator.
 — Spam: enviar mensagens não solicitadas em massa usando os dados da plataforma.
 — Golpes: usar a plataforma para aplicar golpes financeiros de qualquer natureza.
@@ -69,9 +69,9 @@ Contas que violem essas regras serão suspensas permanentemente e, quando necess
         id: "06",
         title: "Responsabilidade Social",
         icon: <Heart className="w-5 h-5" />,
-        content: `Acreditamos no poder das rifas para fazer o bem. A SocialRifa apoia e valoriza:
+        content: `Acreditamos no poder das campanhas de arrecadação para fazer o bem. A TicketOn apoia e valoriza:
 
-— Rifas com fins filantrópicos e beneficentes.
+— Campanhas com fins filantrópicos e beneficentes.
 — Organizadores que usam a plataforma para ajudar comunidades, animais e causas sociais.
 — O empreendedorismo de pequenos organizadores que buscam renda extra de forma honesta.
 
@@ -81,11 +81,11 @@ Nos orgulhamos de ser uma ferramenta que move recursos para causas que importam.
         id: "07",
         title: "Denúncias e Fiscalização",
         icon: <AlertTriangle className="w-5 h-5" />,
-        content: `Levamos a sério qualquer relato de uso indevido da plataforma. Se você presenciar ou suspeitar de uma rifa fraudulenta:
+        content: `Levamos a sério qualquer relato de uso indevido da plataforma. Se você presenciar ou suspeitar de uma campanha fraudulenta:
 
-— Entre em contato com nosso suporte via WhatsApp informando o link da rifa suspeita.
+— Entre em contato com nosso suporte via WhatsApp informando o link da campanha suspeita.
 — Nossa equipe investigará o caso em até 48 horas úteis.
-— Rifas confirmadas como fraudulentas serão removidas imediatamente.
+— Campanhas confirmadas como fraudulentas serão removidas imediatamente.
 — O organizador será suspenso e os participantes serão notificados.
 
 Sua denúncia é confidencial e essencial para mantermos a plataforma segura para todos.`
@@ -94,11 +94,11 @@ Sua denúncia é confidencial e essencial para mantermos a plataforma segura par
         id: "08",
         title: "Nosso Compromisso Contínuo",
         icon: <CheckCircle2 className="w-5 h-5" />,
-        content: `Este Código de Ética não é apenas um documento — é o reflexo dos valores que guiam cada decisão da SocialRifa.
+        content: `Este Código de Ética não é apenas um documento — é o reflexo dos valores que guiam cada decisão da TicketOn.
 
 Revisamos e atualizamos nossas diretrizes regularmente para acompanhar o crescimento da plataforma e as necessidades dos nossos usuários.
 
-Acreditamos que rifas digitais, quando conduzidas com ética e responsabilidade, são uma ferramenta poderosa de geração de renda e impacto social. Esse é o futuro que queremos construir juntos.`
+Acreditamos que campanhas digitais, quando conduzidas com ética e responsabilidade, são uma ferramenta poderosa de geração de renda e impacto social. Esse é o futuro que queremos construir juntos.`
     }
 ];
 
@@ -110,7 +110,7 @@ export default function EticaPage() {
                 <div className="container flex h-16 items-center justify-between px-6 mx-auto">
                     <Link href="/" className="flex items-center gap-2">
                         <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-                        <span className="text-2xl font-bold tracking-tighter">SocialRifa</span>
+                        <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
                     </Link>
                     <Link href="/">
                         <Button variant="outline" className="font-bold border-2 gap-2">
@@ -132,7 +132,7 @@ export default function EticaPage() {
                         Código de Ética
                     </h1>
                     <p className="text-primary-foreground/80 font-medium max-w-xl mx-auto">
-                        Os princípios que guiam cada decisão da SocialRifa e o que esperamos de todos que usam nossa plataforma.
+                        Os princípios que guiam cada decisão da TicketOn e o que esperamos de todos que usam nossa plataforma.
                     </p>
                 </div>
             </section>
@@ -149,7 +149,7 @@ export default function EticaPage() {
                         <div>
                             <p className="font-black text-sm uppercase tracking-widest text-primary-foreground mb-1">Nossa Missão</p>
                             <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                                Acreditamos que rifas digitais podem transformar vidas — gerar renda, ajudar causas e unir comunidades. Para que isso aconteça de forma saudável, todos precisamos agir com ética, respeito e responsabilidade.
+                                Acreditamos que campanhas digitais podem transformar vidas — gerar renda, ajudar causas e unir comunidades. Para que isso aconteça de forma saudável, todos precisamos agir com ética, respeito e responsabilidade.
                             </p>
                         </div>
                     </div>
@@ -188,7 +188,7 @@ export default function EticaPage() {
                             </div>
                         </div>
                         <p className="text-background/70 text-sm font-medium leading-relaxed">
-                            Se você identificou uma rifa fraudulenta ou qualquer uso indevido da plataforma, nos informe. Sua denúncia é confidencial e será investigada com prioridade.
+                            Se você identificou uma campanha fraudulenta ou qualquer uso indevido da plataforma, nos informe. Sua denúncia é confidencial e será investigada com prioridade.
                         </p>
                         <Button
                             className="h-14 px-8 rounded-2xl bg-primary text-primary-foreground font-black text-base gap-3 shadow-xl hover:scale-105 transition-transform"
@@ -201,10 +201,10 @@ export default function EticaPage() {
                     {/* Version */}
                     <div className="text-center py-8 space-y-2">
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                            SocialRifa — Código de Ética • Versão 1.0 • Janeiro 2025
+                            TicketOn — Código de Ética • Versão 1.1
                         </p>
                         <p className="text-xs text-muted-foreground">
-                            Revisado e atualizado regularmente pela equipe SocialRifa.
+                            Revisado e atualizado regularmente pela equipe TicketOn.
                         </p>
                     </div>
                 </div>
@@ -215,14 +215,14 @@ export default function EticaPage() {
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-primary-foreground fill-primary" />
-                        <span className="text-xl font-bold tracking-tighter">SocialRifa</span>
+                        <span className="text-xl font-bold tracking-tighter">TicketOn</span>
                     </div>
                     <div className="flex gap-6 text-sm font-bold text-muted-foreground">
                         <Link href="/termos" className="hover:text-primary-foreground transition-colors">Termos de Uso</Link>
                         <Link href="/privacidade" className="hover:text-primary-foreground transition-colors">Privacidade</Link>
                         <Link href="/etica" className="text-primary-foreground">Código de Ética</Link>
                     </div>
-                    <p className="text-xs font-bold text-muted-foreground">© 2025 SOCIALRIFA</p>
+                    <p className="text-xs font-bold text-muted-foreground">© 2026 TicketOn</p>
                 </div>
             </footer>
         </div>

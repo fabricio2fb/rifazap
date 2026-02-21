@@ -135,13 +135,13 @@ export default function CustomerDashboard() {
 
                                             <div className="pt-4 border-t flex justify-end">
                                                 {purchase.status === 'pending' && (
-                                                    <Link href={`/rifa/${purchase.raffle?.slug}`} className="w-full sm:w-auto">
-                                                        <Button size="sm" variant="outline" className="w-full sm:w-auto">Ver Rifa / Pagar</Button>
+                                                    <Link href={`/campanha/${purchase.raffle?.slug}`} className="w-full sm:w-auto">
+                                                        <Button size="sm" variant="outline" className="w-full sm:w-auto">Ver Campanha / Pagar</Button>
                                                     </Link>
                                                 )}
                                                 {purchase.status !== 'pending' && (
-                                                    <Link href={`/rifa/${purchase.raffle?.slug}`} className="w-full sm:w-auto">
-                                                        <Button size="sm" variant="outline" className="w-full sm:w-auto">Ver Sorteio</Button>
+                                                    <Link href={`/campanha/${purchase.raffle?.slug}`} className="w-full sm:w-auto">
+                                                        <Button size="sm" variant="outline" className="w-full sm:w-auto">Ver Resultado</Button>
                                                     </Link>
                                                 )}
                                             </div>

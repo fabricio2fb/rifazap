@@ -66,8 +66,8 @@ export function DrawRaffleDialog({
         if (confirmedNumbers.length === 0) {
             toast({
                 variant: "destructive",
-                title: "Sorteio Impossível",
-                description: "Não há participantes aptos para este sorteio.",
+                title: "Apuração Impossível",
+                description: "Não há participantes aptos para esta apuração.",
             });
             return;
         }
@@ -144,7 +144,7 @@ export function DrawRaffleDialog({
 
                 <DialogHeader className="p-6 pb-2 relative z-10">
                     <DialogTitle className="text-2xl font-black flex justify-center items-center gap-2 uppercase tracking-wide text-primary">
-                        {step === 'finished' ? 'Ganhador Definido' : 'Realizar Sorteio'}
+                        {step === 'finished' ? 'Ganhador Definido' : 'Realizar Apuração'}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -161,7 +161,7 @@ export function DrawRaffleDialog({
                             <div className="space-y-2">
                                 <h3 className="font-bold text-xl">{raffle.title}</h3>
                                 <p className="text-muted-foreground text-sm">
-                                    <span className="font-bold text-primary">{confirmedNumbers.length}</span> cotas participando
+                                    <span className="font-bold text-primary">{confirmedNumbers.length}</span> tickets participando
                                 </p>
                             </div>
 
@@ -189,7 +189,7 @@ export function DrawRaffleDialog({
                                     </div>
                                 </div>
                             </div>
-                            <p className="font-bold text-primary animate-pulse text-lg uppercase tracking-widest">Sorteando...</p>
+                            <p className="font-bold text-primary animate-pulse text-lg uppercase tracking-widest">Apurando...</p>
                         </div>
                     )}
 
@@ -200,7 +200,7 @@ export function DrawRaffleDialog({
                                     <PartyPopper className="w-12 h-12 text-green-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold uppercase text-muted-foreground tracking-widest mb-1">Número Sorteado</p>
+                                    <p className="text-xs font-bold uppercase text-muted-foreground tracking-widest mb-1">Ticket Sorteado</p>
                                     <div className="text-7xl font-black text-slate-900 tracking-tighter drop-shadow-sm">
                                         {winner.num.toString().padStart(2, '0')}
                                     </div>
@@ -219,7 +219,7 @@ export function DrawRaffleDialog({
                                         {showDetails && (
                                             <div className="mt-4 grid grid-cols-2 gap-4 w-full pt-4 border-t border-primary/10">
                                                 <div className="text-center">
-                                                    <p className="text-xs text-muted-foreground uppercase font-bold">Total Cotas</p>
+                                                    <p className="text-xs text-muted-foreground uppercase font-bold">Total Tickets</p>
                                                     <p className="font-black text-lg">{winner.buyer.selectedNumbers?.length || 1}</p>
                                                 </div>
                                                 <div className="text-center">

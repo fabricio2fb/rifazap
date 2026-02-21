@@ -108,7 +108,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Erro ao atualizar rifa');
+      if (!res.ok) throw new Error(data.error || 'Erro ao atualizar campanha');
 
       // 4. Map back to camelCase for the parent UI state
       const updatedRaffle = {
@@ -125,7 +125,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
       onUpdate(updatedRaffle);
       toast({
         title: "Alterações salvas!",
-        description: "As informações da rifa foram atualizadas com sucesso.",
+        description: "As informações da campanha foram atualizadas com sucesso.",
       });
       onClose();
     } catch (error: any) {
@@ -205,7 +205,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
                     toast({
                       variant: "destructive",
                       title: "Limite atingido",
-                      description: "Você já editou a imagem desta rifa 5 vezes."
+                      description: "Você já editou a imagem desta campanha 5 vezes."
                     });
                   }
                 }}
@@ -245,7 +245,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2 opacity-60">
               <Label className="font-semibold flex items-center gap-1.5">
-                <Lock className="w-3 h-3" /> Valor da Cota
+                <Lock className="w-3 h-3" /> Valor do Ticket
               </Label>
               <div className="relative">
                 <span className="absolute left-3 top-3.5 text-sm font-bold text-muted-foreground">R$</span>
@@ -254,14 +254,14 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
             </div>
             <div className="grid gap-2 opacity-60">
               <Label className="font-semibold flex items-center gap-1.5">
-                <Lock className="w-3 h-3" /> Qtd. Números
+                <Lock className="w-3 h-3" /> Qtd. Tickets
               </Label>
               <Input disabled value={raffle.totalNumbers} className="h-12 text-base bg-muted" />
             </div>
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="edit-date" className="font-semibold">Nova Data do Sorteio</Label>
+            <Label htmlFor="edit-date" className="font-semibold">Nova Data do Resultado</Label>
             <Input
               id="edit-date"
               type="date"

@@ -40,9 +40,9 @@ export function NumberGrid({
             onClick={() => onNumberClick(num)}
             className={cn(
               "aspect-square flex items-center justify-center rounded-md text-sm font-semibold transition-all border",
-              status === 'available' && !isSelected && "bg-rifa-available/20 text-rifa-available border-rifa-available/30 hover:bg-rifa-available/30",
-              status === 'paid' && "bg-rifa-paid text-white border-transparent cursor-not-allowed",
-              status === 'reserved' && "bg-rifa-reserved text-white border-transparent cursor-not-allowed",
+              status === 'available' && !isSelected && "bg-campanha-available/20 text-campanha-available border-campanha-available/30 hover:bg-campanha-available/30",
+              status === 'paid' && "bg-campanha-paid text-white border-transparent cursor-not-allowed",
+              status === 'reserved' && "bg-campanha-reserved text-white border-transparent cursor-not-allowed",
               isSelected && "bg-primary text-primary-foreground border-primary-foreground shadow-md scale-105"
             )}
           >

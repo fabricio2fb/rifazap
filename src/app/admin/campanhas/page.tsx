@@ -36,7 +36,7 @@ export default function RafflesPage() {
             return;
         }
 
-        // Buscar rifas
+        // Buscar campanhas
         const { data: rafflesData } = await supabase
             .from("raffles")
             .select("*")
@@ -65,10 +65,11 @@ export default function RafflesPage() {
             setRaffles(mappedRaffles);
         }
 
-        // Buscar vendas (para usar no componente de rifas sorteadas)
+        // Buscar vendas (para usar no componente de campanhas concluídas)
         const { data: allSales } = await supabase
             .from("purchases")
-            .select("*, customers(*)")
+            .select("*, customers(*), raffles!inner(*)")
+            .eq("raffles.organizer_id", user.id)
             .order("created_at", { ascending: false });
 
         if (allSales) {
@@ -94,7 +95,7 @@ export default function RafflesPage() {
             prev.map((r) => (r.id === updatedRaffle.id ? updatedRaffle : r))
         );
         toast({
-            title: "Rifa Atualizada!",
+            title: "Campanha Atualizada!",
             description: "As informações foram alteradas com sucesso.",
         });
     };
@@ -110,13 +111,13 @@ export default function RafflesPage() {
             timeZone: "America/Sao_Paulo",
         });
 
-        const text = `🎟️ RIFA ATIVA
+        const text = `🎟️ CAMPANHA ATIVA
 
 Prêmio: ${raffle.title}
-Valor por número: ${price}
-Sorteio: ${date}
+Valor do ticket: ${price}
+Resultado: ${date}
 
-👉 Garanta o seu número:
+👉 Garanta o seu ticket:
 ${url}`;
 
         const encodedText = encodeURIComponent(text);
@@ -132,7 +133,7 @@ ${url}`;
         try {
             const slugEncoded = encodeURIComponent(raffle.slug);
             const response = await fetch(
-                `/api/rifa/${slugEncoded}/imagem?t=${Date.now()}`
+                `/api/campanha/${slugEncoded}/imagem?t=${Date.now()}`
             );
 
             if (!response.ok) {
@@ -158,7 +159,7 @@ ${url}`;
             const downloadUrl = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = downloadUrl;
-            a.download = `status-rifa.png`;
+            a.download = `status-campanha.png`;
             document.body.appendChild(a);
             a.click();
 
@@ -195,7 +196,7 @@ ${url}`;
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-black mb-2">Minhas Rifas</h1>
+                <h1 className="text-3xl font-black mb-2">Minhas Campanhas</h1>
                 <p className="text-muted-foreground">
 
                 </p>
