@@ -73,14 +73,25 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setAuthLoading(true);
-    // Not implemented in backend yet, keeping mock delay or TODO
-    toast({ title: "Em breve", description: "Login com Google será habilitado em breve." });
-    setTimeout(() => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+      if (error) throw error;
+      // It will redirect away, no need to setAuthLoading(false) on success
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro no Login com Google",
+        description: error.message || "Tente novamente.",
+      });
       setAuthLoading(false);
-      // router.push("/admin");
-    }, 1000);
+    }
   };
 
   return (
