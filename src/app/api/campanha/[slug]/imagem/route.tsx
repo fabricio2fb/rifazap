@@ -49,13 +49,35 @@ export async function GET(
 
         // Grid Calculation
         let cols = 10;
-        if (totalNumbers > 100) cols = 20;
-        if (totalNumbers > 500) cols = 25;
+        let gap = 10;
+        let imageHeight = 1350;
 
-        const gap = 8;
-        const innerWidth = 980 - 64; // 980 width - 32px padding per side
-        const boxSize = Math.floor((innerWidth - (cols * gap)) / cols);
-        const fontSize = totalNumbers > 100 ? (totalNumbers > 500 ? 12 : 16) : 24;
+        if (totalNumbers > 50) {
+            imageHeight = 1920;
+        }
+
+        if (totalNumbers > 100 && totalNumbers <= 200) {
+            cols = 15;
+            gap = 6;
+        } else if (totalNumbers > 200 && totalNumbers <= 500) {
+            cols = 20;
+            gap = 6;
+        } else if (totalNumbers > 500 && totalNumbers <= 1000) {
+            cols = 30;
+            gap = 4;
+        } else if (totalNumbers > 1000) {
+            cols = 40;
+            gap = 2;
+        }
+
+        const containerWidth = 920;
+        const padding = 32;
+        const innerWidth = containerWidth - (padding * 2);
+
+        // (cols - 1) gaps horizontalmente
+        const totalGapWidth = (cols - 1) * gap;
+        const boxSize = Math.floor((innerWidth - totalGapWidth) / cols);
+        const fontSize = boxSize > 40 ? 24 : (boxSize > 25 ? 16 : 12);
 
         return new ImageResponse(
             (
@@ -139,7 +161,7 @@ export async function GET(
                     </div>
 
                     {/* GRADE CONTAINER AMARELO */}
-                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#fcd34d', border: '6px solid #f59e0b', borderRadius: '24px', padding: '32px', width: '980px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#fcd34d', border: '6px solid #f59e0b', borderRadius: '24px', padding: `${padding}px`, width: `${containerWidth}px`, boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
                         <div
                             style={{
                                 display: 'flex',
@@ -202,7 +224,7 @@ export async function GET(
             ),
             {
                 width: 1080,
-                height: 1350,
+                height: imageHeight,
             }
         );
     } catch (error: any) {
