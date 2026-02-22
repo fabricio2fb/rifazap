@@ -3,8 +3,31 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ticketon.com.br'),
   title: 'TicketOn - Gestão de Campanhas Digitais',
   description: 'Crie e gerencie campanhas digitais com facilidade e profissionalismo.',
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: 'https://ticketon.com.br',
+    siteName: 'TicketOn',
+    title: 'TicketOn - Gestão de Campanhas Digitais',
+    description: 'Crie e gerencie campanhas digitais com facilidade e profissionalismo.',
+    images: [
+      {
+        url: '/android-chrome-512x512.png',
+        width: 512,
+        height: 512,
+        alt: 'TicketOn Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TicketOn - Gestão de Campanhas Digitais',
+    description: 'Crie e gerencie campanhas digitais com facilidade e profissionalismo.',
+    images: ['/android-chrome-512x512.png'],
+  },
   icons: {
     icon: [
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },

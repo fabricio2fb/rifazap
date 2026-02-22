@@ -5,4 +5,4 @@ Disallow: /customer/
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://www.socialrifa.com.br/sitemap.xml
+Sitemap: https://ticketon.com.br/sitemap.xml
