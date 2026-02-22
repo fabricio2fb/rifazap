@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest } from 'next/server';
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 export async function GET(
     request: NextRequest,
@@ -69,14 +69,14 @@ export async function GET(
                 }}
             >
                 {/* TOPO */}
-                < div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px' }}>
                     <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#1a1a1a', textAlign: 'center', marginBottom: '10px' }}>
                         ⚡ CAMPANHA DO {raffle.title.toUpperCase()}
                     </div>
-                    < div style={{ fontSize: '28px', color: '#666', marginBottom: '5px' }}>
+                    <div style={{ fontSize: '28px', color: '#666', marginBottom: '5px' }}>
                         Cada número {price}
                     </div>
-                    < div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ef4444' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ef4444' }}>
                         Sorteio {date}
                     </div>
                 </div>
@@ -85,15 +85,15 @@ export async function GET(
                 <div style={{ display: 'flex', gap: '30px', marginBottom: '40px', fontSize: '20px', fontWeight: '600' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{ width: '20px', height: '20px', backgroundColor: '#22c55e', borderRadius: '4px' }}> </div>
-                        < span > Livre </span>
+                        <span>Livre</span>
                     </div>
-                    < div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{ width: '20px', height: '20px', backgroundColor: '#eab308', borderRadius: '4px' }}> </div>
-                        < span > Reservado </span>
+                        <span>Reservado</span>
                     </div>
-                    < div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{ width: '20px', height: '20px', backgroundColor: '#94a3b8', borderRadius: '4px' }}> </div>
-                        < span > Pago </span>
+                        <span>Pago</span>
                     </div>
                 </div>
 
@@ -144,7 +144,7 @@ export async function GET(
                     <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#0052FF', marginBottom: '10px' }}>
                         Pagamento via site: ticketon.com.br
                     </div>
-                    < div style={{
+                    <div style={{
                         fontSize: '36px',
                         fontWeight: 'bold',
                         color: 'white',
