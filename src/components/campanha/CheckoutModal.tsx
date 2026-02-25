@@ -29,6 +29,8 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
   const [step, setStep] = useState<'info' | 'payment'>('info');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: '', whatsapp: '' });
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [isMounted, setIsMounted] = useState(false);
   const { toast } = useToast();
   const supabase = createClient();
@@ -39,14 +41,42 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
 
   if (!isMounted) return null;
 
-  const total = selectedNumbers.length * raffle.pricePerNumber;
+  // Calculations
+  const baseTotal = selectedNumbers.length * raffle.pricePerNumber;
+
+  // Package Discount
+  const packages = (raffle.settings?.packages || []) as any[];
+  const applicablePackages = packages.filter(p => selectedNumbers.length >= p.quantity).sort((a, b) => b.quantity - a.quantity);
+  const bestPackage = applicablePackages[0];
+  const packageDiscountAmount = bestPackage ? baseTotal * (bestPackage.discount / 100) : 0;
+
+  const totalAfterPackage = baseTotal - packageDiscountAmount;
+
+  // Coupon Discount
+  const couponDiscountAmount = appliedCoupon ? totalAfterPackage * (appliedCoupon.discount / 100) : 0;
+
+  const finalTotal = totalAfterPackage - couponDiscountAmount;
+
+  const handleApplyCoupon = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const coupons = (raffle.settings?.coupons || []) as any[];
+    const validCoupon = coupons.find(c => c.code.toUpperCase() === couponCode.toUpperCase());
+
+    if (validCoupon) {
+      setAppliedCoupon(validCoupon);
+      toast({ title: "Cupom Aplicado!", description: `Desconto de ${validCoupon.discount}% adicionado.` });
+    } else {
+      setAppliedCoupon(null);
+      toast({ title: "Cupom Inválido", description: "Verifique o código e tente novamente.", variant: "destructive" });
+    }
+  };
 
   // Gera o código PIX Copia e Cola real
   const pixCode = generatePixBRCode(
     raffle.pixKey || '',
     (raffle.title || 'Campanha').substring(0, 25),
     'SAO PAULO',
-    total
+    finalTotal
   );
 
   // URL para a API de QR Code
@@ -66,7 +96,9 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
         body: JSON.stringify({
           name: formData.name,
           phone: formData.whatsapp.replace(/\D/g, ''),
-          numbers: selectedNumbers
+          numbers: selectedNumbers,
+          couponCode: appliedCoupon?.code || undefined,
+          totalAmount: finalTotal // Used for logging/fallback, but backend calculates the real value
         })
       });
 
@@ -96,10 +128,10 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
   };
 
   const sendProofToOrganizer = () => {
-    const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+    const priceFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(finalTotal);
     const text = `Olá! Acabei de reservar os tickets: *${selectedNumbers.join(', ')}* na campanha *${raffle.title}*. 
     
-Segue o comprovante do PIX no valor de *${price}*.
+Segue o comprovante do PIX no valor de *${priceFormatted}*.
 Nome: ${formData.name}`;
 
     const encodedText = encodeURIComponent(text);
@@ -177,13 +209,48 @@ Nome: ${formData.name}`;
                 className="h-12"
               />
             </div>
-            <div className="p-4 bg-muted rounded-xl flex justify-between items-center">
-              <span className="font-medium">Total a pagar:</span>
-              <span className="text-xl font-bold" suppressHydrationWarning>
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
-              </span>
+
+            <div className="space-y-2">
+              <Label>Cupom de Desconto</Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Se tiver, digite aqui"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  className="h-10 uppercase font-bold"
+                />
+                <Button type="button" variant="secondary" onClick={handleApplyCoupon} className="h-10">Aplicar</Button>
+              </div>
             </div>
-            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-14 font-bold text-lg rounded-xl">
+
+            <div className="p-4 bg-muted rounded-xl space-y-2">
+              <div className="flex justify-between items-center text-sm text-muted-foreground">
+                <span>Subtotal ({selectedNumbers.length} números):</span>
+                <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(baseTotal)}</span>
+              </div>
+
+              {bestPackage && (
+                <div className="flex justify-between items-center text-sm text-green-600 font-medium">
+                  <span>Pacote Promocional (-{bestPackage.discount}%):</span>
+                  <span>-{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(packageDiscountAmount)}</span>
+                </div>
+              )}
+
+              {appliedCoupon && (
+                <div className="flex justify-between items-center text-sm text-green-600 font-medium">
+                  <span>Cupom {appliedCoupon.code} (-{appliedCoupon.discount}%):</span>
+                  <span>-{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(couponDiscountAmount)}</span>
+                </div>
+              )}
+
+              <div className="border-t border-slate-200 mt-2 pt-2 flex justify-between items-center">
+                <span className="font-bold">Total a pagar:</span>
+                <span className="text-xl font-bold text-slate-900" suppressHydrationWarning>
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(finalTotal)}
+                </span>
+              </div>
+            </div>
+            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-14 font-bold text-lg rounded-xl shadow-md">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirmar Reserva"}
             </Button>
           </form>

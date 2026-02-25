@@ -15,19 +15,6 @@ export async function POST(request: Request) {
 
         console.log("GGCheckout Webhook Received:", payload);
 
-        // --- DEBUG: DUMP PAYLOAD TO FILE SO WE CAN INSPECT IT ---
-        try {
-            const fs = require('fs');
-            const dumpData = {
-                timestamp: new Date().toISOString(),
-                url: request.url,
-                payload: payload
-            };
-            fs.writeFileSync('ggcheckout_latest_payload.json', JSON.stringify(dumpData, null, 2));
-        } catch (e) {
-            console.error("Failed to dump webhook payload:", e);
-        }
-
         // Helper to extract nested fields
         const extractId = (obj: any): string | null => {
             if (!obj) return null;

@@ -9,7 +9,7 @@ export async function POST(
     const slug = (await params).slug;
     const supabase = await createClient();
     const body = await request.json();
-    const { name, phone, numbers } = body;
+    const { name, phone, numbers, couponCode } = body;
 
     // 1. Buscar ou criar cliente
     let { data: customer } = await supabase
@@ -34,7 +34,7 @@ export async function POST(
     // 2. Buscar campanha
     const { data: raffle } = await supabase
         .from('raffles')
-        .select('id, ticket_price')
+        .select('id, ticket_price, settings')
         .eq('slug', slug)
         .single();
 
@@ -63,15 +63,38 @@ export async function POST(
         );
     }
 
-    // 4. Criar compra
-    const totalAmount = numbers.length * raffle.ticket_price;
+    // 4. Calcular Total com Cupons e Pacotes Reais do Banco
+    const baseTotal = numbers.length * raffle.ticket_price;
+    let finalTotal = baseTotal;
+
+    const settings = raffle.settings || {};
+
+    // Pacotes
+    const packages = (settings.packages || []) as any[];
+    const applicablePackages = packages.filter((p: any) => numbers.length >= p.quantity).sort((a: any, b: any) => b.quantity - a.quantity);
+    const bestPackage = applicablePackages[0];
+    const packageDiscountAmount = bestPackage ? baseTotal * (bestPackage.discount / 100) : 0;
+
+    finalTotal -= packageDiscountAmount;
+
+    // Cupons
+    if (couponCode) {
+        const coupons = (settings.coupons || []) as any[];
+        const validCoupon = coupons.find((c: any) => c.code.toUpperCase() === couponCode.toUpperCase());
+        if (validCoupon && validCoupon.active !== false) {
+            const couponDiscountAmount = finalTotal * (validCoupon.discount / 100);
+            finalTotal -= couponDiscountAmount;
+        }
+    }
+
+    // Criar compra
     const { data: purchase, error: purchaseError } = await supabase
         .from('purchases')
         .insert({
             raffle_id: raffle.id,
             customer_id: customer.id,
             numbers,
-            total_amount: totalAmount,
+            total_amount: finalTotal,
             status: 'pending'
         })
         .select()

@@ -14,14 +14,16 @@ import { Label } from "@/components/ui/label";
 import { Search, Loader2, Ticket, CheckCircle2, Clock } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { QRCodeSVG } from "qrcode.react";
 
 interface MyNumbersModalProps {
     isOpen: boolean;
     onClose: () => void;
     raffleId: string;
+    settings?: any;
 }
 
-export function MyNumbersModal({ isOpen, onClose, raffleId }: MyNumbersModalProps) {
+export function MyNumbersModal({ isOpen, onClose, raffleId, settings }: MyNumbersModalProps) {
     const [phone, setPhone] = useState("");
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState<any[] | null>(null);
@@ -94,6 +96,28 @@ export function MyNumbersModal({ isOpen, onClose, raffleId }: MyNumbersModalProp
 
                     {results !== null && (
                         <div className="space-y-4">
+                            {results.length > 0 && results.filter(p => p.status === 'confirmed').reduce((acc, p) => acc + (p.numbers?.length || 0), 0) > 0 && (() => {
+                                const confirmedTickets = results.filter((p: any) => p.status === 'confirmed').reduce((acc: number, p: any) => acc + (p.numbers?.length || 0), 0);
+                                const sortedBonuses = [...(settings?.bonusTiers || [])].sort((a: any, b: any) => b.targetTickets - a.targetTickets);
+                                const unlockedBonus = sortedBonuses.find(b => confirmedTickets >= b.targetTickets);
+
+                                if (unlockedBonus && unlockedBonus.prizeUrl) {
+                                    return (
+                                        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex flex-col items-center text-center space-y-3 shadow-sm mb-6">
+                                            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl shadow-sm">🎁</div>
+                                            <div>
+                                                <p className="font-bold text-green-800 text-sm">Parabéns! Você ganhou: {unlockedBonus.prizeName}</p>
+                                                <p className="text-xs text-green-600/80 mb-4 mt-1">{unlockedBonus.description}</p>
+                                                <a href={unlockedBonus.prizeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-lg text-xs font-bold shadow-sm hover:bg-green-600 transition-colors uppercase tracking-widest">
+                                                    🔗 Acessar Meu Prêmio
+                                                </a>
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })()}
+
                             {results.length > 0 ? (
                                 results.map((purchase) => (
                                     <div
@@ -126,6 +150,23 @@ export function MyNumbersModal({ isOpen, onClose, raffleId }: MyNumbersModalProp
                                                 </div>
                                             ))}
                                         </div>
+
+                                        {purchase.status === "confirmed" && (
+                                            <div className="pt-4 mt-2 border-t border-muted-foreground/10 flex flex-col items-center justify-center space-y-3">
+                                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">QR Code do Ingresso</p>
+                                                <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100">
+                                                    <QRCodeSVG
+                                                        value={`ID:${purchase.id}|RAFFLE:${raffleId}`}
+                                                        size={120}
+                                                        level={"Q"}
+                                                        includeMargin={false}
+                                                    />
+                                                </div>
+                                                <p className="text-[10px] text-muted-foreground/60 text-center max-w-[200px] leading-tight">
+                                                    Apresente este código se solicitado pelo organizador para validação dos bilhetes.
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 ))
                             ) : (

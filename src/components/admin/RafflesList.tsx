@@ -18,6 +18,7 @@ import {
     FileText,
     Copy,
     Loader2,
+    Palette,
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
@@ -118,7 +119,7 @@ export function RafflesList({
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-6 border-t border-dashed border-slate-200">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-6 border-t border-dashed border-slate-200">
                                 <Link href={`/campanha/${raffle.slug}`} target="_blank" className="w-full">
                                     <Button
                                         variant="outline"
@@ -138,6 +139,7 @@ export function RafflesList({
                                     <Pencil className="w-3.5 h-3.5" /> EDITAR
                                 </Button>
 
+
                                 <Button
                                     variant="outline"
                                     size="sm"
@@ -151,17 +153,16 @@ export function RafflesList({
                                     variant="default"
                                     size="sm"
                                     onClick={() => onDraw(raffle)}
-                                    disabled={raffle.status === "drawn"}
-                                    className="gap-2 text-[10px] font-black h-11 shadow-lg bg-slate-900 hover:bg-black text-white rounded-2xl transition-all uppercase tracking-wider disabled:opacity-50"
+                                    className="gap-2 text-[10px] font-black h-11 shadow-lg bg-slate-900 hover:bg-black text-white rounded-2xl transition-all uppercase tracking-wider"
                                 >
-                                    <Dices className="w-3.5 h-3.5" /> CONCLUIR
+                                    <Dices className="w-3.5 h-3.5" /> APURAR
                                 </Button>
 
                                 <Button
                                     variant="default"
                                     size="sm"
                                     onClick={() => onShareWithImage(raffle)}
-                                    className="gap-2 text-[10px] font-black h-11 shadow-lg bg-[#128C7E] hover:bg-[#075E54] text-white rounded-2xl transition-all uppercase tracking-wider col-span-2 sm:col-span-1"
+                                    className="gap-2 text-[10px] font-black h-11 shadow-lg bg-[#128C7E] hover:bg-[#075E54] text-white rounded-2xl transition-all uppercase tracking-wider col-span-2 sm:col-span-1 lg:col-span-1"
                                 >
                                     <MessageCircle className="w-3.5 h-3.5 fill-current" /> WHATSAPP
                                 </Button>

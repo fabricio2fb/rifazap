@@ -11,6 +11,7 @@ interface NumberGridProps {
   reservedNumbers: number[];
   selectedNumbers: number[];
   onNumberClick: (num: number) => void;
+  primaryColor?: string;
 }
 
 export function NumberGrid({
@@ -19,6 +20,7 @@ export function NumberGrid({
   reservedNumbers,
   selectedNumbers,
   onNumberClick,
+  primaryColor,
 }: NumberGridProps) {
   const numbers = useMemo(() => Array.from({ length: totalNumbers }, (_, i) => i + 1), [totalNumbers]);
 
@@ -38,12 +40,14 @@ export function NumberGrid({
             key={num}
             disabled={isPaid || isReserved}
             onClick={() => onNumberClick(num)}
+            style={isSelected && primaryColor ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
             className={cn(
               "aspect-square flex items-center justify-center rounded-md text-sm font-semibold transition-all border",
               status === 'available' && !isSelected && "bg-campanha-available/20 text-campanha-available border-campanha-available/30 hover:bg-campanha-available/30",
               status === 'paid' && "bg-campanha-paid text-white border-transparent cursor-not-allowed",
               status === 'reserved' && "bg-campanha-reserved text-white border-transparent cursor-not-allowed",
-              isSelected && "bg-primary text-primary-foreground border-primary-foreground shadow-md scale-105"
+              isSelected && (!primaryColor && "bg-primary border-primary-foreground"),
+              isSelected && "text-white shadow-md scale-105"
             )}
           >
             {num.toString().padStart(2, '0')}

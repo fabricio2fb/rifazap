@@ -78,9 +78,10 @@ export default function SalesList({ sales, raffles, timeDrift, onConfirm, onCanc
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm font-medium text-slate-500">
-                                    <div className="flex items-center gap-2.5 text-blue-600 bg-blue-50/50 px-3 py-1.5 rounded-full w-fit border border-blue-100/50">
-                                        <Phone className="w-4 h-4" /> {sale.whatsapp}
-                                    </div>
+                                    <a href={`https://wa.me/55${sale.whatsapp?.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-full w-fit border border-green-200 transition-colors shadow-sm cursor-pointer">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                        <span className="font-bold">{sale.whatsapp}</span>
+                                    </a>
                                     <div className="flex items-center gap-2.5 bg-slate-100/50 px-3 py-1.5 rounded-full w-fit border border-slate-200/50 text-slate-700">
                                         <Ticket className="w-4 h-4 text-slate-400" /> {raffle?.title || "Campanha não encontrada"}
                                     </div>

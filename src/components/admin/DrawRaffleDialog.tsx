@@ -232,7 +232,7 @@ export function DrawRaffleDialog({
                                 </CardContent>
                             </Card>
 
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
                                 <Button
                                     variant="outline"
                                     className="h-12 font-bold border-2"
@@ -243,6 +243,13 @@ export function DrawRaffleDialog({
                                     ) : (
                                         <><Eye className="mr-2 w-4 h-4" /> Ver Detalhes</>
                                     )}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="h-12 font-bold bg-blue-50 text-blue-700 border-2 border-blue-200 hover:bg-blue-100 transition-colors"
+                                    onClick={() => { setStep('idle'); setWinner(null); setShowDetails(false); }}
+                                >
+                                    <Dices className="mr-2 w-4 h-4" /> Novo Sorteio
                                 </Button>
                                 <Button
                                     className="h-12 font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg"

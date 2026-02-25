@@ -15,6 +15,7 @@ export interface Raffle {
   whatsappGroupLink?: string;
   whatsappContact: string; // WhatsApp para receber comprovantes
   pixKey: string;
+  settings?: any;
   createdAt?: any;
 }
 

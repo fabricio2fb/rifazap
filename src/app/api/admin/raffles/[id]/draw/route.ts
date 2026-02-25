@@ -16,10 +16,10 @@ export async function POST(
         return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // 2. Verificar se o usuário é o dono da campanha
+    // 2. Verificar se o usuário é o dono da campanha e buscar dados atuais
     const { data: raffle, error: fetchError } = await supabase
         .from('raffles')
-        .select('organizer_id')
+        .select('organizer_id, winner_number, winner')
         .eq('id', id)
         .single();
 
@@ -31,13 +31,27 @@ export async function POST(
         return NextResponse.json({ error: 'Sem permissão para realizar o sorteio desta campanha' }, { status: 403 });
     }
 
-    // 3. Executar o update do ganhador
+    // 3. Formatar o histórico (adicionar múltiplos ganhadores)
+    let newWinnerNumber = winnerNumber.toString();
+    let newWinnerName = winnerName;
+
+    if (raffle.winner_number != null) {
+        const existingNumbers = raffle.winner_number.toString().split(', ').filter(Boolean);
+        existingNumbers.push(newWinnerNumber);
+        newWinnerNumber = existingNumbers.join(', ');
+
+        const existingNames = (raffle.winner || '').split(', ').filter(Boolean);
+        existingNames.push(newWinnerName);
+        newWinnerName = existingNames.join(', ');
+    }
+
+    // 4. Executar o update do ganhador
     const { error: updateError } = await supabase
         .from('raffles')
         .update({
             status: 'drawn',
-            winner_number: winnerNumber,
-            winner: winnerName
+            winner_number: newWinnerNumber,
+            winner: newWinnerName
         })
         .eq('id', id);
 

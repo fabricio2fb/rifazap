@@ -9,10 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone, Copy, CheckCircle2, Loader2, ArrowRight, Zap, Info } from 'lucide-react';
+import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone, Copy, CheckCircle2, Loader2, ArrowRight, Zap, Info, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface CreateRaffleDialogProps {
   onCreate?: (raffle: any) => void;
@@ -39,8 +40,10 @@ const PixQRCode = () => (
 );
 
 export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<'form' | 'payment'>('form');
+  const [step, setStep] = useState<'type' | 'form' | 'payment'>('type');
+  const [creationType, setCreationType] = useState<'basic' | 'pro' | null>(null);
   const [loading, setLoading] = useState(false);
   const [pendingRaffle, setPendingRaffle] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -163,7 +166,8 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
     <Dialog open={open} onOpenChange={(val) => {
       setOpen(val);
       if (!val) {
-        setStep('form');
+        setStep('type');
+        setCreationType(null);
         setPendingRaffle(null);
       }
     }}>
@@ -172,19 +176,190 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
           <Plus className="w-5 h-5" /> Criar Nova Campanha
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-0 gap-0">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-0 gap-0">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="text-2xl font-bold">
-            {step === 'form' ? 'Configurar Campanha' : 'Taxa de Ativação'}
+            {step === 'type' ? 'Escolha o Formato da Campanha' : step === 'form' ? 'Configurar Campanha' : 'Taxa de Ativação'}
           </DialogTitle>
           {step === 'payment' && (
             <DialogDescription className="text-base font-medium text-foreground/80 mt-2">
               Sua campanha foi salva como rascunho! Para ativá-la e torná-la pública, realize o pagamento da taxa de publicação.
             </DialogDescription>
           )}
+          {step === 'type' && (
+            <DialogDescription className="text-base font-medium text-foreground/80 mt-1">
+              Como você deseja apresentar o prêmio aos seus compradores na tela inicial?
+            </DialogDescription>
+          )}
         </DialogHeader>
 
-        {step === 'form' ? (
+        {step === 'type' ? (
+          <div className="p-6 pt-2 grid md:grid-cols-2 gap-6">
+
+            {/* Card BÁSICO (Sem Edição) */}
+            <div
+              onClick={() => { setCreationType('basic'); setStep('form'); }}
+              className="flex flex-col border-2 border-slate-200 rounded-3xl p-6 cursor-pointer hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all group bg-white relative overflow-hidden"
+            >
+              <div className="mb-4">
+                <h3 className="text-xl font-black text-slate-800 mb-1">Sem Edição</h3>
+                <p className="text-sm text-slate-500 font-medium leading-snug h-10">Padrão do sistema. Layout estático baseado na foto do prêmio que você enviar.</p>
+              </div>
+
+              <div className="mb-6 flex items-baseline gap-1">
+                <span className="text-sm font-bold text-slate-400">R$</span>
+                <span className="text-4xl font-black text-slate-800 tracking-tighter">9,90</span>
+                <span className="text-sm font-bold text-slate-400">/campanha</span>
+              </div>
+
+              <div className="bg-[#e4eff1] rounded-2xl w-full h-[240px] p-0 flex flex-col relative overflow-hidden group-hover:bg-[#d5e4e6] transition-colors shadow-inner"
+                style={{ backgroundImage: 'linear-gradient(to bottom, #eff6ff 0%, #f1f5f9 100%)' }}>
+                <div className="w-full h-full bg-white/0 flex flex-col inset-0 pt-3 px-3 pb-2">
+                  <div className="text-center mb-2">
+                    <h4 className="text-[14px] font-black text-slate-900 leading-tight tracking-tight">RIFA DE R$ 5.000,00 VIA PIX</h4>
+                  </div>
+
+                  <div className="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm border-[3px] border-[#e2e8f0] relative z-10 mb-2 overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                    <span className="text-3xl">💵</span>
+                  </div>
+
+                  <div className="flex gap-2 w-full mb-3">
+                    <div className="bg-[#e0f2fe] flex-1 rounded-lg text-center border-b-2 border-[#bae6fd] shadow-sm p-1.5 flex flex-col justify-center">
+                      <span className="text-[5px] font-black text-sky-800/60 uppercase">VALOR DA COTA</span>
+                      <span className="text-[12px] font-black text-sky-950 leading-none mt-0.5">R$ 50,00</span>
+                    </div>
+                    <div className="bg-[#ffedd5] flex-1 rounded-lg text-center border-b-2 border-[#fdba74] shadow-sm p-1.5 flex flex-col justify-center">
+                      <span className="text-[5px] font-black text-orange-800/60 uppercase">SORTEIO DIA</span>
+                      <span className="text-[12px] font-black text-orange-950 leading-none mt-0.5">20/12/2024</span>
+                    </div>
+                  </div>
+
+                  <div className="px-1 w-full mt-auto mb-2">
+                    <div className="bg-white rounded-md border border-slate-200 p-1 flex items-center shadow-sm">
+                      <div className="h-4 w-4 rounded-sm" style={{ backgroundColor: '#e2e8f0' }}></div>
+                      <div className="h-4 w-4 rounded-sm ml-1" style={{ backgroundColor: '#cbd5e1' }}></div>
+                      <div className="flex-1"></div>
+                      <div className="flex flex-col items-end">
+                        <span className="text-[4px] font-bold text-slate-400 uppercase">PROGRESSO</span>
+                        <span className="text-[7px] font-black text-slate-700">50%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 rounded-[6px] p-1 grid grid-cols-10 gap-0.5 shadow-sm max-h-[36px] overflow-hidden">
+                    {Array.from({ length: 30 }).map((_, i) => (
+                      <div key={i} className={`h-2 rounded-[1px] ${[3, 5, 12, 18].includes(i) ? 'bg-green-500' : 'bg-slate-100'} border-[0.5px] border-slate-200`}></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <Button variant="outline" className="w-full mt-6 h-12 text-base gap-2 text-slate-600 font-bold border-2 rounded-xl group-hover:bg-slate-50">Selecionar Sem Edição <ArrowRight className="w-4 h-4 ml-1" /></Button>
+            </div>
+
+            {/* Card TICKETON PRO */}
+            <div
+              onClick={() => { setCreationType('pro'); setStep('form'); }}
+              className="flex flex-col border-[3px] border-[#f97316] rounded-3xl p-6 cursor-pointer bg-orange-50/30 hover:bg-orange-50 hover:shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1 transition-all relative overflow-hidden group"
+            >
+              <div className="absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br from-orange-400 to-red-500 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+
+              <div className="absolute top-0 right-8 bg-[#f97316] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-b-lg shadow-md flex items-center gap-1">
+                <Sparkles className="w-3 h-3" /> Mais Vendido
+              </div>
+
+              <div className="mb-4 relative z-10">
+                <h3 className="text-xl font-black text-[#ea580c] mb-1 flex items-center gap-2">TicketOn PRO</h3>
+                <p className="text-sm text-slate-600 font-medium leading-snug mb-2"><strong>Editor da Rifa</strong> completo para você vender muito mais com:</p>
+                <div className="flex flex-wrap gap-1.5 text-[9px] font-black uppercase tracking-wider text-[#ea580c]">
+                  <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">🔔 Notificações</span>
+                  <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">⏳ Contador</span>
+                  <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">🏷️ Cupons</span>
+                  <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">✅ Badge</span>
+                  <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">+ mais</span>
+                </div>
+              </div>
+
+              <div className="mb-6 flex items-baseline gap-1 relative z-10">
+                <span className="text-sm font-bold text-orange-600/60">R$</span>
+                <span className="text-4xl font-black text-[#ea580c] tracking-tighter">21,90</span>
+                <span className="text-sm font-bold text-orange-600/60">/campanha</span>
+              </div>
+
+              <div className="bg-[#f2f4f6] border-2 border-slate-200 rounded-2xl w-full h-[240px] flex flex-col items-center justify-start py-2 px-1 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner"
+                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\\\'120\\\' height=\\\'120\\\' viewBox=\\\'0 0 60 60\\\' xmlns=\\\'http://www.w3.org/2000/svg\\\'%3E%3Cpath d=\\\'M30 0l-15 35h12l-6 25 20-30H29l8-30z\\\' fill=\\\'%23f59e0b\\\' fill-opacity=\\\'0.06\\\' fill-rule=\\\'evenodd\\\'/%3E%3C/svg%3E")' }}>
+
+                {/* Notification Popup UI */}
+                <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm text-white rounded-full px-2 py-1 flex items-center gap-1 shadow-lg z-20 animate-pulse border border-white/10" style={{ transform: 'scale(0.8)', transformOrigin: 'top right' }}>
+                  <span className="text-[10px]">🟢</span>
+                  <span className="text-[8px] font-medium tracking-wide">João acabou de comprar!</span>
+                </div>
+
+                <div className="w-full h-full bg-white/0 flex flex-col inset-0 pt-4 pb-1 relative z-10 px-2 lg:px-4">
+                  <div className="text-center mb-2">
+                    <h4 className="text-[18px] text-black leading-none font-black" style={{ letterSpacing: "-0.5px" }}>IPHONE 15 128GB</h4>
+                  </div>
+                  <div className="flex gap-2 w-full px-1 mb-2">
+                    <div className="bg-white flex-1 rounded-md text-left border border-slate-100 shadow-[0_2px_4px_rgba(0,0,0,0.04)] p-1.5 flex items-center gap-2">
+                      <span className="text-[11px] text-yellow-500 ml-1">🏆</span>
+                      <div className="flex flex-col">
+                        <span className="text-[5px] font-bold text-slate-400 uppercase">VALOR DA COTA</span>
+                        <span className="text-[10px] text-black font-black">R$ 20,00</span>
+                      </div>
+                    </div>
+                    <div className="bg-white flex-1 rounded-md text-left border border-slate-100 shadow-[0_2px_4px_rgba(0,0,0,0.04)] p-1.5 flex items-center gap-1.5">
+                      <span className="text-[10px] bg-red-100/60 text-red-500 rounded-[3px] px-1 py-0.5 leading-[1]" style={{ fontSize: '5px', fontWeight: 'bold', textAlign: 'center' }}>JUL<br /><span style={{ fontSize: '8px' }}>17</span></span>
+                      <div className="flex flex-col">
+                        <span className="text-[5px] font-bold text-slate-400 uppercase">SORTEIO DIA</span>
+                        <span className="text-[10px] text-black font-black">20/03/2007</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center gap-3 mt-1 mb-2">
+                    <div className="flex items-center gap-1 text-[7px] text-black font-medium"><div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-sm"></div>Livre</div>
+                    <div className="flex items-center gap-1 text-[7px] text-black font-medium"><div className="w-2.5 h-2.5 rounded-full bg-[#f97316] shadow-sm"></div>Reservado</div>
+                    <div className="flex items-center gap-1 text-[7px] text-black font-medium"><div className="w-2.5 h-2.5 rounded-full bg-slate-300 shadow-sm"></div>Pago</div>
+                  </div>
+
+                  <div className="px-1 w-full mb-1.5">
+                    <div className="flex justify-between items-end mb-0.5">
+                      <span className="text-[5px] font-medium text-slate-600 uppercase tracking-widest">PROGRESSO DA RIFA</span>
+                      <span className="text-[6px] font-medium text-[#ea580c]">12% VENDIDO</span>
+                    </div>
+                    <div className="bg-slate-200 rounded-full h-[6px] w-full flex overflow-hidden shadow-inner">
+                      <div className="bg-[#f97316] w-[18%] h-full rounded-full"></div>
+                    </div>
+                  </div>
+
+                  <div className="mx-1 mt-auto bg-[#fbbf24] border-[3px] border-[#f59e0b] rounded-[10px] p-[3px] grid grid-cols-5 gap-[2px] shadow-sm">
+                    {Array.from({ length: 10 }).map((_, i) => {
+                      let bgClass = "bg-white text-slate-600 border border-slate-200/50";
+                      if (i === 3 || i === 5) bgClass = "bg-slate-300 text-white border-transparent"; // Pago
+                      if (i === 4 || i === 8) bgClass = "bg-[#f97316] text-white border-transparent"; // Reservado
+                      return (
+                        <div key={i} className={`h-5 w-full bg-white rounded flex items-center justify-center text-[7px] font-medium shadow-sm ${bgClass}`}>
+                          {i + 1}
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <div className="w-full text-center mt-2.5 pb-0">
+                    <div className="text-[11px] font-medium text-slate-900 tracking-wide uppercase leading-none">PARTICIPE AGORA MESMO</div>
+                    <div className="text-[5px] font-medium text-slate-800 uppercase mt-1 leading-none">SORTEIO DIA: 20/03/2007</div>
+                    <div className="text-[4px] font-bold text-slate-500 mt-1 uppercase tracking-widest leading-none">COMPRA SEGURA • PAGAMENTO VIA SITE</div>
+                  </div>
+                </div>
+              </div>
+
+              <Button className="w-full mt-6 h-12 flex-shrink-0 text-base gap-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:from-[#ea580c] hover:to-[#c2410c] font-black text-white shadow-lg shadow-orange-500/30 rounded-xl relative z-10 transition-transform active:scale-95">
+                Escolher TicketOn PRO <Sparkles className="w-5 h-5 ml-1" />
+              </Button>
+            </div>
+
+          </div>
+        ) : step === 'form' ? (
           <form onSubmit={handleCreateAndShowPayment} className="p-6 space-y-5">
             <div className="grid gap-2">
               <Label htmlFor="title" className="font-semibold">Título do Prêmio</Label>
@@ -199,7 +374,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             <div className="space-y-4">
               <div className="grid gap-2">
                 <Label className="font-semibold flex items-center gap-2">
-                  <Upload className="w-4 h-4" /> Upload de Foto do Prêmio
+                  <Upload className="w-4 h-4" /> {creationType === 'pro' ? 'Foto do Prêmio (Para o Editor da Rifa)' : 'Upload de Foto do Prêmio'}
                 </Label>
                 <div className="relative">
                   <Input
@@ -360,10 +535,15 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
               <div className="w-full pt-4">
                 <Button
                   variant="outline"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false);
+                    if (creationType === 'pro' && pendingRaffle?.id) {
+                      router.push(`/admin/campanhas/${pendingRaffle.id}/editor`);
+                    }
+                  }}
                   className="w-full h-12 text-muted-foreground font-bold border-2"
                 >
-                  Concluir e pagar depois
+                  {creationType === 'pro' ? 'Pular Ativação e Ir para Editor' : 'Concluir e pagar depois'}
                 </Button>
               </div>
             </div>

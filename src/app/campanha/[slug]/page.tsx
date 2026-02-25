@@ -123,7 +123,8 @@ export default async function PublicRafflePage({ params }: Props) {
     drawDate: raffleData.draw_date,
     whatsappGroupLink: raffleData.whatsapp_group_link || '',
     whatsappContact: raffleData.whatsapp_contact || '',
-    pixKey: raffleData.pix_key
+    pixKey: raffleData.pix_key,
+    settings: raffleData.settings || {}
   };
 
   const initialParticipants = salesData ? salesData.map(p => ({

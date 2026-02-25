@@ -2,6 +2,28 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
+export async function GET(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const id = (await params).id;
+    const supabase = await createClient();
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
+    const { data: raffle, error } = await supabase
+        .from('raffles')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error || !raffle) return NextResponse.json({ error: 'Campanha não encontrada' }, { status: 404 });
+    if (raffle.organizer_id !== user.id) return NextResponse.json({ error: 'Sem permissão' }, { status: 403 });
+
+    return NextResponse.json({ raffle });
+}
+
 export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -33,7 +55,7 @@ export async function PATCH(
 
     // 3. Executar o update
     // Filtramos o body para evitar que o usuário tente alterar campos sensíveis como organizer_id
-    const { title, description, image_url, draw_date, whatsapp_contact, whatsapp_group_link, status, winner_number, winner } = body;
+    const { title, description, image_url, draw_date, whatsapp_contact, whatsapp_group_link, status, winner_number, winner, settings } = body;
 
     const updateData: any = {};
     if (title !== undefined) updateData.title = title;
@@ -45,6 +67,7 @@ export async function PATCH(
     if (status !== undefined) updateData.status = status;
     if (winner_number !== undefined) updateData.winner_number = winner_number;
     if (winner !== undefined) updateData.winner = winner;
+    if (settings !== undefined) updateData.settings = settings;
 
     const { data: updated, error: updateError } = await supabase
         .from('raffles')
