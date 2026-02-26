@@ -380,7 +380,14 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
           <DialogContent
             className="max-w-[450px] w-[95vw] h-[85vh] overflow-hidden bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 p-0 flex flex-col rounded-3xl"
             onPointerDownOutside={(e) => {
-              // Previne que o clique fora (backdrop) feche também o modal pai
+              e.preventDefault();
+              setPreviewTheme(null);
+            }}
+            onEscapeKeyDown={(e) => {
+              e.preventDefault();
+              setPreviewTheme(null);
+            }}
+            onInteractOutside={(e) => {
               e.preventDefault();
               setPreviewTheme(null);
             }}

@@ -67,10 +67,10 @@ export function RafflesList({
             {raffles.map((raffle) => (
                 <Card
                     key={raffle.id}
-                    className="overflow-hidden border-none shadow-sm hover:shadow-xl transition-all duration-500 bg-white/80 backdrop-blur-md rounded-[32px] group"
+                    className="overflow-hidden border-none shadow-sm hover:shadow-xl transition-all duration-500 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-[32px] group"
                 >
                     <div className="flex flex-col lg:flex-row min-h-[220px]">
-                        <div className="relative w-full lg:w-72 h-56 lg:h-auto shrink-0 bg-slate-100 overflow-hidden">
+                        <div className="relative w-full lg:w-72 h-56 lg:h-auto shrink-0 bg-slate-100 dark:bg-zinc-800 overflow-hidden">
                             {raffle.imageUrl && (
                                 <Image
                                     src={raffle.imageUrl}
@@ -106,20 +106,20 @@ export function RafflesList({
 
                         <div className="flex-1 p-8 flex flex-col justify-between space-y-6">
                             <div className="space-y-3">
-                                <CardTitle className="text-2xl font-black tracking-tight group-hover:text-primary transition-colors">
+                                <CardTitle className="text-xl sm:text-2xl font-black tracking-tight group-hover:text-primary transition-colors pr-2">
                                     {raffle.title}
                                 </CardTitle>
-                                <div className="flex items-center gap-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-                                    <span className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full">
+                                <div className="flex flex-wrap items-center gap-2 sm:gap-6 text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-widest sm:tracking-[0.2em]">
+                                    <span className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-zinc-800 dark:text-zinc-300 px-3 py-1.5 rounded-full whitespace-nowrap">
                                         <Users className="w-3.5 h-3.5" /> {raffle.totalNumbers} Tickets
                                     </span>
-                                    <span className="text-foreground bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+                                    <span className="text-foreground bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 whitespace-nowrap">
                                         R$ {raffle.pricePerNumber?.toFixed(2)} / cada
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-6 border-t border-dashed border-slate-200">
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 pt-6 border-t border-dashed border-slate-200">
                                 <Link href={`/campanha/${raffle.slug}`} target="_blank" className="w-full">
                                     <Button
                                         variant="outline"
@@ -139,12 +139,23 @@ export function RafflesList({
                                     <Pencil className="w-3.5 h-3.5" /> EDITAR
                                 </Button>
 
+                                {raffle.plan === 'pro' && (
+                                    <Link href={`/admin/campanhas/${raffle.id}/editor`} className="w-full">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-full gap-2 text-[10px] font-black h-11 border-2 border-[#e0891d] text-[#e0891d] rounded-2xl hover:bg-[#fff9f0] dark:hover:bg-[#e0891d]/10 transition-all uppercase tracking-wider bg-transparent"
+                                        >
+                                            <Palette className="w-3.5 h-3.5" /> Editor PRO
+                                        </Button>
+                                    </Link>
+                                )}
 
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={() => onViewSummary(raffle)}
-                                    className="gap-2 text-[10px] font-black h-11 border-2 rounded-2xl hover:bg-slate-50 transition-all uppercase tracking-wider"
+                                    className="gap-2 text-[10px] font-black h-11 border-2 rounded-2xl hover:bg-slate-50 transition-all uppercase tracking-wider bg-slate-900 text-white dark:bg-zinc-800 dark:text-white dark:border-zinc-700 hover:text-slate-900 border-transparent dark:hover:bg-zinc-700 dark:hover:text-white"
                                 >
                                     <FileText className="w-3.5 h-3.5" /> RESUMO
                                 </Button>
@@ -162,22 +173,22 @@ export function RafflesList({
                                     variant="default"
                                     size="sm"
                                     onClick={() => onShareWithImage(raffle)}
-                                    className="gap-2 text-[10px] font-black h-11 shadow-lg bg-[#128C7E] hover:bg-[#075E54] text-white rounded-2xl transition-all uppercase tracking-wider col-span-2 sm:col-span-1 lg:col-span-1"
+                                    className="gap-2 text-[10px] sm:text-[11px] font-black h-11 shadow-lg bg-[#128C7E] hover:bg-[#075E54] text-white rounded-2xl transition-all uppercase tracking-wider col-span-2 md:col-span-2 lg:col-span-1"
                                 >
                                     <MessageCircle className="w-3.5 h-3.5 fill-current" /> WHATSAPP
                                 </Button>
                             </div>
 
                             {raffle.status === "pending_payment" && (
-                                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-xl border border-blue-100 dark:border-blue-900/50 flex flex-col sm:flex-row items-center justify-between gap-4">
                                     <div className="flex items-center gap-3 text-left">
                                         <Zap className="w-6 h-6 text-blue-600 fill-current" />
                                         <div>
-                                            <p className="text-[10px] font-bold text-blue-700 uppercase leading-none mb-1">
+                                            <p className="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase leading-none mb-1">
                                                 Pagamento Necessário
                                             </p>
-                                            <p className="text-sm font-medium text-blue-800 leading-tight">
-                                                Sua campanha está salva, mas falta pagar a taxa (R$ 9,90) para ativar.
+                                            <p className="text-sm font-medium text-blue-800 dark:text-blue-300 leading-tight">
+                                                Sua campanha está salva, mas falta pagar a taxa (R$ 14,90) para ativar.
                                             </p>
                                         </div>
                                     </div>
