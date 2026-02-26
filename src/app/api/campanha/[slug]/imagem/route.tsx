@@ -223,7 +223,7 @@ function TemplateMint({ raffle, statusMap, pct, total, price, date }: TemplatePr
             {/* Imagem do produto + anel */}
             {raffle.image_url && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 32 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, background: 'conic-gradient(#34d399, #059669, #34d399)', padding: 6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, backgroundColor: '#34d399', padding: 6 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={raffle.image_url} width={208} height={208} style={{ borderRadius: 104, objectFit: 'cover' }} alt="" />
                     </div>
@@ -273,7 +273,7 @@ function TemplateGold({ raffle, statusMap, pct, total, price, date }: TemplatePr
 
             {raffle.image_url && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 32 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, background: 'conic-gradient(#fbbf24, #92400e, #fbbf24)', padding: 6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, backgroundColor: '#fbbf24', padding: 6 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={raffle.image_url} width={208} height={208} style={{ borderRadius: 104, objectFit: 'cover' }} alt="" />
                     </div>
@@ -364,7 +364,7 @@ function TemplateSolar({ raffle, statusMap, pct, total, price, date }: TemplateP
 
             {raffle.image_url && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 32 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, background: 'conic-gradient(#fb923c, #ef4444, #fbbf24, #ef4444, #fb923c)', padding: 6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, backgroundColor: '#fb923c', padding: 6 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={raffle.image_url} width={208} height={208} style={{ borderRadius: 104, objectFit: 'cover' }} alt="" />
                     </div>
@@ -408,7 +408,7 @@ function TemplateNebula({ raffle, statusMap, pct, total, price, date }: Template
 
             {raffle.image_url && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 32 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, background: 'conic-gradient(#818cf8, #4f46e5, #c084fc, #4f46e5, #818cf8)', padding: 6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 220, height: 220, borderRadius: 110, backgroundColor: '#818cf8', padding: 6 }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={raffle.image_url} width={208} height={208} style={{ borderRadius: 104, objectFit: 'cover' }} alt="" />
                     </div>

@@ -47,6 +47,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
   const [step, setStep] = useState<'type' | 'form' | 'payment'>('type');
   const [creationType, setCreationType] = useState<'basic' | 'pro' | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<'mint' | 'gold' | 'pink' | 'solar' | 'nebula' | 'scrapbook' | 'calor' | 'juliana' | 'creme'>('juliana');
+  const [previewTheme, setPreviewTheme] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pendingRaffle, setPendingRaffle] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -472,7 +473,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={(e) => { e.preventDefault(); window.open(`/api/campanha/demo/imagem?theme=${selectedTheme}`, '_blank'); }}
+                  onClick={(e) => { e.preventDefault(); setPreviewTheme(selectedTheme); }}
                   className="gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-xl ml-2 shrink-0"
                 >
                   <Eye className="w-3.5 h-3.5" /> Expandir Preview
@@ -502,7 +503,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
                   >
                     <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/api/campanha/demo/imagem?theme=${t.id}`} alt={t.name} className="object-cover w-full h-full" loading="lazy" />
+                      <img src={`/api/campanha/demo/imagem?theme=${t.id}`} alt={t.name} className="object-cover object-top w-full h-full" loading="lazy" />
                     </div>
                     <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
                   </div>
@@ -610,6 +611,25 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
           </div>
         )}
       </DialogContent>
+
+      {/* Modal de Preview em Tamanho Real */}
+      {previewTheme && (
+        <Dialog open={!!previewTheme} onOpenChange={(val) => !val && setPreviewTheme(null)}>
+          <DialogContent className="max-w-[450px] w-[95vw] h-[85vh] overflow-hidden bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 p-0 flex flex-col rounded-3xl">
+            <DialogHeader className="p-4 bg-slate-50 dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800 shrink-0 flex flex-row items-center justify-between">
+              <DialogTitle className="text-slate-900 dark:text-white text-sm uppercase tracking-widest font-black flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-primary" /> Preview: {previewTheme}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex-1 overflow-y-auto w-full flex justify-center bg-slate-100 dark:bg-black/50 p-4 sm:p-6 no-scrollbar relative">
+              <div className="w-full max-w-[380px] h-fit bg-red-50 relative rounded-xl shadow-2xl overflow-hidden ring-1 ring-black/5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/api/campanha/demo/imagem?theme=${previewTheme}`} alt={`Preview ${previewTheme}`} className="w-full h-auto block" />
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </Dialog>
   );
 }
