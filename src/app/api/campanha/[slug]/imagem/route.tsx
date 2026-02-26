@@ -757,12 +757,11 @@ const DEFAULT_THEME: RaffleTheme = 'juliana';
 // ─── Altura da imagem por volume de números ────────────────────────────────────
 
 function imageHeight(total: number): number {
-    if (total <= 50) return 1200;
-    if (total <= 100) return 1400;
-    if (total <= 200) return 1600;
-    if (total <= 300) return 1800;
-    if (total <= 500) return 2200;
-    return 2800; // 500-1000+
+    const { cols, gap, boxSize, padding } = gridConfig(total, 984);
+    const rows = Math.ceil(total / cols);
+    const gridH = (rows * boxSize) + ((rows - 1) * gap) + (padding * 2);
+    const headerFooterSpace = 1050; // Um espaço extra e seguro para títulos, imagens, legenda e progressbar
+    return gridH + headerFooterSpace;
 }
 
 // ─── Route Handler ─────────────────────────────────────────────────────────────

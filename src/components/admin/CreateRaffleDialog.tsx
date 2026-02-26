@@ -501,9 +501,9 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
                         : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-slate-50 dark:bg-zinc-900"
                     )}
                   >
-                    <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center">
+                    <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center p-0.5">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/api/campanha/demo/imagem?theme=${t.id}`} alt={t.name} className="object-cover object-top w-full h-full" loading="lazy" />
+                      <img src={`/api/campanha/demo/imagem?theme=${t.id}`} alt={t.name} className="object-contain w-full h-full" loading="lazy" />
                     </div>
                     <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
                   </div>
