@@ -317,8 +317,8 @@ function TemplatePink({ raffle, statusMap, pct, total, price, date }: TemplatePr
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: W, backgroundColor: '#fff0f3', padding: '56px 40px', fontFamily: 'sans-serif' }}>
             <span style={{ fontSize: 100, fontWeight: 900, color: 'rgba(244,63,94,0.15)', letterSpacing: -2, lineHeight: 1, marginBottom: -20 }}>RIFA</span>
-            <span style={{ fontSize: 52, fontWeight: 700, color: '#9f1239', fontStyle: 'italic', marginBottom: 32 }}>solidária</span>
-            <span style={{ fontSize: 22, color: '#7a3040', fontWeight: 400, marginBottom: 36, textAlign: 'center' }}>{raffle.title}</span>
+            <span style={{ fontSize: 52, fontWeight: 700, color: '#9f1239', fontStyle: 'italic', marginBottom: 32, textAlign: 'center', padding: '0 20px' }}>{raffle.title}</span>
+            {raffle.description && <span style={{ fontSize: 22, color: '#7a3040', fontWeight: 400, marginBottom: 36, textAlign: 'center', padding: '0 40px' }}>{raffle.description}</span>}
 
             {raffle.image_url && (
                 <div style={{ display: 'flex', marginBottom: 32 }}>
@@ -547,11 +547,11 @@ function TemplateCalor({ raffle, statusMap, pct, total, price, date }: TemplateP
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: '40px 48px 56px', backgroundColor: '#0d001a' }}>
                 {/* Prêmio strip */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(255,0,128,0.1)', border: '1px solid rgba(255,69,0,0.25)', borderRadius: 20, padding: '20px 32px', width: 984, marginBottom: 32 }}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, marginRight: 24 }}>
                         <span style={{ fontSize: 15, color: 'rgba(255,200,100,0.65)', fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>🎁 PRÊMIO</span>
-                        <span style={{ fontSize: 36, color: '#fff', fontWeight: 900 }}>{raffle.prize_description || raffle.title}</span>
+                        <span style={{ fontSize: 32, color: '#fff', fontWeight: 900, whiteSpace: 'pre-wrap', lineHeight: 1.2 }}>{raffle.prize_description || raffle.title}</span>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                         <span style={{ fontSize: 15, color: 'rgba(255,200,100,0.65)', fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>SORTEIO</span>
                         <span style={{ fontSize: 36, color: '#fff', fontWeight: 900 }}>{date}</span>
                     </div>
@@ -589,9 +589,9 @@ function TemplateJuliana({ raffle, statusMap, pct, total, price, date }: Templat
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: W, backgroundColor: '#fce8e4', padding: '56px 48px', fontFamily: 'sans-serif' }}>
             {/* Título */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 40, textAlign: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 40, textAlign: 'center', padding: '0 20px' }}>
                 <span style={{ fontSize: 88, fontWeight: 900, color: '#2d1b1b', lineHeight: 1, letterSpacing: -2 }}>RIFA</span>
-                <span style={{ fontSize: 52, fontWeight: 700, color: '#c96a50', fontStyle: 'italic', marginTop: -8 }}>{raffle.organizer_name ? `da ${raffle.organizer_name}` : 'Solidária'}</span>
+                <span style={{ fontSize: 52, fontWeight: 700, color: '#c96a50', fontStyle: 'italic', marginTop: -8 }}>{raffle.title}</span>
                 <span style={{ fontSize: 24, color: '#7a5050', fontWeight: 400, marginTop: 12 }}>
                     {raffle.description || `Ajude comprando um número por ${price}!`}
                 </span>
@@ -662,9 +662,9 @@ function TemplateCreme({ raffle, statusMap, pct, total, price, date }: TemplateP
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: W, backgroundColor: '#f5edd8', padding: '56px 48px', fontFamily: 'sans-serif' }}>
             {/* Header com coração */}
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%', marginBottom: 36 }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, marginRight: 24 }}>
                     <span style={{ fontSize: 88, fontWeight: 900, color: '#3a2a10', lineHeight: 1, letterSpacing: -2 }}>RIFA</span>
-                    <span style={{ fontSize: 52, fontWeight: 700, color: '#c0823a', fontStyle: 'italic', marginTop: -8 }}>Solidária</span>
+                    <span style={{ fontSize: 52, fontWeight: 700, color: '#c0823a', fontStyle: 'italic', marginTop: -8, whiteSpace: 'pre-wrap', lineHeight: 1.1 }}>{raffle.title}</span>
                     <span style={{ fontSize: 22, color: '#7a6040', fontWeight: 400, marginTop: 12, maxWidth: 700, lineHeight: 1.4 }}>
                         {raffle.description || 'Ajude nossa instituição e concorra a um prêmio de R$ 100,00.'}
                     </span>
@@ -777,10 +777,13 @@ export async function GET(
 
         // Caso especial: 'demo' para gerar miniaturas de preview no painel
         if (slug === 'demo') {
+            const customImg = searchParams.get('img');
+            const customTitle = searchParams.get('title');
+
             const raffle = {
-                title: 'EXEMPLO DE RIFA PRO',
+                title: customTitle || 'EXEMPLO DE RIFA PRO',
                 description: 'Esta é uma rifa de demonstração para exibir o layout escolhido.',
-                image_url: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1080&auto=format&fit=crop',
+                image_url: customImg || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1080&auto=format&fit=crop',
                 ticket_price: 1.5,
                 total_numbers: 100,
                 draw_date: new Date().toISOString(),
