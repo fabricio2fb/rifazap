@@ -218,7 +218,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
 
               <div className="mb-6 flex items-baseline gap-1">
                 <span className="text-sm font-bold text-slate-400">R$</span>
-                <span className="text-4xl font-black text-slate-800 tracking-tighter">9,90</span>
+                <span className="text-4xl font-black text-slate-800 tracking-tighter">14,90</span>
                 <span className="text-sm font-bold text-slate-400">/campanha</span>
               </div>
 
@@ -292,7 +292,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
 
               <div className="mb-6 flex items-baseline gap-1 relative z-10">
                 <span className="text-sm font-bold text-orange-600/60">R$</span>
-                <span className="text-4xl font-black text-[#ea580c] tracking-tighter">21,90</span>
+                <span className="text-4xl font-black text-[#ea580c] tracking-tighter">25,90</span>
                 <span className="text-sm font-bold text-orange-600/60">/campanha</span>
               </div>
 
@@ -305,60 +305,51 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
                   <span className="text-[8px] font-medium tracking-wide">João acabou de comprar!</span>
                 </div>
 
-                <div className="w-full h-full bg-white/0 flex flex-col inset-0 pt-4 pb-1 relative z-10 px-2 lg:px-4">
-                  <div className="text-center mb-2">
-                    <h4 className="text-[18px] text-black leading-none font-black" style={{ letterSpacing: "-0.5px" }}>IPHONE 15 128GB</h4>
+                <div className="w-full h-full flex flex-col inset-0 pt-4 pb-1 relative z-10 px-2 lg:px-4 bg-zinc-950 rounded-lg shadow-2xl border border-zinc-800 overflow-hidden text-white">
+
+                  {/* Banner Editor Topo */}
+                  <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-r from-orange-600 to-red-600 opacity-20"></div>
+
+                  <div className="text-center mb-2 mt-2 relative z-10">
+                    <h4 className="text-[17px] text-zinc-100 leading-tight font-black uppercase tracking-tight">PC GAMER RTX 4090</h4>
                   </div>
-                  <div className="flex gap-2 w-full px-1 mb-2">
-                    <div className="bg-white flex-1 rounded-md text-left border border-slate-100 shadow-[0_2px_4px_rgba(0,0,0,0.04)] p-1.5 flex items-center gap-2">
-                      <span className="text-[11px] text-yellow-500 ml-1">🏆</span>
-                      <div className="flex flex-col">
-                        <span className="text-[5px] font-bold text-slate-400 uppercase">VALOR DA COTA</span>
-                        <span className="text-[10px] text-black font-black">R$ 20,00</span>
-                      </div>
+
+                  <div className="flex gap-2 w-full px-1 mb-2 relative z-10">
+                    <div className="bg-zinc-900 flex-1 rounded-md text-left border border-zinc-800 shadow-md p-1.5 flex flex-col justify-center">
+                      <span className="text-[5px] font-bold text-zinc-500 uppercase">VALOR DA COTA</span>
+                      <span className="text-[12px] font-black text-orange-500 leading-none mt-0.5">R$ 1,00</span>
                     </div>
-                    <div className="bg-white flex-1 rounded-md text-left border border-slate-100 shadow-[0_2px_4px_rgba(0,0,0,0.04)] p-1.5 flex items-center gap-1.5">
-                      <span className="text-[10px] bg-red-100/60 text-red-500 rounded-[3px] px-1 py-0.5 leading-[1]" style={{ fontSize: '5px', fontWeight: 'bold', textAlign: 'center' }}>JUL<br /><span style={{ fontSize: '8px' }}>17</span></span>
-                      <div className="flex flex-col">
-                        <span className="text-[5px] font-bold text-slate-400 uppercase">SORTEIO DIA</span>
-                        <span className="text-[10px] text-black font-black">20/03/2007</span>
-                      </div>
+                    <div className="bg-zinc-900 flex-1 rounded-md text-left border border-zinc-800 shadow-md p-1.5 flex flex-col justify-center">
+                      <span className="text-[5px] font-bold text-zinc-500 uppercase">AÇÃO E AVISOS</span>
+                      <span className="text-[10px] bg-red-500/20 text-red-500 border border-red-500/50 rounded flex items-center justify-center font-bold mt-1 py-0.5 px-1 uppercase w-fit leading-none">Últimas 50!</span>
                     </div>
                   </div>
 
-                  <div className="flex justify-center gap-3 mt-1 mb-2">
-                    <div className="flex items-center gap-1 text-[7px] text-black font-medium"><div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-sm"></div>Livre</div>
-                    <div className="flex items-center gap-1 text-[7px] text-black font-medium"><div className="w-2.5 h-2.5 rounded-full bg-[#f97316] shadow-sm"></div>Reservado</div>
-                    <div className="flex items-center gap-1 text-[7px] text-black font-medium"><div className="w-2.5 h-2.5 rounded-full bg-slate-300 shadow-sm"></div>Pago</div>
-                  </div>
-
-                  <div className="px-1 w-full mb-1.5">
+                  <div className="px-1 w-full mb-1.5 mt-1 relative z-10">
                     <div className="flex justify-between items-end mb-0.5">
-                      <span className="text-[5px] font-medium text-slate-600 uppercase tracking-widest">PROGRESSO DA RIFA</span>
-                      <span className="text-[6px] font-medium text-[#ea580c]">12% VENDIDO</span>
+                      <span className="text-[5px] font-medium text-zinc-500 uppercase tracking-widest">PROGRESSO PREMIUM</span>
+                      <span className="text-[6px] font-black text-orange-500">98% VENDIDO</span>
                     </div>
-                    <div className="bg-slate-200 rounded-full h-[6px] w-full flex overflow-hidden shadow-inner">
-                      <div className="bg-[#f97316] w-[18%] h-full rounded-full"></div>
+                    <div className="bg-zinc-800 rounded-full h-[6px] w-full flex overflow-hidden shadow-inner border border-zinc-700">
+                      <div className="bg-gradient-to-r from-orange-500 to-red-500 w-[98%] h-full rounded-full"></div>
                     </div>
                   </div>
 
-                  <div className="mx-1 mt-auto bg-[#fbbf24] border-[3px] border-[#f59e0b] rounded-[10px] p-[3px] grid grid-cols-5 gap-[2px] shadow-sm">
+                  <div className="mx-1 mt-auto bg-zinc-900 border-[1px] border-zinc-700 rounded-[10px] p-[3px] grid grid-cols-5 gap-[2px] shadow-sm relative z-10">
                     {Array.from({ length: 10 }).map((_, i) => {
-                      let bgClass = "bg-white text-slate-600 border border-slate-200/50";
-                      if (i === 3 || i === 5) bgClass = "bg-slate-300 text-white border-transparent"; // Pago
+                      let bgClass = "bg-zinc-800 text-zinc-400 border border-zinc-700/50";
+                      if (i === 3 || i === 5) bgClass = "bg-zinc-600 text-zinc-300 border-transparent"; // Pago
                       if (i === 4 || i === 8) bgClass = "bg-[#f97316] text-white border-transparent"; // Reservado
                       return (
-                        <div key={i} className={`h-5 w-full bg-white rounded flex items-center justify-center text-[7px] font-medium shadow-sm ${bgClass}`}>
+                        <div key={i} className={`h-5 w-full rounded flex items-center justify-center text-[7px] font-bold shadow-sm ${bgClass}`}>
                           {i + 1}
                         </div>
                       )
                     })}
                   </div>
 
-                  <div className="w-full text-center mt-2.5 pb-0">
-                    <div className="text-[11px] font-medium text-slate-900 tracking-wide uppercase leading-none">PARTICIPE AGORA MESMO</div>
-                    <div className="text-[5px] font-medium text-slate-800 uppercase mt-1 leading-none">SORTEIO DIA: 20/03/2007</div>
-                    <div className="text-[4px] font-bold text-slate-500 mt-1 uppercase tracking-widest leading-none">COMPRA SEGURA • PAGAMENTO VIA SITE</div>
+                  <div className="w-full text-center mt-2.5 pb-0 relative z-10">
+                    <div className="text-[9px] w-fit mx-auto bg-white text-black px-2 py-0.5 rounded-full font-black tracking-wide uppercase leading-tight shadow-lg shadow-white/10">🏆 BÔNUS ATIVO</div>
                   </div>
                 </div>
               </div>
@@ -460,57 +451,59 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
               <Input id="whatsappGroupLink" name="whatsappGroupLink" placeholder="https://chat.whatsapp.com/..." className="h-12 border-green-100 dark:border-green-900/50 dark:bg-zinc-900" />
             </div>
 
-            <div className="grid gap-3 pt-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="font-semibold dark:text-zinc-300">
-                    Template da Imagem de Compartilhamento
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Escolha o design da imagem gerada automaticamente para compartilhar.
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => { e.preventDefault(); setPreviewTheme(selectedTheme); }}
-                  className="gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-xl ml-2 shrink-0"
-                >
-                  <Eye className="w-3.5 h-3.5" /> Expandir Preview
-                </Button>
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-2">
-                {[
-                  { id: 'mint', name: 'Mint' },
-                  { id: 'gold', name: 'Gold' },
-                  { id: 'pink', name: 'Pink' },
-                  { id: 'solar', name: 'Solar' },
-                  { id: 'nebula', name: 'Nebula' },
-                  { id: 'scrapbook', name: 'Scrapbook' },
-                  { id: 'calor', name: 'Calor' },
-                  { id: 'juliana', name: 'Juliana' },
-                  { id: 'creme', name: 'Creme' },
-                ].map((t) => (
-                  <div
-                    key={t.id}
-                    onClick={() => setSelectedTheme(t.id as any)}
-                    className={cn(
-                      "flex flex-col items-center justify-center p-1 rounded-xl border-2 cursor-pointer transition-all hover:scale-105 overflow-hidden",
-                      selectedTheme === t.id
-                        ? `border-primary shadow-md ring-2 ring-primary/20 bg-primary/5`
-                        : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-slate-50 dark:bg-zinc-900"
-                    )}
-                  >
-                    <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center p-0.5">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/api/campanha/demo/imagem?theme=${t.id}${imageUrl ? `&img=${encodeURIComponent(imageUrl)}` : ''}${title ? `&title=${encodeURIComponent(title)}` : ''}`} alt={t.name} className="object-contain w-full h-full" loading="lazy" />
-                    </div>
-                    <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
+            {creationType === 'pro' && (
+              <div className="grid gap-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-semibold dark:text-zinc-300">
+                      Template da Imagem de Compartilhamento
+                    </Label>
+                    <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-orange-500" /> Vantagem exclusiva PRO
+                    </p>
                   </div>
-                ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => { e.preventDefault(); setPreviewTheme(selectedTheme); }}
+                    className="gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-xl ml-2 shrink-0 border-orange-200 hover:border-orange-300 hover:bg-orange-50 text-orange-700 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:text-orange-400"
+                  >
+                    <Eye className="w-3.5 h-3.5" /> Expandir Preview
+                  </Button>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-2">
+                  {[
+                    { id: 'mint', name: 'Mint' },
+                    { id: 'gold', name: 'Gold' },
+                    { id: 'pink', name: 'Pink' },
+                    { id: 'solar', name: 'Solar' },
+                    { id: 'nebula', name: 'Nebula' },
+                    { id: 'scrapbook', name: 'Scrapbook' },
+                    { id: 'calor', name: 'Calor' },
+                    { id: 'juliana', name: 'Juliana' },
+                    { id: 'creme', name: 'Creme' },
+                  ].map((t) => (
+                    <div
+                      key={t.id}
+                      onClick={() => setSelectedTheme(t.id as any)}
+                      className={cn(
+                        "flex flex-col items-center justify-center p-1 rounded-xl border-2 cursor-pointer transition-all hover:scale-105 overflow-hidden",
+                        selectedTheme === t.id
+                          ? `border-orange-500 shadow-md ring-2 ring-orange-500/20 bg-orange-50 dark:bg-orange-500/10`
+                          : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-slate-50 dark:bg-zinc-900"
+                      )}
+                    >
+                      <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center p-0.5">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={`/api/campanha/demo/imagem?theme=${t.id}${imageUrl ? `&img=${encodeURIComponent(imageUrl)}` : ''}${title ? `&title=${encodeURIComponent(title)}` : ''}`} alt={t.name} className="object-contain w-full h-full" loading="lazy" />
+                      </div>
+                      <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="grid gap-2 bg-muted/30 dark:bg-zinc-900 p-4 rounded-xl border border-border dark:border-zinc-800">
               <div className="flex items-start space-x-3">

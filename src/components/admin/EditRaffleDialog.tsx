@@ -158,7 +158,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-0 gap-0">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto no-scrollbar p-0 gap-0 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <Pencil className="w-5 h-5 text-primary-foreground" />
@@ -365,7 +365,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
             </div>
           </div>
 
-          <div className="pt-4 sticky bottom-0 bg-white pb-2">
+          <div className="pt-4 sticky bottom-0 pb-4 bg-background dark:bg-zinc-950 px-6 border-t border-border/50 dark:border-zinc-800/50 mt-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] dark:shadow-none z-10 w-[calc(100%+48px)] -ml-6 mb-[-24px]">
             <Button type="submit" className="w-full h-14 font-bold text-lg shadow-xl" disabled={loading}>
               {loading ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : null}
               {loading ? "Salvando..." : "Salvar Alterações"}
