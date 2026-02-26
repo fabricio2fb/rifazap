@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 interface CreateRaffleDialogProps {
   onCreate?: (raffle: any) => void;
@@ -44,6 +45,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'type' | 'form' | 'payment'>('type');
   const [creationType, setCreationType] = useState<'basic' | 'pro' | null>(null);
+  const [selectedTheme, setSelectedTheme] = useState<'mint' | 'gold' | 'pink' | 'solar' | 'nebula' | 'scrapbook' | 'calor' | 'juliana' | 'creme'>('juliana');
   const [loading, setLoading] = useState(false);
   const [pendingRaffle, setPendingRaffle] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -133,7 +135,10 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
         pix_key_type: 'random',
         whatsapp_contact: formData.get('whatsappContact') as string,
         whatsapp_group_link: formData.get('whatsappGroupLink') as string,
-        status: 'pending_payment'
+        status: 'pending_payment',
+        settings: {
+          image_theme: selectedTheme
+        }
       };
 
       // Insert into DB via Secure API
@@ -176,7 +181,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
           <Plus className="w-5 h-5" /> Criar Nova Campanha
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-0 gap-0">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto no-scrollbar p-0 gap-0 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="text-2xl font-bold">
             {step === 'type' ? 'Escolha o Formato da Campanha' : step === 'form' ? 'Configurar Campanha' : 'Taxa de Ativação'}
@@ -199,11 +204,11 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             {/* Card BÁSICO (Sem Edição) */}
             <div
               onClick={() => { setCreationType('basic'); setStep('form'); }}
-              className="flex flex-col border-2 border-slate-200 rounded-3xl p-6 cursor-pointer hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all group bg-white relative overflow-hidden"
+              className="flex flex-col border-2 border-slate-200 dark:border-zinc-800 rounded-3xl p-6 cursor-pointer hover:border-slate-400 dark:hover:border-zinc-600 hover:shadow-xl hover:-translate-y-1 transition-all group bg-white dark:bg-zinc-900 relative overflow-hidden"
             >
               <div className="mb-4">
-                <h3 className="text-xl font-black text-slate-800 mb-1">Sem Edição</h3>
-                <p className="text-sm text-slate-500 font-medium leading-snug h-10">Padrão do sistema. Layout estático baseado na foto do prêmio que você enviar.</p>
+                <h3 className="text-xl font-black text-slate-800 dark:text-white mb-1">Sem Edição</h3>
+                <p className="text-sm text-slate-500 dark:text-zinc-400 font-medium leading-snug h-10">Padrão do sistema. Layout estático baseado na foto do prêmio que você enviar.</p>
               </div>
 
               <div className="mb-6 flex items-baseline gap-1">
@@ -260,7 +265,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             {/* Card TICKETON PRO */}
             <div
               onClick={() => { setCreationType('pro'); setStep('form'); }}
-              className="flex flex-col border-[3px] border-[#f97316] rounded-3xl p-6 cursor-pointer bg-orange-50/30 hover:bg-orange-50 hover:shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1 transition-all relative overflow-hidden group"
+              className="flex flex-col border-[3px] border-[#f97316] rounded-3xl p-6 cursor-pointer bg-orange-50/30 dark:bg-zinc-900 hover:bg-orange-50 dark:hover:bg-zinc-800 hover:shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1 transition-all relative overflow-hidden group"
             >
               <div className="absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br from-orange-400 to-red-500 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
 
@@ -269,9 +274,9 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
               </div>
 
               <div className="mb-4 relative z-10">
-                <h3 className="text-xl font-black text-[#ea580c] mb-1 flex items-center gap-2">TicketOn PRO</h3>
-                <p className="text-sm text-slate-600 font-medium leading-snug mb-2"><strong>Editor da Rifa</strong> completo para você vender muito mais com:</p>
-                <div className="flex flex-wrap gap-1.5 text-[9px] font-black uppercase tracking-wider text-[#ea580c]">
+                <h3 className="text-xl font-black text-[#ea580c] dark:text-orange-400 mb-1 flex items-center gap-2">TicketOn PRO</h3>
+                <p className="text-sm text-slate-600 dark:text-zinc-400 font-medium leading-snug mb-2"><strong>Editor da Rifa</strong> completo para você vender muito mais com:</p>
+                <div className="flex flex-wrap gap-1.5 text-[9px] font-black uppercase tracking-wider text-[#ea580c] dark:text-orange-400">
                   <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">🔔 Notificações</span>
                   <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">⏳ Contador</span>
                   <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">🏷️ Cupons</span>
@@ -362,13 +367,13 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
         ) : step === 'form' ? (
           <form onSubmit={handleCreateAndShowPayment} className="p-6 space-y-5">
             <div className="grid gap-2">
-              <Label htmlFor="title" className="font-semibold">Título do Prêmio</Label>
-              <Input id="title" name="title" placeholder="Ex: iPhone 15 Pro Max" required className="h-12 text-base" />
+              <Label htmlFor="title" className="font-semibold dark:text-zinc-300">Título do Prêmio</Label>
+              <Input id="title" name="title" placeholder="Ex: iPhone 15 Pro Max" required className="h-12 text-base dark:bg-zinc-900 dark:border-zinc-800" />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="description" className="font-semibold">Descrição e Regras</Label>
-              <Textarea id="description" name="description" placeholder="Descreva os detalhes do prêmio..." required className="min-h-[80px] text-base" />
+              <Label htmlFor="description" className="font-semibold dark:text-zinc-300">Descrição e Regras</Label>
+              <Textarea id="description" name="description" placeholder="Descreva os detalhes do prêmio..." required className="min-h-[80px] text-base dark:bg-zinc-900 dark:border-zinc-800" />
             </div>
 
             <div className="space-y-4">
@@ -414,61 +419,97 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="price" className="font-semibold">Valor do Ticket</Label>
+                <Label htmlFor="price" className="font-semibold dark:text-zinc-300">Valor do Ticket</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-3.5 text-sm font-bold text-muted-foreground">R$</span>
-                  <input name="price" type="number" step="0.01" placeholder="10,00" required className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                  <input name="price" type="number" step="0.01" placeholder="10,00" required className="flex h-12 w-full rounded-md border border-input dark:border-zinc-800 bg-background dark:bg-zinc-900 px-3 py-2 pl-10 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="total" className="font-semibold">Qtd. Tickets</Label>
-                <Input id="total" name="total" type="number" placeholder="100" required className="h-12 text-base" />
+                <Label htmlFor="total" className="font-semibold dark:text-zinc-300">Qtd. Tickets</Label>
+                <Input id="total" name="total" type="number" placeholder="100" required className="h-12 text-base dark:bg-zinc-900 dark:border-zinc-800" />
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="date" className="font-semibold">Data Prevista do Resultado</Label>
-              <Input id="date" name="date" type="date" required className="h-12 text-base" />
+              <Label htmlFor="date" className="font-semibold dark:text-zinc-300">Data Prevista do Resultado</Label>
+              <Input id="date" name="date" type="date" required className="h-12 text-base dark:bg-zinc-900 dark:border-zinc-800" />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="whatsappContact" className="flex items-center gap-2 font-semibold text-green-700">
+              <Label htmlFor="whatsappContact" className="flex items-center gap-2 font-semibold text-green-700 dark:text-green-500">
                 <Phone className="w-4 h-4" /> WhatsApp para Comprovantes
               </Label>
-              <Input id="whatsappContact" name="whatsappContact" placeholder="5511999999999" required className="h-12 border-green-100" />
+              <Input id="whatsappContact" name="whatsappContact" placeholder="5511999999999" required className="h-12 border-green-100 dark:border-green-900/50 dark:bg-zinc-900" />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="pix" className="font-semibold text-green-700">Sua Chave PIX (Recebimento)</Label>
-              <Input id="pix" name="pix" placeholder="E-mail, CPF ou Celular" required className="h-12 border-green-200 focus:ring-green-500 text-base" />
+              <Label htmlFor="pix" className="font-semibold text-green-700 dark:text-green-500">Sua Chave PIX (Recebimento)</Label>
+              <Input id="pix" name="pix" placeholder="E-mail, CPF ou Celular" required className="h-12 border-green-200 dark:border-green-900/50 dark:bg-zinc-900 focus:ring-green-500 text-base" />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="whatsappGroupLink" className="flex items-center gap-2 font-semibold text-green-700">
+              <Label htmlFor="whatsappGroupLink" className="flex items-center gap-2 font-semibold text-green-700 dark:text-green-500">
                 <LinkIcon className="w-4 h-4" /> Link do Grupo (WhatsApp)
               </Label>
-              <Input id="whatsappGroupLink" name="whatsappGroupLink" placeholder="https://chat.whatsapp.com/..." className="h-12 border-green-100" />
+              <Input id="whatsappGroupLink" name="whatsappGroupLink" placeholder="https://chat.whatsapp.com/..." className="h-12 border-green-100 dark:border-green-900/50 dark:bg-zinc-900" />
             </div>
 
-            <div className="grid gap-2 bg-muted/30 p-4 rounded-xl border border-border">
+            <div className="grid gap-3 pt-2">
+              <Label className="font-semibold dark:text-zinc-300">
+                Template da Imagem de Compartilhamento
+              </Label>
+              <p className="text-xs text-muted-foreground -mt-1">
+                Escolha o design da imagem que será gerada automaticamente ao compartilhar sua campanha no WhatsApp.
+              </p>
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-2">
+                {[
+                  { id: 'mint', name: 'Mint', bg: 'bg-[#041f16]', border: 'border-[#34d399]' },
+                  { id: 'gold', name: 'Gold', bg: 'bg-[#050505]', border: 'border-[#fbbf24]' },
+                  { id: 'pink', name: 'Pink', bg: 'bg-[#fff0f3]', border: 'border-[#e11d48]' },
+                  { id: 'solar', name: 'Solar', bg: 'bg-[#3a0a02]', border: 'border-[#fb923c]' },
+                  { id: 'nebula', name: 'Nebula', bg: 'bg-[#10002b]', border: 'border-[#4f46e5]' },
+                  { id: 'scrapbook', name: 'Scrapbook', bg: 'bg-[#fdf6e3]', border: 'border-[#b5894a]' },
+                  { id: 'calor', name: 'Calor', bg: 'bg-gradient-to-br from-[#ff0080] to-[#ff8c00]', border: 'border-[#ff0080]' },
+                  { id: 'juliana', name: 'Juliana', bg: 'bg-[#fce8e4]', border: 'border-[#c96a50]' },
+                  { id: 'creme', name: 'Creme', bg: 'bg-[#f5edd8]', border: 'border-[#c0823a]' },
+                ].map((t) => (
+                  <div
+                    key={t.id}
+                    onClick={() => setSelectedTheme(t.id as any)}
+                    className={cn(
+                      "flex flex-col items-center justify-center p-2 rounded-xl border-2 cursor-pointer transition-all hover:scale-105",
+                      selectedTheme === t.id
+                        ? `border-primary shadow-md ring-2 ring-primary/20 bg-primary/5`
+                        : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-transparent"
+                    )}
+                  >
+                    <div className={cn("w-full aspect-square rounded-lg mb-2 border", t.bg, t.border)}></div>
+                    <span className="text-[10px] font-bold text-center">{t.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-2 bg-muted/30 dark:bg-zinc-900 p-4 rounded-xl border border-border dark:border-zinc-800">
               <div className="flex items-start space-x-3">
                 <Checkbox id="terms" name="terms" required className="mt-1" />
                 <div className="grid gap-1.5 leading-none">
                   <label
                     htmlFor="terms"
-                    className="text-sm font-medium leading-tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-sm font-medium leading-tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-zinc-200"
                   >
                     Eu aceito os Termos de Uso
                   </label>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground dark:text-zinc-500">
                     Declaro que sou o único responsável legal por essa campanha e concordo com os{' '}
-                    <Link href="/termos" target="_blank" className="font-bold underline text-primary-foreground">Termos de Uso</Link>.
+                    <Link href="/termos" target="_blank" className="font-bold underline text-primary-foreground dark:text-zinc-300">Termos de Uso</Link>.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 sticky bottom-0 bg-white pb-2">
+            <div className="pt-4 sticky bottom-0 bg-white dark:bg-zinc-950 pb-2">
               <Button type="submit" className="w-full h-14 font-bold text-lg shadow-xl gap-2" disabled={loading}>
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Publicar e Ir para Pagamento <ArrowRight className="w-5 h-5" /></>}
               </Button>
@@ -484,7 +525,7 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             <div className="w-full py-4 space-y-4">
               <div className="w-full py-4 space-y-4">
                 <div className="text-sm text-muted-foreground font-medium">
-                  Clique no botão abaixo para ir para o pagamento da taxa de ativação.
+                  Uma taxa única de R$ 14,90 será cobrada para ativar a campanha após a criação. Suas vendas caem direto no seu PIX.ativação.
                   A ativação será automática após a confirmação.
                 </div>
 

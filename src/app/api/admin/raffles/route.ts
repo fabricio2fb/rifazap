@@ -18,6 +18,7 @@ export async function POST(request: Request) {
         ...body,
         organizer_id: user.id,
         status: body.status || 'pending_payment',
+        settings: body.settings || {},
         created_at: new Date().toISOString()
     };
 
