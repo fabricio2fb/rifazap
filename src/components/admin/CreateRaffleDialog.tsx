@@ -451,59 +451,57 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
               <Input id="whatsappGroupLink" name="whatsappGroupLink" placeholder="https://chat.whatsapp.com/..." className="h-12 border-green-100 dark:border-green-900/50 dark:bg-zinc-900" />
             </div>
 
-            {creationType === 'pro' && (
-              <div className="grid gap-3 pt-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label className="font-semibold dark:text-zinc-300">
-                      Template da Imagem de Compartilhamento
-                    </Label>
-                    <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-orange-500" /> Vantagem exclusiva PRO
-                    </p>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => { e.preventDefault(); setPreviewTheme(selectedTheme); }}
-                    className="gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-xl ml-2 shrink-0 border-orange-200 hover:border-orange-300 hover:bg-orange-50 text-orange-700 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:text-orange-400"
-                  >
-                    <Eye className="w-3.5 h-3.5" /> Expandir Preview
-                  </Button>
+            <div className="grid gap-3 pt-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="font-semibold dark:text-zinc-300">
+                    Template da Imagem de Compartilhamento
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Escolha o design da imagem gerada automaticamente para compartilhar.
+                  </p>
                 </div>
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-2">
-                  {[
-                    { id: 'mint', name: 'Mint' },
-                    { id: 'gold', name: 'Gold' },
-                    { id: 'pink', name: 'Pink' },
-                    { id: 'solar', name: 'Solar' },
-                    { id: 'nebula', name: 'Nebula' },
-                    { id: 'scrapbook', name: 'Scrapbook' },
-                    { id: 'calor', name: 'Calor' },
-                    { id: 'juliana', name: 'Juliana' },
-                    { id: 'creme', name: 'Creme' },
-                  ].map((t) => (
-                    <div
-                      key={t.id}
-                      onClick={() => setSelectedTheme(t.id as any)}
-                      className={cn(
-                        "flex flex-col items-center justify-center p-1 rounded-xl border-2 cursor-pointer transition-all hover:scale-105 overflow-hidden",
-                        selectedTheme === t.id
-                          ? `border-orange-500 shadow-md ring-2 ring-orange-500/20 bg-orange-50 dark:bg-orange-500/10`
-                          : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-slate-50 dark:bg-zinc-900"
-                      )}
-                    >
-                      <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center p-0.5">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={`/api/campanha/demo/imagem?theme=${t.id}${imageUrl ? `&img=${encodeURIComponent(imageUrl)}` : ''}${title ? `&title=${encodeURIComponent(title)}` : ''}`} alt={t.name} className="object-contain w-full h-full" loading="lazy" />
-                      </div>
-                      <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
-                    </div>
-                  ))}
-                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => { e.preventDefault(); setPreviewTheme(selectedTheme); }}
+                  className="gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-xl ml-2 shrink-0 border-orange-200 hover:border-orange-300 hover:bg-orange-50 text-orange-700 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:text-orange-400"
+                >
+                  <Eye className="w-3.5 h-3.5" /> Expandir Preview
+                </Button>
               </div>
-            )}
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-2">
+                {[
+                  { id: 'mint', name: 'Mint' },
+                  { id: 'gold', name: 'Gold' },
+                  { id: 'pink', name: 'Pink' },
+                  { id: 'solar', name: 'Solar' },
+                  { id: 'nebula', name: 'Nebula' },
+                  { id: 'scrapbook', name: 'Scrapbook' },
+                  { id: 'calor', name: 'Calor' },
+                  { id: 'juliana', name: 'Juliana' },
+                  { id: 'creme', name: 'Creme' },
+                ].map((t) => (
+                  <div
+                    key={t.id}
+                    onClick={() => setSelectedTheme(t.id as any)}
+                    className={cn(
+                      "flex flex-col items-center justify-center p-1 rounded-xl border-2 cursor-pointer transition-all hover:scale-105 overflow-hidden",
+                      selectedTheme === t.id
+                        ? `border-orange-500 shadow-md ring-2 ring-orange-500/20 bg-orange-50 dark:bg-orange-500/10`
+                        : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-slate-50 dark:bg-zinc-900"
+                    )}
+                  >
+                    <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center p-0.5">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`/api/campanha/demo/imagem?theme=${t.id}${imageUrl ? `&img=${encodeURIComponent(imageUrl)}` : ''}${title ? `&title=${encodeURIComponent(title)}` : ''}`} alt={t.name} className="object-contain w-full h-full" loading="lazy" />
+                    </div>
+                    <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="grid gap-2 bg-muted/30 dark:bg-zinc-900 p-4 rounded-xl border border-border dark:border-zinc-800">
               <div className="flex items-start space-x-3">
