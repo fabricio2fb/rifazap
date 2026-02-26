@@ -785,24 +785,25 @@ export async function GET(
                 description: 'Esta é uma rifa de demonstração para exibir o layout escolhido.',
                 image_url: customImg || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1080&auto=format&fit=crop',
                 ticket_price: 1.5,
-                total_numbers: 100,
+                total_numbers: 45, // Reduzido de 100 para 45 para carregar preview muito mais rápido (menos DOM nodes)
                 draw_date: new Date().toISOString(),
                 pix_key: '(11) 99999-9999',
             };
             const statusMap = new Map<number, NumStatus>();
-            for (let i = 1; i <= 65; i++) statusMap.set(i, 'pago');
-            for (let i = 66; i <= 85; i++) statusMap.set(i, 'reservado');
+            for (let i = 1; i <= 25; i++) statusMap.set(i, 'pago');
+            for (let i = 26; i <= 35; i++) statusMap.set(i, 'reservado');
 
             const total = raffle.total_numbers;
             const price = formatBRL(raffle.ticket_price);
             const date = formatDate(raffle.draw_date);
-            const paidCount = 65;
+            const paidCount = 25;
             const pct = Math.round((paidCount / total) * 100);
 
             const renderFn = TEMPLATES[theme] ?? TEMPLATES[DEFAULT_THEME];
             const element = renderFn({ raffle, statusMap, pct, total, price, date });
 
-            return new ImageResponse(element, { width: 1080, height: imageHeight(total) });
+            // Reduzido o ImageResponse pra 720px no modo demo para gerar mais rápido
+            return new ImageResponse(element, { width: 720, height: imageHeight(total) * (720 / 1080) });
         }
 
         const supabase = await createAdminClient();
