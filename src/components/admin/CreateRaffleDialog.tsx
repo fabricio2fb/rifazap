@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone, Copy, CheckCircle2, Loader2, ArrowRight, Zap, Info, Sparkles } from 'lucide-react';
+import { Plus, Image as ImageIcon, Link as LinkIcon, Upload, Phone, Copy, CheckCircle2, Loader2, ArrowRight, Zap, Info, Sparkles, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 
 interface CreateRaffleDialogProps {
   onCreate?: (raffle: any) => void;
+  children?: React.ReactNode;
 }
 
 const PixQRCode = () => (
@@ -40,7 +41,7 @@ const PixQRCode = () => (
   </svg>
 );
 
-export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
+export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'type' | 'form' | 'payment'>('type');
@@ -177,9 +178,11 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
       }
     }}>
       <DialogTrigger asChild>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 gap-2 shadow-lg">
-          <Plus className="w-5 h-5" /> Criar Nova Campanha
-        </Button>
+        {children ? children : (
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 gap-2 shadow-lg">
+            <Plus className="w-5 h-5" /> Criar Nova Campanha
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto no-scrollbar p-0 gap-0 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100">
         <DialogHeader className="p-6 pb-2">
@@ -456,36 +459,52 @@ export function CreateRaffleDialog({ onCreate }: CreateRaffleDialogProps) {
             </div>
 
             <div className="grid gap-3 pt-2">
-              <Label className="font-semibold dark:text-zinc-300">
-                Template da Imagem de Compartilhamento
-              </Label>
-              <p className="text-xs text-muted-foreground -mt-1">
-                Escolha o design da imagem que será gerada automaticamente ao compartilhar sua campanha no WhatsApp.
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="font-semibold dark:text-zinc-300">
+                    Template da Imagem de Compartilhamento
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Escolha o design da imagem gerada automaticamente para compartilhar.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => { e.preventDefault(); window.open(`/api/campanha/demo/imagem?theme=${selectedTheme}`, '_blank'); }}
+                  className="gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-xl ml-2 shrink-0"
+                >
+                  <Eye className="w-3.5 h-3.5" /> Expandir Preview
+                </Button>
+              </div>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-2">
                 {[
-                  { id: 'mint', name: 'Mint', bg: 'bg-[#041f16]', border: 'border-[#34d399]' },
-                  { id: 'gold', name: 'Gold', bg: 'bg-[#050505]', border: 'border-[#fbbf24]' },
-                  { id: 'pink', name: 'Pink', bg: 'bg-[#fff0f3]', border: 'border-[#e11d48]' },
-                  { id: 'solar', name: 'Solar', bg: 'bg-[#3a0a02]', border: 'border-[#fb923c]' },
-                  { id: 'nebula', name: 'Nebula', bg: 'bg-[#10002b]', border: 'border-[#4f46e5]' },
-                  { id: 'scrapbook', name: 'Scrapbook', bg: 'bg-[#fdf6e3]', border: 'border-[#b5894a]' },
-                  { id: 'calor', name: 'Calor', bg: 'bg-gradient-to-br from-[#ff0080] to-[#ff8c00]', border: 'border-[#ff0080]' },
-                  { id: 'juliana', name: 'Juliana', bg: 'bg-[#fce8e4]', border: 'border-[#c96a50]' },
-                  { id: 'creme', name: 'Creme', bg: 'bg-[#f5edd8]', border: 'border-[#c0823a]' },
+                  { id: 'mint', name: 'Mint' },
+                  { id: 'gold', name: 'Gold' },
+                  { id: 'pink', name: 'Pink' },
+                  { id: 'solar', name: 'Solar' },
+                  { id: 'nebula', name: 'Nebula' },
+                  { id: 'scrapbook', name: 'Scrapbook' },
+                  { id: 'calor', name: 'Calor' },
+                  { id: 'juliana', name: 'Juliana' },
+                  { id: 'creme', name: 'Creme' },
                 ].map((t) => (
                   <div
                     key={t.id}
                     onClick={() => setSelectedTheme(t.id as any)}
                     className={cn(
-                      "flex flex-col items-center justify-center p-2 rounded-xl border-2 cursor-pointer transition-all hover:scale-105",
+                      "flex flex-col items-center justify-center p-1 rounded-xl border-2 cursor-pointer transition-all hover:scale-105 overflow-hidden",
                       selectedTheme === t.id
                         ? `border-primary shadow-md ring-2 ring-primary/20 bg-primary/5`
-                        : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-transparent"
+                        : "border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 bg-slate-50 dark:bg-zinc-900"
                     )}
                   >
-                    <div className={cn("w-full aspect-square rounded-lg mb-2 border", t.bg, t.border)}></div>
-                    <span className="text-[10px] font-bold text-center">{t.name}</span>
+                    <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`/api/campanha/demo/imagem?theme=${t.id}`} alt={t.name} className="object-cover w-full h-full" loading="lazy" />
+                    </div>
+                    <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
                   </div>
                 ))}
               </div>

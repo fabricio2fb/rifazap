@@ -773,9 +773,35 @@ export async function GET(
 ) {
     try {
         const { slug } = await params;
-
-        // Lê o tema da query string: /api/og/[slug]?theme=mint
         const { searchParams } = new URL(request.url);
+        const theme = (searchParams.get('theme') as RaffleTheme) ?? DEFAULT_THEME;
+
+        // Caso especial: 'demo' para gerar miniaturas de preview no painel
+        if (slug === 'demo') {
+            const raffle = {
+                title: 'EXEMPLO DE RIFA PRO',
+                description: 'Esta é uma rifa de demonstração para exibir o layout escolhido.',
+                image_url: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1080&auto=format&fit=crop',
+                ticket_price: 1.5,
+                total_numbers: 100,
+                draw_date: new Date().toISOString(),
+                pix_key: '(11) 99999-9999',
+            };
+            const statusMap = new Map<number, NumStatus>();
+            for (let i = 1; i <= 65; i++) statusMap.set(i, 'pago');
+            for (let i = 66; i <= 85; i++) statusMap.set(i, 'reservado');
+
+            const total = raffle.total_numbers;
+            const price = formatBRL(raffle.ticket_price);
+            const date = formatDate(raffle.draw_date);
+            const paidCount = 65;
+            const pct = Math.round((paidCount / total) * 100);
+
+            const renderFn = TEMPLATES[theme] ?? TEMPLATES[DEFAULT_THEME];
+            const element = renderFn({ raffle, statusMap, pct, total, price, date });
+
+            return new ImageResponse(element, { width: 1080, height: imageHeight(total) });
+        }
 
         const supabase = await createAdminClient();
 
@@ -790,8 +816,7 @@ export async function GET(
             return new Response('Campanha não encontrada', { status: 404 });
         }
 
-        // Tenta pegar o tema da query string, depois dos settings do DB, depois o default.
-        const theme = (searchParams.get('theme') as RaffleTheme) ?? raffle?.settings?.image_theme ?? DEFAULT_THEME;
+        const dbTheme = (searchParams.get('theme') as RaffleTheme) ?? raffle?.settings?.image_theme ?? DEFAULT_THEME;
 
         // 2. Busca participações
         const { data: purchases } = await supabase
@@ -817,7 +842,7 @@ export async function GET(
         const pct = Math.round((paidCount / total) * 100);
 
         // 5. Seleciona template
-        const renderFn = TEMPLATES[theme] ?? TEMPLATES[DEFAULT_THEME];
+        const renderFn = TEMPLATES[dbTheme] ?? TEMPLATES[DEFAULT_THEME];
         const element = renderFn({ raffle, statusMap, pct, total, price, date });
 
         return new ImageResponse(element, {
