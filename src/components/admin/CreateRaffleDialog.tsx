@@ -607,7 +607,14 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
       {/* Modal de Preview em Tamanho Real */}
       {previewTheme && (
         <Dialog open={!!previewTheme} onOpenChange={(val) => !val && setPreviewTheme(null)}>
-          <DialogContent className="max-w-[450px] w-[95vw] h-[85vh] overflow-hidden bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 p-0 flex flex-col rounded-3xl">
+          <DialogContent
+            className="max-w-[450px] w-[95vw] h-[85vh] overflow-hidden bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 p-0 flex flex-col rounded-3xl"
+            onPointerDownOutside={(e) => {
+              // Previne que o clique fora (backdrop) feche também o modal pai
+              e.preventDefault();
+              setPreviewTheme(null);
+            }}
+          >
             <DialogHeader className="p-4 bg-slate-50 dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800 shrink-0 flex flex-row items-center justify-between">
               <DialogTitle className="text-slate-900 dark:text-white text-sm uppercase tracking-widest font-black flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-primary" /> Preview: {previewTheme}
