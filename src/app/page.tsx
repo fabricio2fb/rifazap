@@ -525,10 +525,9 @@ export default function Home() {
                   <img
                     key={themes[activeThemeIndex].id}
                     className="absolute inset-0 w-full h-full object-cover z-10 animate-in fade-in zoom-in-95 duration-500"
-                    src={`/api/campanha/demo/imagem?theme=${themes[activeThemeIndex].id}&title=PC%20GAMER%20GIGABYTE`}
+                    src={`/tamplates/${themes[activeThemeIndex].id}.png`}
                     alt={`Preview do ${themes[activeThemeIndex].name}`}
                   />
-                  <div className="absolute top-0 w-32 h-6 bg-zinc-800 rounded-b-xl z-20 left-1/2 -translate-x-1/2" />
                 </div>
               </div>
             </div>
