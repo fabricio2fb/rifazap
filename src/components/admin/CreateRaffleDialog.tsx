@@ -631,7 +631,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
             <div className="flex-1 overflow-y-auto w-full flex justify-center bg-slate-100 dark:bg-black/50 p-4 sm:p-6 no-scrollbar relative">
               <div className="w-full max-w-[380px] h-fit bg-red-50 relative rounded-xl shadow-2xl overflow-hidden ring-1 ring-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/api/campanha/demo/imagem?theme=${previewTheme}${imageUrl ? `&img=${encodeURIComponent(imageUrl)}` : ''}${title ? `&title=${encodeURIComponent(title)}` : ''}`} alt={`Preview ${previewTheme}`} className="w-full h-auto block" />
+                <img src={`/tamplates/${previewTheme}.png`} alt={`Preview ${previewTheme}`} className="w-full h-auto block" />
               </div>
             </div>
           </DialogContent>
