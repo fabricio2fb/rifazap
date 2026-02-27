@@ -23,7 +23,10 @@ import {
   HelpCircle,
   Wifi,
   BatteryMedium,
-  Signal
+  Signal,
+  Sparkles,
+  Palette,
+  Clock
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -426,50 +429,134 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Pricing Section */}
-        <section id="preços" className="py-24 bg-white border-y">
-          <div className="container mx-auto px-6 text-center space-y-12">
-            <div className="space-y-4">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight">Preço Justo e Sem Surpresas</h2>
-              <p className="text-lg text-muted-foreground font-medium max-w-2xl mx-auto">Você só paga quando cria uma nova campanha. Sem mensalidades, sem comissões sobre suas vendas.</p>
+        {/* PRO Editor Showcase Section */}
+        <section className="py-24 bg-zinc-50 border-y border-slate-200">
+          <div className="container mx-auto px-6 space-y-16">
+            <div className="text-center space-y-4 max-w-3xl mx-auto">
+              <div className="inline-flex h-8 items-center justify-center rounded-full bg-orange-100 text-orange-600 px-4 mb-2 font-black text-[10px] tracking-widest uppercase border border-orange-200">
+                <Sparkles className="w-3.5 h-3.5 mr-2" /> Exclusividade TicketOn
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900">Conheça o Editor PRO</h2>
+              <p className="text-lg text-muted-foreground font-medium">A única plataforma que permite você personalizar sua campanha como um verdadeiro site profissional. Venda mais com gatilhos de conversão.</p>
             </div>
 
-            <div className="max-w-md mx-auto">
-              <div className="bg-primary rounded-[2.5rem] p-1 shadow-2xl">
-                <div className="bg-white rounded-[2.2rem] p-10 space-y-8 relative overflow-hidden">
-                  <div className="absolute top-6 right-6">
-                    <div className="bg-primary/20 p-3 rounded-2xl">
-                      <Coins className="w-8 h-8 text-primary-foreground" />
-                    </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 border border-orange-100 group-hover:bg-orange-500 transition-colors">
+                  <Palette className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="text-xl font-black mb-3">9 Templates Exclusivos</h3>
+                <p className="text-muted-foreground font-medium text-sm leading-relaxed">
+                  Mint, Gold, Pink, Solar, Nebula, Scrapbook, Calor, Juliana e Creme. Escolha o tema que mais combina com seu prêmio e personalize as cores como quiser.
+                </p>
+              </div>
+
+              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 border border-blue-100 group-hover:bg-blue-500 transition-colors">
+                  <Clock className="w-6 h-6 text-blue-500 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="text-xl font-black mb-3">Gatilhos de Urgência</h3>
+                <p className="text-muted-foreground font-medium text-sm leading-relaxed">
+                  Adicione contadores regressivos dinâmicos, alertas de "Últimas Cotas!" e banners de compras em tempo real para acelerar o fechamento da sua campanha.
+                </p>
+              </div>
+
+              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mb-6 border border-green-100 group-hover:bg-green-500 transition-colors">
+                  <Trophy className="w-6 h-6 text-green-500 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="text-xl font-black mb-3">Cupons e Bônus Extras</h3>
+                <p className="text-muted-foreground font-medium text-sm leading-relaxed">
+                  Crie cupons de desconto, configure pacotes promocionais automáticos e ofereça Bônus Garantidos para quem mais apoiar seu projeto.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section id="preços" className="py-24 bg-white border-b">
+          <div className="container mx-auto px-6 text-center space-y-16">
+            <div className="space-y-4 max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight">Preço Justo e Sem Surpresas</h2>
+              <p className="text-lg text-muted-foreground font-medium">Você só paga quando cria uma nova campanha. Sem dores de cabeça, sem porcentagem em cima da sua arrecadação.</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {/* Plano Básico */}
+              <div className="bg-white rounded-[2.5rem] p-10 border-2 border-slate-100 shadow-lg hover:border-slate-300 transition-colors relative flex flex-col text-left">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-black text-slate-800">Básico (Sem Edição)</h3>
+                  <p className="text-sm text-slate-500 mt-2 font-medium">Layout estático padrão do sistema.</p>
+                </div>
+
+                <div className="mb-8 flex items-baseline gap-1">
+                  <span className="text-4xl font-extrabold tracking-tight">R$ 14,90</span>
+                  <span className="text-muted-foreground font-bold text-sm">/ campanha</span>
+                </div>
+
+                <ul className="space-y-4 mb-8 flex-1">
+                  {[
+                    "Crie até 1.000 participações",
+                    "Receba 100% via PIX na sua conta",
+                    "Painel de Gestão Completo",
+                    "Upload de 1 foto do prêmio",
+                    "Link exclusivo da campanha",
+                    "Apuração e Sorteio Integrados"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm font-semibold text-slate-700">
+                      <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/login" className="block w-full mt-auto">
+                  <Button variant="outline" className="w-full h-14 rounded-2xl text-slate-700 font-black text-lg border-2 hover:bg-slate-50 transition-colors">
+                    Criar Básico
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Plano TicketOn PRO */}
+              <div className="bg-gradient-to-b from-orange-500 to-red-500 rounded-[2.5rem] p-1 shadow-2xl relative flex flex-col transform md:-translate-y-4">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1 z-10">
+                  <Sparkles className="w-3 h-3" /> Mais Escolhido
+                </div>
+                <div className="bg-white rounded-[2.3rem] p-10 relative flex flex-col h-full text-left">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-black text-orange-600 flex items-center gap-2">TicketOn PRO</h3>
+                    <p className="text-sm text-slate-500 mt-2 font-medium">Editor Visual Completo para conversão máxima.</p>
                   </div>
 
-                  <div className="text-left space-y-2">
-                    <p className="text-sm font-black text-primary-foreground uppercase tracking-widest">Taxa de Utilização</p>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-extrabold tracking-tight">R$ 14,90</span>
-                      <span className="text-muted-foreground font-bold">/ campanha</span>
-                    </div>
+                  <div className="mb-8 flex items-baseline gap-1">
+                    <span className="text-4xl font-extrabold tracking-tight text-slate-900">R$ 25,90</span>
+                    <span className="text-muted-foreground font-bold text-sm">/ campanha</span>
                   </div>
 
-                  <ul className="space-y-4 text-left">
+                  <ul className="space-y-4 mb-8 flex-1">
+                    <li className="flex items-start gap-3 text-sm font-bold text-slate-800">
+                      <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                      Tudo do Básico, mais:
+                    </li>
                     {[
-                      "Crie até 1.000 participações",
-                      "Receba 100% do valor via PIX",
-                      "Painel de Gestão Completo",
-                      "Upload de fotos ilimitado",
-                      "Link exclusivo para WhatsApp",
-                      "Ferramenta de Apuração Integrada"
+                      "Acesso total ao Editor Visual PRO",
+                      "9 Templates de Cores e Temas",
+                      "Notificações ('João acabou de comprar')",
+                      "Contador Regressivo (Urgência)",
+                      "Cupons de Desconto e Bônus",
+                      "Cores Personalizadas"
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 font-bold text-sm">
-                        <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                      <li key={i} className="flex items-start gap-3 text-sm font-semibold text-slate-700">
+                        <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
                   </ul>
 
-                  <Link href="/login" className="block w-full">
-                    <Button className="w-full h-16 rounded-2xl bg-primary text-primary-foreground font-black text-xl shadow-xl hover:scale-105 transition-transform">
-                      Começar Agora
+                  <Link href="/login" className="block w-full mt-auto">
+                    <Button className="w-full h-14 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-black text-lg shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-105 transition-all">
+                      Assinar PRO Agora
                     </Button>
                   </Link>
                 </div>
@@ -608,7 +695,7 @@ export default function Home() {
             </ul>
             <div className="pt-2">
               <p className="text-xs text-muted-foreground/80 font-medium">CNPJ: 00.000.000/0001-00</p>
-              <p className="text-xs text-muted-foreground/80 font-medium">Sua Cidade - UF</p>
+              <p className="text-xs text-muted-foreground/80 font-medium">São Gonçalo - RJ</p>
               <p className="text-xs text-muted-foreground/80 font-medium">contato@ticketon.com.br</p>
             </div>
           </div>
