@@ -82,14 +82,14 @@ export default function Home() {
               Plataforma #1 para Campanhas Digitais
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight tracking-tight">
-              Sua Campanha no WhatsApp <br /> <span className="text-white">em 60 Segundos</span>
+              Sua Campanha no WhatsApp <br /> em 60 Segundos
             </h1>
             <p className="max-w-2xl mx-auto text-xl text-primary-foreground/90 font-medium">
               A maneira mais simples, rápida e profissional de organizar campanhas online, gerenciar participações e arrecadar muito mais.
             </p>
-            <div className="max-w-3xl mx-auto mt-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-sm md:text-base text-primary-foreground/90 font-medium text-left shadow-lg">
-              <p className="mb-3 font-bold text-white text-base md:text-lg">A TicketOn fornece infraestrutura tecnológica para criação e gestão de campanhas digitais.</p>
-              <ul className="list-disc pl-5 space-y-2 opacity-90">
+            <div className="max-w-3xl mx-auto mt-6 bg-white/40 backdrop-blur-md border border-black/10 rounded-2xl p-6 text-sm md:text-base text-slate-800 font-medium text-left shadow-lg">
+              <p className="mb-3 font-bold text-slate-900 text-base md:text-lg">A TicketOn fornece infraestrutura tecnológica para criação e gestão de campanhas digitais.</p>
+              <ul className="list-disc pl-5 space-y-2 text-slate-800">
                 <li>Os valores pagos pelos apoiadores são enviados diretamente para a conta do organizador via PIX.</li>
                 <li>A TicketOn não intermedeia, retém ou movimenta valores financeiros.</li>
               </ul>
