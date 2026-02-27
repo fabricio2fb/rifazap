@@ -85,8 +85,15 @@ export default function Home() {
               Sua Campanha no WhatsApp <br /> <span className="text-white">em 60 Segundos</span>
             </h1>
             <p className="max-w-2xl mx-auto text-xl text-primary-foreground/90 font-medium">
-              A maneira mais simples, rápida e profissional de organizar campanhas online, gerenciar pagamentos via PIX e arrecadar muito mais.
+              A maneira mais simples, rápida e profissional de organizar campanhas online, gerenciar participações e arrecadar muito mais.
             </p>
+            <div className="max-w-3xl mx-auto mt-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-sm md:text-base text-primary-foreground/90 font-medium text-left shadow-lg">
+              <p className="mb-3 font-bold text-white text-base md:text-lg">A TicketOn fornece infraestrutura tecnológica para criação e gestão de campanhas digitais.</p>
+              <ul className="list-disc pl-5 space-y-2 opacity-90">
+                <li>Os valores pagos pelos apoiadores são enviados diretamente para a conta do organizador via PIX.</li>
+                <li>A TicketOn não intermedeia, retém ou movimenta valores financeiros.</li>
+              </ul>
+            </div>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
               <Link href="/login">
                 <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl gap-2 rounded-2xl">
@@ -120,7 +127,7 @@ export default function Home() {
               </div>
               <div className="space-y-1">
                 <p className="text-4xl font-black text-primary-foreground">+45k</p>
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Compradores Felizes</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Apoiadores Ativos</p>
               </div>
             </div>
           </div>
@@ -189,7 +196,7 @@ export default function Home() {
                       <div className="space-y-2">
                         <h4 className="font-black text-xl leading-tight text-slate-900">Apoie nosso Projeto + PC Gamer</h4>
                         <p className="text-xs text-muted-foreground font-medium leading-relaxed">
-                          Participe e ganhe recompensas incríveis. Cada ticket apenas R$ 1,00!
+                          Apoie nosso projeto participando da campanha. Cada participação: R$ 1,00
                         </p>
                       </div>
 
@@ -200,7 +207,7 @@ export default function Home() {
                             <Trophy className="w-5 h-5 text-primary-foreground" />
                           </div>
                           <div className="leading-none">
-                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Ticket</p>
+                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Participação</p>
                             <p className="font-black text-sm text-slate-900">R$ 1,00</p>
                           </div>
                         </div>
@@ -209,7 +216,7 @@ export default function Home() {
                             <CheckCircle2 className="w-5 h-5 text-green-600" />
                           </div>
                           <div className="leading-none">
-                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Resultado</p>
+                            <p className="text-[10px] uppercase font-black text-muted-foreground mb-1">Encerramento</p>
                             <p className="font-black text-xs text-slate-900">15/01/25</p>
                           </div>
                         </div>
@@ -229,7 +236,7 @@ export default function Home() {
                       {/* Grade de Tickets Realista */}
                       <div className="space-y-3 pt-2">
                         <div className="flex items-center justify-between">
-                          <h5 className="font-black text-xs uppercase tracking-widest">Escolha seu Ticket</h5>
+                          <h5 className="font-black text-xs uppercase tracking-widest">Escolha sua Participação</h5>
                           <span className="text-[10px] font-bold text-muted-foreground">Ver todos</span>
                         </div>
                         <div className="grid grid-cols-5 gap-2 pb-24">
@@ -261,7 +268,7 @@ export default function Home() {
                   <div className="absolute bottom-6 left-4 right-4 z-40 animate-bounce">
                     <div className="w-full h-16 rounded-[1.25rem] bg-slate-900 flex items-center justify-between px-6 border-2 border-slate-800 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
                       <div className="text-left">
-                        <p className="text-[10px] font-black uppercase text-slate-400">01 Ticket Selecionado</p>
+                        <p className="text-[10px] font-black uppercase text-slate-400">01 Participação Selecionada</p>
                         <p className="font-black text-white text-base">COMPRAR AGORA</p>
                       </div>
                       <div className="bg-primary p-2 rounded-lg">
@@ -292,8 +299,8 @@ export default function Home() {
                   {[
                     {
                       icon: <Smartphone className="h-6 w-6 text-primary-foreground" />,
-                      title: "Escolha dos Tickets",
-                      desc: "Grade interativa onde o cliente vê na hora o que está livre ou ocupado.",
+                      title: "Escolha das Participações",
+                      desc: "Grade interativa onde o apoiador vê na hora o que está livre ou ocupado.",
                       active: animationStep === 0
                     },
                     {
@@ -305,7 +312,7 @@ export default function Home() {
                     {
                       icon: <ShieldCheck className="h-6 w-6 text-primary-foreground" />,
                       title: "PIX Automático",
-                      desc: "Geramos o código copia e cola na hora. Você recebe direto na sua conta.",
+                      desc: "Geramos automaticamente o código PIX. O pagamento é realizado diretamente na conta do organizador.",
                       active: animationStep === 2
                     },
                     {
@@ -337,7 +344,7 @@ export default function Home() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
                           <h3 className="font-black text-2xl">iPhone 15 Pro</h3>
-                          <p className="text-sm font-bold text-muted-foreground">Escolha seus tickets</p>
+                          <p className="text-sm font-bold text-muted-foreground">Escolha suas participações</p>
                         </div>
                         <div className="h-12 w-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary-foreground">
                           <Trophy className="w-6 h-6" />
@@ -354,7 +361,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="mt-auto">
-                        <div className="w-full h-16 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-lg shadow-xl">RESERVAR 01 TICKET</div>
+                        <div className="w-full h-16 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-lg shadow-xl">RESERVAR 01 PARTICIPAÇÃO</div>
                       </div>
                     </div>
                   )}
@@ -403,13 +410,13 @@ export default function Home() {
                       </div>
                       <div className="space-y-3">
                         <h3 className="font-black text-4xl text-slate-900">SUCESSO!</h3>
-                        <p className="text-lg text-muted-foreground font-black px-6">Sua reserva do ticket 09 foi confirmada. Boa sorte!</p>
+                        <p className="text-lg text-muted-foreground font-black px-6">Sua reserva da participação 09 foi confirmada. Boa sorte!</p>
                       </div>
                       <div className="w-full space-y-4 pt-6">
                         <Button className="w-full h-20 rounded-2xl bg-[#25D366] text-white font-black text-xl gap-3 shadow-xl hover:bg-[#128C7E]">
                           <MessageCircle className="w-8 h-8 fill-current" /> ENVIAR COMPROVANTE
                         </Button>
-                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Clique acima para validar seu ticket</p>
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Clique acima para validar sua participação</p>
                       </div>
                     </div>
                   )}
@@ -439,15 +446,14 @@ export default function Home() {
                   <div className="text-left space-y-2">
                     <p className="text-sm font-black text-primary-foreground uppercase tracking-widest">Taxa de Utilização</p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold">R$</span>
-                      <span className="text-6xl font-black tracking-tighter">9,90</span>
+                      <span className="text-4xl font-extrabold tracking-tight">R$ 14,90</span>
                       <span className="text-muted-foreground font-bold">/ campanha</span>
                     </div>
                   </div>
 
                   <ul className="space-y-4 text-left">
                     {[
-                      "Crie até 1.000 tickets",
+                      "Crie até 1.000 participações",
                       "Receba 100% do valor via PIX",
                       "Painel de Gestão Completo",
                       "Upload de fotos ilimitado",
@@ -486,8 +492,8 @@ export default function Home() {
             <Accordion type="single" collapsible className="w-full">
               {[
                 {
-                  q: "Como recebo o dinheiro das minhas vendas?",
-                  a: "O dinheiro cai 100% na sua conta. No momento da criação da campanha, você insere sua chave PIX. No checkout, o cliente copia sua chave e paga no banco dele. A TicketOn não retém nada das suas vendas."
+                  q: "Como recebo o dinheiro das minhas campanhas?",
+                  a: "O valor pago pelos apoiadores é transferido diretamente para sua conta via PIX. A TicketOn não recebe nem administra os valores arrecadados."
                 },
                 {
                   q: "As campanhas online são permitidas?",
@@ -495,11 +501,11 @@ export default function Home() {
                 },
                 {
                   q: "Como funciona a apuração dos resultados?",
-                  a: "No seu painel, após as vendas serem confirmadas, você clica no botão de registro e uma ferramenta gera um resultado de forma transparente apenas entre os tickets que já foram pagos, ajudando a identificar os participantes de forma justa."
+                  a: "No seu painel, você clica no botão de registro e uma ferramenta gera um resultado de forma transparente apenas entre as participações que já foram pagas, ajudando a identificar os contemplados de forma justa."
                 },
                 {
-                  q: "Qual o limite de tickets por campanha?",
-                  a: "Atualmente, você pode criar campanhas de 10 até 1.000 tickets. Isso garante uma experiênca de navegação rápida e fluida para quem está acessando no celular."
+                  q: "Qual o limite de participações por campanha?",
+                  a: "Atualmente, você pode criar campanhas de 10 até 1.000 participações. Isso garante uma experiênca de navegação rápida e fluida para quem está acessando no celular."
                 },
                 {
                   q: "Tenho suporte caso precise de ajuda?",
@@ -599,8 +605,12 @@ export default function Home() {
             <ul className="space-y-4 text-muted-foreground text-sm font-bold">
               <li><Link href="/termos" className="hover:text-primary-foreground transition-colors">Termos de Uso</Link></li>
               <li><Link href="/privacidade" className="hover:text-primary-foreground transition-colors">Política de Privacidade</Link></li>
-              <li><Link href="/etica" className="hover:text-primary-foreground transition-colors">Código de Ética</Link></li>
             </ul>
+            <div className="pt-2">
+              <p className="text-xs text-muted-foreground/80 font-medium">CNPJ: 00.000.000/0001-00</p>
+              <p className="text-xs text-muted-foreground/80 font-medium">Sua Cidade - UF</p>
+              <p className="text-xs text-muted-foreground/80 font-medium">contato@ticketon.com.br</p>
+            </div>
           </div>
 
           <div className="space-y-8">
