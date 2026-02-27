@@ -139,9 +139,9 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
         whatsapp_contact: formData.get('whatsappContact') as string,
         whatsapp_group_link: formData.get('whatsappGroupLink') as string,
         status: 'pending_payment',
+        plan: creationType,
         settings: {
-          image_theme: selectedTheme,
-          plan: creationType
+          image_theme: selectedTheme
         }
       };
 

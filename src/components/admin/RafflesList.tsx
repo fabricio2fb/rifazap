@@ -138,7 +138,7 @@ export function RafflesList({
                                 >
                                     <Pencil className="w-3.5 h-3.5" /> EDITAR
                                 </Button>
-                                {raffle.settings?.plan === 'pro' && (
+                                {raffle.plan === 'pro' && (
                                     <Link href={`/admin/campanhas/${raffle.id}/editor`} className="w-full">
                                         <Button
                                             variant="outline"
