@@ -4,7 +4,6 @@ import RaffleView from "./RaffleView";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Info, AlertCircle } from "lucide-react";
-import { cleanupExpiredReservations } from "@/lib/utils/cleanup";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -83,9 +82,6 @@ export default async function PublicRafflePage({ params }: Props) {
       </div>
     );
   }
-
-  // 1. Limpeza Proativa: Remove reservas expiradas do banco (dispara Realtime)
-  await cleanupExpiredReservations(raffleData.id);
 
   // Block unpaid raffles
   if (raffleData.status === 'pending_payment') {

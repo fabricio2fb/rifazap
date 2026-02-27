@@ -149,7 +149,7 @@ export default function EticaPage() {
                         <div>
                             <p className="font-black text-sm uppercase tracking-widest text-primary-foreground mb-1">Nossa Missão</p>
                             <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                                Acreditamos que campanhas digitais podem transformar vidas — gerar renda, ajudar causas e unir comunidades. Para que isso aconteça de forma saudável, todos precisamos agir com ética, respeito e responsabilidade.
+                                A TicketOn é estritamente uma provedora de tecnologia SaaS. Você organiza e é total responsável pela sua campanha. Nós fornecemos apenas o painel e os links. O dinheiro vai direto pra você via PIX. A taxa da plataforma é de R$ 14,90 por campanha ativada.r com ética, respeito e responsabilidade.
                             </p>
                         </div>
                     </div>

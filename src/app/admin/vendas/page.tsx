@@ -309,7 +309,7 @@ export default function VendasPage() {
                 <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
                     placeholder="Buscar por nome ou WhatsApp..."
-                    className="pl-10 h-12 bg-white rounded-xl shadow-sm border-slate-200"
+                    className="pl-10 h-12 bg-white dark:bg-zinc-900 rounded-xl shadow-sm border-slate-200 dark:border-zinc-800"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -317,11 +317,11 @@ export default function VendasPage() {
 
             <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
                 <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                    <TabsList className="flex w-full overflow-x-auto bg-slate-100 p-1 rounded-xl h-auto min-h-[48px] justify-start md:justify-center no-scrollbar flex-1">
-                        <TabsTrigger value="all" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap">Todas ({counts.all})</TabsTrigger>
-                        <TabsTrigger value="pending" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap">Pendentes ({counts.pending})</TabsTrigger>
-                        <TabsTrigger value="confirmed" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap">Confirmadas ({counts.confirmed})</TabsTrigger>
-                        <TabsTrigger value="cancelled" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap">Canceladas ({counts.cancelled})</TabsTrigger>
+                    <TabsList className="flex w-full overflow-x-auto bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl h-auto min-h-[48px] justify-start md:justify-center no-scrollbar flex-1">
+                        <TabsTrigger value="all" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 dark:text-zinc-300 dark:data-[state=active]:text-white transition-all">Todas ({counts.all})</TabsTrigger>
+                        <TabsTrigger value="pending" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 dark:text-zinc-300 dark:data-[state=active]:text-white transition-all">Pendentes ({counts.pending})</TabsTrigger>
+                        <TabsTrigger value="confirmed" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 dark:text-zinc-300 dark:data-[state=active]:text-white transition-all">Confirmadas ({counts.confirmed})</TabsTrigger>
+                        <TabsTrigger value="cancelled" className="font-bold flex-shrink-0 px-4 py-2 whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 dark:text-zinc-300 dark:data-[state=active]:text-white transition-all">Canceladas ({counts.cancelled})</TabsTrigger>
                     </TabsList>
 
                     <Button
@@ -345,8 +345,8 @@ export default function VendasPage() {
                             onCancel={cancelReservation}
                         />
                     ) : (
-                        <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                            <p className="text-slate-400 font-bold">Nenhuma venda encontrada.</p>
+                        <div className="text-center py-20 bg-white dark:bg-zinc-900/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-zinc-800">
+                            <p className="text-slate-400 dark:text-slate-500 font-bold">Nenhuma venda encontrada.</p>
                         </div>
                     )}
                 </TabsContent>

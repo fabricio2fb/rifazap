@@ -43,29 +43,10 @@ export async function POST(request: Request) {
 
         let raffleToActivateId = raffleId;
 
-        // --- FALLBACK LOGIC IF NO ID IS PROVIDED BY GGCHECKOUT ---
-        // Se o GGCheckout não retornar NENHUM parâmetro de tracking (src, external_reference, etc),
-        // Vamos varrer o banco de dados e procurar a rifa 'pending_payment' correta.
+        // --- LOGIC IF NO ID IS PROVIDED BY GGCHECKOUT ---
         if (!raffleToActivateId) {
-            console.log("[Webhook] No direct raffle ID found in payload. Attempting fallback match...");
-            const supabase = await createAdminClient();
-
-            // 1. First, just try to find the absolute most recent 'pending_payment' raffle.
-            // Since the user is likely the only one using the platform right now or checkout happens fast.
-            const { data: recentPendingRaffles, error: pendingErr } = await supabase
-                .from('raffles')
-                .select('id, title, status')
-                .eq('status', 'pending_payment')
-                .order('created_at', { ascending: false })
-                .limit(1);
-
-            if (recentPendingRaffles && recentPendingRaffles.length > 0) {
-                raffleToActivateId = recentPendingRaffles[0].id;
-                console.log(`[Webhook] Fallback matched most recent pending raffle: ${raffleToActivateId}`);
-            } else {
-                console.log("[Webhook] No pending raffles found. Ignoring webhook.");
-                return NextResponse.json({ success: true, message: "No pending raffles to activate" }, { status: 200 });
-            }
+            console.log("[Webhook] Nenhuma ID de campanha foi encontrada neste pagamento. Ignorando evento para prevenir ativação indesejada de outras campanhas.");
+            return NextResponse.json({ success: true, message: "ID não reconhecida, ignorando webhook" }, { status: 200 });
         }
 
         const successStatuses = [

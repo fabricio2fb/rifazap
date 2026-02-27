@@ -21,24 +21,18 @@ interface CreateRaffleDialogProps {
   children?: React.ReactNode;
 }
 
-const PixQRCode = () => (
-  <svg viewBox="0 0 100 100" className="w-full h-full p-2" shapeRendering="crispEdges">
-    <rect width="100" height="100" fill="white" />
-    <path d="M10,10 h20 v20 h-20 z M15,15 h10 v10 h-10 z" fill="black" />
-    <path d="M70,10 h20 v20 h-20 z M75,15 h10 v10 h-10 z" fill="black" />
-    <path d="M10,70 h20 v20 h-20 z M15,75 h10 v10 h-10 z" fill="black" />
-    <rect x="40" y="10" width="10" height="10" fill="black" />
-    <rect x="10" y="40" width="10" height="10" fill="black" />
-    <rect x="40" y="40" width="20" height="20" fill="black" />
-    <rect x="70" y="40" width="10" height="10" fill="black" />
-    <rect x="40" y="70" width="10" height="10" fill="black" />
-    <rect x="70" y="70" width="10" height="10" fill="black" />
-    <rect x="80" y="80" width="10" height="10" fill="black" />
-    <rect x="55" y="15" width="5" height="5" fill="black" />
-    <rect x="15" y="55" width="5" height="5" fill="black" />
-    <rect x="80" y="55" width="5" height="5" fill="black" />
-    <rect x="55" y="80" width="5" height="5" fill="black" />
-  </svg>
+const PixQRCode = ({ code }: { code?: string }) => (
+  <div className="w-full h-full flex items-center justify-center bg-white rounded-xl overflow-hidden p-2 border-2 border-slate-50">
+    {code ? (
+      <img
+        src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(code)}`}
+        alt="QR Code PIX"
+        className="w-full h-full object-contain"
+      />
+    ) : (
+      <div className="animate-pulse bg-slate-100 w-full h-full rounded-xl" />
+    )}
+  </div>
 );
 
 export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogProps) {
@@ -54,6 +48,8 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [title, setTitle] = useState<string>('');
+  const [syncPayData, setSyncPayData] = useState<{ pix_code: string; amount: number } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const { toast } = useToast();
 
@@ -538,51 +534,90 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
             <div className="w-full py-4 space-y-4">
               <div className="w-full py-4 space-y-4">
                 <div className="text-sm text-muted-foreground font-medium">
-                  Uma taxa única de R$ 14,90 será cobrada para ativar a campanha após a criação. Suas vendas caem direto no seu PIX.ativação.
-                  A ativação será automática após a confirmação.
+                  {creationType === 'pro'
+                    ? "Uma taxa única de R$ 25,90 será cobrada para ativar as ferramentas PRO de gestão. Suas vendas caem direto no seu PIX."
+                    : "Uma taxa única de R$ 14,90 será cobrada para ativar a infraestrutura de software da sua campanha. Suas vendas caem direto no seu PIX."
+                  }
+                  <br />A ativação será automática após a confirmação do pagamento.
                 </div>
 
-                <Button
-                  className="w-full h-16 bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
-                  disabled={loading}
-                  onClick={async () => {
-                    try {
-                      setLoading(true);
-                      const res = await fetch('/api/payments/ggcheckout', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ raffleId: pendingRaffle?.id })
-                      });
-                      const data = await res.json();
-                      if (!res.ok) {
-                        const msg = data.details ? `${data.error}: ${data.details}` : data.error;
-                        throw new Error(msg || 'Erro ao gerar pagamento');
-                      }
+                {!syncPayData ? (
+                  <Button
+                    className="w-full h-16 bg-[#009EE3] hover:bg-[#007EB5] text-white font-black text-xl gap-3 rounded-2xl shadow-xl transition-all active:scale-95"
+                    disabled={loading}
+                    onClick={async () => {
+                      try {
+                        setLoading(true);
+                        const res = await fetch('/api/payments/syncpay', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ raffleId: pendingRaffle?.id })
+                        });
+                        const data = await res.json();
+                        if (!res.ok) {
+                          const msg = data.details ? `${data.error}: ${data.details}` : data.error;
+                          throw new Error(msg || 'Erro ao gerar pagamento');
+                        }
 
-                      // Redirect to GGCheckout URL
-                      if (data.checkout_url) {
-                        window.location.href = data.checkout_url;
+                        if (data.pix_code) {
+                          setSyncPayData({ pix_code: data.pix_code, amount: data.amount });
+                        }
+                      } catch (err: any) {
+                        toast({
+                          variant: "destructive",
+                          title: "Erro no Pagamento",
+                          description: err.message
+                        });
+                      } finally {
+                        setLoading(false);
                       }
-                    } catch (err: any) {
-                      toast({
-                        variant: "destructive",
-                        title: "Erro no Pagamento",
-                        description: err.message
-                      });
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 fill-current" />}
-                  IR PARA PAGAMENTO
-                </Button>
+                    }}
+                  >
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 fill-current" />}
+                    GERAR PIX DE ATIVAÇÃO
+                  </Button>
+                ) : (
+                  <div className="space-y-4 animate-in fade-in zoom-in duration-300">
+                    <div className="p-4 bg-white border-2 border-primary rounded-2xl flex flex-col items-center gap-4 shadow-inner">
+                      <div className="w-56 h-56 bg-white rounded-3xl flex items-center justify-center border-4 border-slate-50 shadow-sm overflow-hidden p-2">
+                        <PixQRCode code={syncPayData.pix_code} />
+                      </div>
+                      <div className="w-full space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-muted-foreground text-center block">Código Copia e Cola</Label>
+                        <div className="relative">
+                          <Input
+                            readOnly
+                            value={syncPayData.pix_code}
+                            className="pr-24 font-mono text-[10px] h-12 bg-slate-50 border-slate-200"
+                          />
+                          <Button
+                            size="sm"
+                            className="absolute right-1 top-1 bottom-1 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-[10px] rounded-lg"
+                            onClick={() => {
+                              navigator.clipboard.writeText(syncPayData.pix_code);
+                              setCopied(true);
+                              setTimeout(() => setCopied(false), 2000);
+                              toast({ title: "Copiado!", description: "Código PIX copiado para a área de transferência." });
+                            }}
+                          >
+                            {copied ? "COPIADO!" : "COPIAR"}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 text-green-600 font-bold text-sm animate-pulse">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Aguardando pagamento...
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 text-left border border-blue-100">
                 <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
                 <p className="text-sm text-blue-800 leading-tight">
-                  O pagamento é processado com segurança pelo GGCheckout. Após concluir, sua campanha aparecerá como Ativa no painel em instantes.
+                  O pagamento é processado com segurança pela SyncPay. Após concluir, sua infraestrutura de software será ativada automaticamente em instantes.
                 </p>
               </div>
 

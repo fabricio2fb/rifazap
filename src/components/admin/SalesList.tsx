@@ -25,12 +25,12 @@ export default function SalesList({ sales, raffles, timeDrift, onConfirm, onCanc
                     <div
                         key={sale.id}
                         className={cn(
-                            "group relative overflow-hidden p-8 rounded-[32px] shadow-sm hover:shadow-md transition-all border border-slate-100",
+                            "group relative overflow-hidden p-8 rounded-[32px] shadow-sm hover:shadow-md transition-all border border-slate-100 dark:border-zinc-800",
                             sale.status === "confirmed" || sale.status === "paid" || sale.status === "paid_delayed"
-                                ? "bg-gradient-to-br from-white to-green-50/30"
+                                ? "bg-gradient-to-br from-white to-green-50/30 dark:from-zinc-900 dark:to-green-950/20"
                                 : sale.status === "pending"
-                                    ? "bg-gradient-to-br from-white to-orange-50/30"
-                                    : "bg-gradient-to-br from-white to-red-50/30"
+                                    ? "bg-gradient-to-br from-white to-orange-50/30 dark:from-zinc-900 dark:to-orange-950/20"
+                                    : "bg-gradient-to-br from-white to-red-50/30 dark:from-zinc-900 dark:to-red-950/20"
                         )}
                     >
                         {/* Status Accent Bar */}
@@ -49,24 +49,24 @@ export default function SalesList({ sales, raffles, timeDrift, onConfirm, onCanc
                                     <div className={cn(
                                         "h-12 w-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-sm border",
                                         sale.status === "confirmed" || sale.status === "paid" || sale.status === "paid_delayed"
-                                            ? "bg-green-100 text-green-700 border-green-200"
+                                            ? "bg-green-100 text-green-700 border-green-200 dark:bg-green-950/50 dark:text-green-400 dark:border-green-900/50"
                                             : sale.status === "pending"
-                                                ? "bg-orange-100 text-orange-700 border-orange-200"
-                                                : "bg-red-100 text-red-700 border-red-200"
+                                                ? "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-950/50 dark:text-orange-400 dark:border-orange-900/50"
+                                                : "bg-red-100 text-red-700 border-red-200 dark:bg-red-950/50 dark:text-red-400 dark:border-red-900/50"
                                     )}>
                                         {sale.name.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <span className="font-black text-xl tracking-tight block">
+                                        <span className="font-black text-xl tracking-tight block dark:text-white">
                                             {sale.name}
                                         </span>
                                         <span className={cn(
                                             "text-[10px] font-black uppercase tracking-wider",
                                             sale.status === "confirmed" || sale.status === "paid" || sale.status === "paid_delayed"
-                                                ? "text-green-600"
+                                                ? "text-green-600 dark:text-green-400"
                                                 : sale.status === "pending"
-                                                    ? "text-orange-600"
-                                                    : "text-red-600"
+                                                    ? "text-orange-600 dark:text-orange-400"
+                                                    : "text-red-600 dark:text-red-400"
                                         )}>
                                             {sale.status === "confirmed" || sale.status === "paid" || sale.status === "paid_delayed"
                                                 ? "Confirmado"
@@ -77,16 +77,16 @@ export default function SalesList({ sales, raffles, timeDrift, onConfirm, onCanc
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm font-medium text-slate-500">
-                                    <a href={`https://wa.me/55${sale.whatsapp?.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-full w-fit border border-green-200 transition-colors shadow-sm cursor-pointer">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm font-medium text-slate-500 dark:text-slate-400">
+                                    <a href={`https://wa.me/55${sale.whatsapp?.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-full w-fit border border-green-200 dark:bg-green-950/30 dark:border-green-900/50 dark:text-green-400 dark:hover:bg-green-900/50 transition-colors shadow-sm cursor-pointer">
                                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                                         <span className="font-bold">{sale.whatsapp}</span>
                                     </a>
-                                    <div className="flex items-center gap-2.5 bg-slate-100/50 px-3 py-1.5 rounded-full w-fit border border-slate-200/50 text-slate-700">
+                                    <div className="flex items-center gap-2.5 bg-slate-100/50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-full w-fit border border-slate-200/50 dark:border-zinc-700/50 text-slate-700 dark:text-zinc-300">
                                         <Ticket className="w-4 h-4 text-slate-400" /> {raffle?.title || "Campanha não encontrada"}
                                     </div>
-                                    <div className="flex items-center gap-2.5 bg-slate-100/50 px-3 py-1.5 rounded-full w-fit border border-slate-200/50">
-                                        <Calendar className="w-4 h-4 text-slate-400" />
+                                    <div className="flex items-center gap-2.5 bg-slate-100/50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-full w-fit border border-slate-200/50 dark:border-zinc-700/50">
+                                        <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500" />
                                         {format(new Date(sale.createdAt), "dd MMM 'às' HH:mm", { locale: ptBR })}
                                     </div>
                                 </div>

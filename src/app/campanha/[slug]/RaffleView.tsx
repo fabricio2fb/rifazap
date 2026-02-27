@@ -90,6 +90,12 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
 
     const timeLeft = useCountdown(initialRaffle.drawDate, settings.countdown?.enabled);
 
+    // Trigger Background Cleanup Non-Blockingly
+    useEffect(() => {
+        if (!initialRaffle.slug) return;
+        fetch(`/api/campanha_api/${initialRaffle.slug}/cleanup`, { method: 'POST', keepalive: true }).catch(console.error);
+    }, [initialRaffle.slug]);
+
     useEffect(() => {
         const channel = supabase
             .channel(`raffle-${initialRaffle.id}`)
