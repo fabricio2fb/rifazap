@@ -150,7 +150,7 @@ export default function Home() {
                   Criar Minha Campanha <ArrowRight className="w-6 h-6" />
                 </Button>
               </Link>
-              <Link href="/campanha/rifa-exemplo-pc-gamer">
+              <Link href="/campanha/exemplo-pc-gamer">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-bold border-foreground/20 text-foreground bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20">
                   Ver Demonstração
                 </Button>
@@ -196,7 +196,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link href="/campanha/rifa-exemplo-pc-gamer">
+                  <Link href="/campanha/exemplo-pc-gamer">
                     <Button size="lg" className="h-16 px-8 rounded-2xl text-lg font-black gap-3 shadow-xl hover:scale-105 transition-transform">
                       ABRIR EXEMPLO COMPLETO <ExternalLink className="w-5 h-5" />
                     </Button>
@@ -493,7 +493,7 @@ export default function Home() {
                 Experimente o Editor PRO Exclusivo
               </h2>
               <p className="text-lg text-zinc-400 font-medium max-w-2xl mx-auto leading-relaxed">
-                A única plataforma que permite você transformar sua rifa num site profissional, com identidade própria, contadores de escassez e notificações em tempo real. Teste abaixo!
+                A única plataforma que permite você transformar sua campanha num site profissional, com identidade própria, contadores de escassez e notificações em tempo real. Teste abaixo!
               </p>
             </div>
 
@@ -570,7 +570,7 @@ export default function Home() {
                     <div className="px-4 py-3 space-y-3 flex-1 overflow-y-auto no-scrollbar">
                       <div>
                         <h2 className={`font-black text-sm mb-1 uppercase tracking-tight ${editorThemeMode === 'claro' ? 'text-slate-900' : 'text-white'}`}>PC GAMER COMPLETÃO</h2>
-                        <p className="text-[9px] text-zinc-500 font-medium leading-relaxed">Concorra agora a um PC Gamer de última geração por apenas R$ 1,00!</p>
+                        <p className="text-[9px] text-zinc-500 font-medium leading-relaxed">Participe da campanha de apoio ao projeto PC Gamer por apenas R$ 1,00!</p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 mt-2">
@@ -585,7 +585,7 @@ export default function Home() {
                           <div className="w-6 h-6 rounded-md bg-green-500/10 text-green-500 flex items-center justify-center">
                             <CheckCircle2 className="w-3.5 h-3.5" />
                           </div>
-                          <span className="text-[7px] text-zinc-500 uppercase font-black tracking-wider mt-1">Sorteio</span>
+                          <span className="text-[7px] text-zinc-500 uppercase font-black tracking-wider mt-1">Encerramento</span>
                           <span className={`text-[10px] font-black mt-0.5 ${editorThemeMode === 'claro' ? 'text-slate-900' : 'text-zinc-100'}`}>20/12/2026</span>
                         </div>
                       </div>
@@ -671,8 +671,8 @@ export default function Home() {
                     "Crie até 1.000 participações",
                     "Receba 100% via PIX na sua conta",
                     "Painel de Gestão Completo",
-                    "Upload de foto do prêmio",
-                    "Apuração de Sorteio Integrada"
+                    "Upload de imagem da campanha",
+                    "Sistema de encerramento automático"
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm font-semibold text-slate-700">
                       <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
@@ -757,8 +757,8 @@ export default function Home() {
                   a: "Sim, desde que respeitadas as normas vigentes. A TicketOn é uma ferramenta de gestão. Recomendamos que o organizador utilize a plataforma para campanhas filantrópicas ou promocionais."
                 },
                 {
-                  q: "Como funciona a apuração dos resultados?",
-                  a: "No seu painel, você clica no botão de registro e uma ferramenta gera um resultado de forma transparente apenas entre as participações que já foram pagas, ajudando a identificar os contemplados de forma justa."
+                  q: "Como funciona a gestão interna de resultados?",
+                  a: "No seu painel, você acesso imediato a uma ferramenta de organização de encerramento que estrutura todos os dados das participações confirmadas, garantindo controle e transparência total no fechamento do seu projeto."
                 },
                 {
                   q: "Qual o limite de participações por campanha?",
