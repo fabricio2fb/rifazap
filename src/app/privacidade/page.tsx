@@ -39,11 +39,13 @@ Não utilizamos seus dados para fins de marketing de terceiros, nem vendemos, al
 
 Com o Organizador: os dados do participante (nome e WhatsApp) são compartilhados com o organizador da campanha para que ele possa confirmar pagamentos e comunicar o resultado da apuração.
 
-Com Prestadores de Serviço: podemos compartilhar dados com fornecedores de tecnologia que nos auxiliam na operação da plataforma, sempre sob contratos de confidencialidade.
+Com Provedores de Serviço: Os dados fornecidos podem ser compartilhados com terceiros (Provedores de Pagamento, Gateways Financeiros, Servidores de Nuvem) apenas na medida do necessário para o estrito cumprimento contratual da prestação do serviço de tecnologia SaaS.
 
 Por Obrigação Legal: quando exigido por lei, ordem judicial ou autoridade competente.
 
-Nunca vendemos seus dados a terceiros.`
+Os dados de pagamento não são tratados nem armazenados pela TicketOn. Todas as transações financeiras são processadas por provedores de pagamento terceirizados, estando sujeitos às políticas de privacidade dos respectivos serviços.
+
+Nunca vendemos ou locamos seus dados a terceiros.`
     },
     {
         id: "04",
@@ -59,16 +61,11 @@ Os dados são mantidos pelo período necessário para a prestação dos serviço
         id: "05",
         title: "Seus Direitos (LGPD)",
         icon: <Shield className="w-5 h-5" />,
-        content: `Conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você tem direito a:
+        content: `Conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018), nossos usuários e os participantes das campanhas têm o direito de solicitar a confirmação, acesso, correção ou exclusão de seus dados pessoais em nosso banco de dados. 
 
-— Confirmar a existência de tratamento dos seus dados.
-— Acessar os dados que temos sobre você.
-— Corrigir dados incompletos, inexatos ou desatualizados.
-— Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários.
-— Solicitar a portabilidade dos seus dados.
-— Revogar o consentimento a qualquer momento.
+Comprometemo-nos a responder e atender a essas solicitações dentro do prazo estipulado pela legislação brasileira vigente. Para exercer qualquer um desses direitos, entre em contato com nossa equipe via WhatsApp DPO.
 
-Para exercer qualquer um desses direitos, entre em contato com nossa equipe via WhatsApp.`
+As bases legais para o tratamento dos seus dados pela TicketOn são estritamente a execução de contrato (prestação do serviço de licenciamento de software SaaS) e o nosso legítimo interesse na manutenção e segurança do ambiente tecnológico.`
     },
     {
         id: "06",
