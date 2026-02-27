@@ -40,26 +40,23 @@ import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [animationStep, setAnimationStep] = useState(0);
-  const [activeThemeIndex, setActiveThemeIndex] = useState(1); // Default to gold
 
-  const themes = [
-    { id: 'mint', name: 'Mint', color: 'bg-emerald-400' },
-    { id: 'gold', name: 'Gold', color: 'bg-yellow-400' },
-    { id: 'pink', name: 'Pink', color: 'bg-pink-400' },
-    { id: 'solar', name: 'Solar', color: 'bg-orange-400' },
-    { id: 'nebula', name: 'Nebula', color: 'bg-purple-600' },
-    { id: 'scrapbook', name: 'Scrapbook', color: 'bg-stone-300' },
-    { id: 'calor', name: 'Calor', color: 'bg-red-500' },
-    { id: 'juliana', name: 'Juliana', color: 'bg-fuchsia-500' },
-    { id: 'creme', name: 'Creme', color: 'bg-amber-100' }
+  // Editor Mini Showcase States
+  const [editorPrimaryColor, setEditorPrimaryColor] = useState('#ea580c');
+  const [editorThemeMode, setEditorThemeMode] = useState<'claro' | 'escuro'>('claro');
+  const editorColors = ['#ea580c', '#3b82f6', '#22c55e', '#ef4444', '#eab308', '#a855f7', '#ec4899', '#06b6d4', '#000000'];
+
+  const templatesList = [
+    { id: 'mint', name: 'Mint' },
+    { id: 'gold', name: 'Gold' },
+    { id: 'pink', name: 'Pink' },
+    { id: 'solar', name: 'Solar' },
+    { id: 'nebula', name: 'Nebula' },
+    { id: 'scrapbook', name: 'Scrapbook' },
+    { id: 'calor', name: 'Calor' },
+    { id: 'juliana', name: 'Juliana' },
+    { id: 'creme', name: 'Creme' }
   ];
-
-  useEffect(() => {
-    const themeTimer = setInterval(() => {
-      setActiveThemeIndex((prev) => (prev + 1) % themes.length);
-    }, 4000);
-    return () => clearInterval(themeTimer);
-  }, [themes.length]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -452,84 +449,150 @@ export default function Home() {
           </div>
         </section>
 
-        {/* PRO Editor Showcase Section - Visual & Interactive */}
-        <section className="py-24 bg-zinc-950 border-y border-zinc-800 relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-500/10 blur-[120px] rounded-full point-events-none" />
+        {/* PRO Editor Showcase - Mini Functional Editor */}
+        <section className="py-24 bg-[#121214] border-y border-zinc-900 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full point-events-none" />
 
-          <div className="container mx-auto px-6 space-y-16 relative z-10">
-            <div className="text-center space-y-6 max-w-4xl mx-auto">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight">
-                Seu site,<br />sua <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Identidade Visual</span>
+          <div className="container mx-auto px-6 space-y-16 relative z-10 text-center">
+            <div className="space-y-6 max-w-4xl mx-auto">
+              <div className="inline-flex h-8 items-center justify-center rounded-full bg-orange-500/20 text-orange-500 px-4 mb-2 font-black text-[10px] tracking-widest uppercase border border-orange-500/30">
+                <Sparkles className="w-3.5 h-3.5 mr-2" /> Exclusividade TicketOn
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                Experimente o Editor PRO Exclusivo
               </h2>
-              <p className="text-xl text-zinc-400 font-medium max-w-2xl mx-auto leading-relaxed">
-                Com o Editor PRO, você tem 9 temas fantásticos. Escolha sua cor, mostre um cronômetro e ative notificações de compras em tempo real.
+              <p className="text-lg text-zinc-400 font-medium max-w-2xl mx-auto leading-relaxed">
+                A única plataforma que permite você transformar sua rifa num site profissional, com identidade própria, contadores de escassez e notificações em tempo real. Teste abaixo!
               </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
-              {/* Left Side: Features and Theme Selector */}
-              <div className="w-full lg:w-1/3 flex flex-col space-y-10">
-                <div className="space-y-6">
-                  <h3 className="text-white text-2xl font-black flex items-center gap-3">
-                    <Palette className="w-8 h-8 text-orange-400" />
-                    9 Templates Mágicos
-                  </h3>
-                  <div className="grid grid-cols-3 gap-3">
-                    {themes.map((theme, index) => (
-                      <button
-                        key={theme.id}
-                        onClick={() => setActiveThemeIndex(index)}
-                        className={cn(
-                          "flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all duration-300 border-2",
-                          activeThemeIndex === index
-                            ? "bg-zinc-800 border-orange-500 scale-105 shadow-[0_0_20px_rgba(249,115,22,0.3)]"
-                            : "bg-zinc-900 border-zinc-800 hover:bg-zinc-800/80 hover:border-zinc-700"
-                        )}
-                      >
-                        <div className={cn("w-6 h-6 rounded-full shadow-inner", theme.color)} />
-                        <span className="text-[10px] font-bold text-zinc-300 uppercase tracking-wider">{theme.name}</span>
-                      </button>
-                    ))}
+            {/* Mini Editor UI */}
+            <div className="mx-auto w-full max-w-[1000px] bg-[#1a1b1f] border border-zinc-800 rounded-2xl shadow-2xl flex flex-col md:flex-row text-left overflow-hidden ring-4 ring-black/50">
+
+              {/* Sidebar do Editor */}
+              <div className="w-full md:w-80 bg-[#16171a] border-r border-zinc-800/60 p-6 flex flex-col shrink-0">
+                <div className="flex items-center gap-2 mb-8 border-b border-zinc-800 pb-4">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center text-white"><Palette className="w-4 h-4" /></div>
+                  <div>
+                    <h3 className="text-white font-black text-sm">Editor da Campanha</h3>
+                    <p className="text-[10px] font-bold text-orange-500 uppercase">TicketOn PRO</p>
                   </div>
                 </div>
 
-                <div className="space-y-6 pt-6 border-t border-zinc-800">
-                  <div className="flex gap-4 items-start">
-                    <div className="bg-orange-500/20 p-3 rounded-2xl shrink-0 mt-1">
-                      <Clock className="w-6 h-6 text-orange-400" />
+                <div className="flex bg-zinc-900/50 p-1 rounded-xl mb-8 border border-zinc-800">
+                  <button className="flex-1 bg-zinc-800 text-white shadow rounded-lg py-1.5 text-xs font-bold text-center">Design</button>
+                  <button className="flex-1 text-zinc-500 hover:text-white py-1.5 text-xs font-bold text-center">Avisos</button>
+                </div>
+
+                <div className="space-y-8 flex-1">
+                  <div>
+                    <h4 className="text-white font-black text-sm mb-1">Cores e Tema</h4>
+                    <p className="text-zinc-500 text-[11px] font-medium leading-tight mb-4">Personalize a aparência da sua página.</p>
+
+                    <div className="mb-6">
+                      <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-2 block">Tema Base</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button onClick={() => setEditorThemeMode('claro')} className={`py-2 px-3 rounded-lg text-xs font-bold border-2 transition-all ${editorThemeMode === 'claro' ? 'border-orange-500 text-white bg-zinc-800' : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/50'}`}>Claro</button>
+                        <button onClick={() => setEditorThemeMode('escuro')} className={`py-2 px-3 rounded-lg text-xs font-bold border-2 transition-all ${editorThemeMode === 'escuro' ? 'border-orange-500 text-white bg-zinc-800' : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/50'}`}>Escuro</button>
+                      </div>
                     </div>
+
                     <div>
-                      <h4 className="text-white font-black text-lg">Contador Regressivo</h4>
-                      <p className="text-sm text-zinc-400 font-medium leading-relaxed">Crie urgência real. Os compradores veem o tempo acabando e compram mais rápido.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 items-start">
-                    <div className="bg-red-500/20 p-3 rounded-2xl shrink-0 mt-1">
-                      <Sparkles className="w-6 h-6 text-red-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-white font-black text-lg">Notificações ao Vivo</h4>
-                      <p className="text-sm text-zinc-400 font-medium leading-relaxed">Plaquinhas pulando na tela mostrando que outras pessoas estão comprando agora.</p>
+                      <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-2 block">Cor Primária (Botões)</label>
+                      <div className="bg-white p-3 rounded-2xl grid grid-cols-5 gap-y-3 gap-x-2">
+                        {editorColors.map(c => (
+                          <button key={c} onClick={() => setEditorPrimaryColor(c)} className={`w-9 h-9 mx-auto rounded-full shadow-inner ring-2 ring-offset-2 ring-offset-white ${editorPrimaryColor === c ? 'ring-slate-900 scale-110' : 'ring-transparent hover:scale-110'} transition-all`} style={{ backgroundColor: c }} />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Right Side: Visual Image Preview */}
-              <div className="w-full lg:w-1/3 flex justify-center">
-                <div className="relative w-full max-w-[340px] aspect-[9/16] bg-zinc-900 rounded-[2.5rem] shadow-2xl border-8 border-zinc-800 flex items-center justify-center overflow-hidden ring-4 ring-zinc-950">
-                  <div className="absolute inset-0 flex items-center justify-center text-zinc-700">
-                    <Loader2 className="w-8 h-8 animate-spin" />
+              {/* Área de Preview Transparente Quadriculada */}
+              <div className="flex-1 bg-[#09090b] relative flex items-center justify-center p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px]">
+
+                {/* Smartphone Frame Simulator */}
+                <div className="w-full max-w-[300px] bg-black rounded-[2.5rem] p-2 md:p-2.5 shadow-2xl relative border-2 border-zinc-800 ring-4 ring-black aspect-[9/19] flex flex-col items-center">
+                  <div className="bg-black w-24 h-5 absolute top-2 rounded-b-xl z-20" />
+
+                  {/* Inner Screen */}
+                  <div className={`w-full h-full rounded-[2rem] overflow-hidden flex flex-col relative transition-colors duration-500 border ${editorThemeMode === 'claro' ? 'bg-white border-zinc-200' : 'bg-[#121214] text-white border-zinc-900'}`}>
+
+                    {/* Header Mock */}
+                    <div className="h-44 w-full bg-zinc-200 relative overflow-hidden shrink-0">
+                      <Image src="/pcgamer.jpg" alt="Exemplo" fill className="object-cover" />
+                      {/* Notificação Pulse */}
+                      <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur w-fit whitespace-nowrap text-white text-[8px] px-2.5 py-1.5 rounded-full flex gap-1.5 items-center shadow-lg border border-white/10 animate-pulse z-10 font-medium">
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping" /> João comprou 5 cotas
+                      </div>
+                      {/* Countdown Overlay Mock */}
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> ACABA EM 02:45:10
+                      </div>
+                    </div>
+
+                    {/* Body Mock */}
+                    <div className="px-4 py-3 space-y-3 flex-1 overflow-y-auto no-scrollbar">
+                      <div>
+                        <h2 className={`font-black text-sm mb-1 uppercase tracking-tight ${editorThemeMode === 'claro' ? 'text-slate-900' : 'text-white'}`}>PC GAMER COMPLETÃO</h2>
+                        <p className="text-[9px] text-zinc-500 font-medium leading-relaxed">Concorra agora a um PC Gamer de última geração por apenas R$ 1,00!</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <div className={`p-2 rounded-xl border flex flex-col gap-1 transition-colors ${editorThemeMode === 'claro' ? 'bg-slate-50 border-slate-100' : 'bg-zinc-900/50 border-zinc-800'}`}>
+                          <div className="w-6 h-6 rounded-md flex items-center justify-center transition-colors" style={{ backgroundColor: `${editorPrimaryColor}20`, color: editorPrimaryColor }}>
+                            <Trophy className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-[7px] text-zinc-500 uppercase font-black tracking-wider mt-1">Valor do Ticket</span>
+                          <span className="text-xs font-black transition-colors" style={{ color: editorPrimaryColor }}>R$ 1,00</span>
+                        </div>
+                        <div className={`p-2 rounded-xl border flex flex-col gap-1 transition-colors ${editorThemeMode === 'claro' ? 'bg-slate-50 border-slate-100' : 'bg-zinc-900/50 border-zinc-800'}`}>
+                          <div className="w-6 h-6 rounded-md bg-green-500/10 text-green-500 flex items-center justify-center">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-[7px] text-zinc-500 uppercase font-black tracking-wider mt-1">Sorteio</span>
+                          <span className={`text-[10px] font-black mt-0.5 ${editorThemeMode === 'claro' ? 'text-slate-900' : 'text-zinc-100'}`}>20/12/2026</span>
+                        </div>
+                      </div>
+
+                      <div className={`mt-3 p-3 rounded-xl border-dashed border-2 flex items-center gap-2 ${editorThemeMode === 'claro' ? 'border-orange-200 bg-orange-50' : 'border-zinc-800 bg-zinc-900'}`}>
+                        <div className="text-[10px] font-bold text-orange-600 flex-1">🚀 Bônus: Compre 10 cotas e leve 15!</div>
+                      </div>
+                    </div>
+
+                    {/* Footer Mock */}
+                    <div className={`p-3 shrink-0 rounded-b-[2rem] border-t relative z-10 transition-colors ${editorThemeMode === 'claro' ? 'bg-white border-slate-100' : 'bg-[#121214] border-zinc-800'}`}>
+                      <div className="h-12 w-full rounded-2xl flex items-center justify-center text-white font-black text-[11px] shadow-lg transition-colors duration-500 gap-1 tracking-wider" style={{ backgroundColor: editorPrimaryColor }}>
+                        COMPRAR AGORA <ArrowRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
                   </div>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    key={themes[activeThemeIndex].id}
-                    className="absolute inset-0 w-full h-full object-cover z-10 animate-in fade-in zoom-in-95 duration-500"
-                    src={`/tamplates/${themes[activeThemeIndex].id}.png`}
-                    alt={`Preview do ${themes[activeThemeIndex].name}`}
-                  />
                 </div>
+
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Templates Showcase (Free for all) */}
+        <section className="py-20 bg-muted/20 border-b">
+          <div className="container mx-auto px-6 space-y-12">
+            <div className="text-center space-y-4 max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight">9 Templates Prontos para Uso</h2>
+              <p className="text-lg text-muted-foreground font-medium">Não perca tempo criando designs do zero. Selecione o modelo que mais combina com a sua campanha em um só clique!</p>
+            </div>
+
+            <div className="flex gap-4 overflow-x-auto pb-8 snap-x no-scrollbar">
+              {templatesList.map((t) => (
+                <div key={t.id} className="shrink-0 snap-center w-[200px] group">
+                  <div className="aspect-[9/16] bg-slate-100 rounded-3xl overflow-hidden shadow-sm border-[6px] border-white group-hover:border-primary group-hover:shadow-2xl transition-all relative ring-1 ring-slate-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`/tamplates/${t.id}.png`} alt={`Template ${t.name}`} className="w-full h-full object-cover" />
+                  </div>
+                  <p className="text-center font-bold text-sm text-slate-700 mt-4 uppercase tracking-widest">{t.name}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -539,15 +602,15 @@ export default function Home() {
           <div className="container mx-auto px-6 text-center space-y-16">
             <div className="space-y-4 max-w-2xl mx-auto">
               <h2 className="text-3xl md:text-5xl font-black tracking-tight">Preço Justo e Sem Surpresas</h2>
-              <p className="text-lg text-muted-foreground font-medium">Você só paga quando cria uma nova campanha. Sem dores de cabeça, sem porcentagem em cima da sua arrecadação.</p>
+              <p className="text-lg text-muted-foreground font-medium">Você só paga a ativação da campanha. Sem dores de cabeça, sem porcentagem em cima da sua arrecadação.</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Plano Básico */}
               <div className="bg-white rounded-[2.5rem] p-10 border-2 border-slate-100 shadow-lg hover:border-slate-300 transition-colors relative flex flex-col text-left">
                 <div className="mb-6">
-                  <h3 className="text-2xl font-black text-slate-800">Básico (Sem Edição)</h3>
-                  <p className="text-sm text-slate-500 mt-2 font-medium">Layout estático padrão do sistema.</p>
+                  <h3 className="text-2xl font-black text-slate-800">Básico (9 Templates)</h3>
+                  <p className="text-sm text-slate-500 mt-2 font-medium">Layouts fantásticos Inclusos para começar.</p>
                 </div>
 
                 <div className="mb-8 flex items-baseline gap-1">
@@ -557,12 +620,12 @@ export default function Home() {
 
                 <ul className="space-y-4 mb-8 flex-1">
                   {[
+                    "Acesso aos 9 Templates Exclusivos",
                     "Crie até 1.000 participações",
                     "Receba 100% via PIX na sua conta",
                     "Painel de Gestão Completo",
-                    "Upload de 1 foto do prêmio",
-                    "Link exclusivo da campanha",
-                    "Apuração e Sorteio Integrados"
+                    "Upload de foto do prêmio",
+                    "Apuração de Sorteio Integrada"
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm font-semibold text-slate-700">
                       <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
@@ -581,12 +644,12 @@ export default function Home() {
               {/* Plano TicketOn PRO */}
               <div className="bg-gradient-to-b from-orange-500 to-red-500 rounded-[2.5rem] p-1 shadow-2xl relative flex flex-col transform md:-translate-y-4">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1 z-10">
-                  <Sparkles className="w-3 h-3" /> Mais Escolhido
+                  <Sparkles className="w-3 h-3" /> Máxima Conversão
                 </div>
                 <div className="bg-white rounded-[2.3rem] p-10 relative flex flex-col h-full text-left">
                   <div className="mb-6">
                     <h3 className="text-2xl font-black text-orange-600 flex items-center gap-2">TicketOn PRO</h3>
-                    <p className="text-sm text-slate-500 mt-2 font-medium">Editor Visual Completo para conversão máxima.</p>
+                    <p className="text-sm text-slate-500 mt-2 font-medium">Editor Visual com ferramentas de venda.</p>
                   </div>
 
                   <div className="mb-8 flex items-baseline gap-1">
@@ -601,11 +664,11 @@ export default function Home() {
                     </li>
                     {[
                       "Acesso total ao Editor Visual PRO",
-                      "9 Templates de Cores e Temas",
-                      "Notificações ('João acabou de comprar')",
-                      "Contador Regressivo (Urgência)",
-                      "Cupons de Desconto e Bônus",
-                      "Cores Personalizadas"
+                      "Cores 100% Personalizadas e Tema Escuro",
+                      "Notificações ao Vivo de Compras",
+                      "Contador Regressivo (Gatilho de Urgência)",
+                      "Cupons de Desconto Automáticos",
+                      "Ocultar logo da TicketOn do Rodapé"
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm font-semibold text-slate-700">
                         <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
