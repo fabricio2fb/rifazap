@@ -60,6 +60,7 @@ export default function RafflesPage() {
                 whatsappContact: r.whatsapp_contact,
                 whatsappGroupLink: r.whatsapp_group_link,
                 imageEditCount: r.image_edit_count || 0,
+                plan: r.plan,
                 createdAt: r.created_at,
             }));
             setRaffles(mappedRaffles);
