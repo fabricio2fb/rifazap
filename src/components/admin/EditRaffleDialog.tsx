@@ -357,7 +357,7 @@ export function EditRaffleDialog({ raffle, isOpen, onClose, onUpdate }: EditRaff
                 >
                   <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center p-0.5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/api/campanha/demo/imagem?theme=${t.id}${formData.imageUrl ? `&img=${encodeURIComponent(formData.imageUrl)}` : ''}${formData.title ? `&title=${encodeURIComponent(formData.title)}` : ''}`} alt={t.name} className="object-contain w-full h-full" loading="lazy" />
+                    <img src={`/tamplates/${t.id}.png`} alt={t.name} className="object-cover w-full h-full" loading="lazy" />
                   </div>
                   <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
                 </div>

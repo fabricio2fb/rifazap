@@ -275,13 +275,13 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
             >
               <div className="absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br from-orange-400 to-red-500 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
 
-              <div className="absolute top-0 right-8 bg-[#f97316] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-b-lg shadow-md flex items-center gap-1">
+              <div className="absolute top-0 right-8 bg-[#f97316] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-b-lg shadow-md flex items-center gap-1 z-20">
                 <Sparkles className="w-3 h-3" /> Mais Vendido
               </div>
 
               <div className="mb-4 relative z-10">
                 <h3 className="text-xl font-black text-[#ea580c] dark:text-orange-400 mb-1 flex items-center gap-2">TicketOn PRO</h3>
-                <p className="text-sm text-slate-600 dark:text-zinc-400 font-medium leading-snug mb-2"><strong>Editor da Rifa</strong> completo para você vender muito mais com:</p>
+                <p className="text-sm text-slate-800 dark:text-zinc-300 font-medium leading-snug mb-2"><strong>Editor da Rifa</strong> completo para você vender muito mais com:</p>
                 <div className="flex flex-wrap gap-1.5 text-[9px] font-black uppercase tracking-wider text-[#ea580c] dark:text-orange-400">
                   <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">🔔 Notificações</span>
                   <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">⏳ Contador</span>
@@ -496,7 +496,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
                   >
                     <div className="w-full aspect-[9/16] relative rounded-lg overflow-hidden mb-1.5 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center p-0.5">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/api/campanha/demo/imagem?theme=${t.id}${imageUrl ? `&img=${encodeURIComponent(imageUrl)}` : ''}${title ? `&title=${encodeURIComponent(title)}` : ''}`} alt={t.name} className="object-contain w-full h-full" loading="lazy" />
+                      <img src={`/tamplates/${t.id}.png`} alt={t.name} className="object-cover w-full h-full" loading="lazy" />
                     </div>
                     <span className="text-[10px] font-bold text-center mb-0.5">{t.name}</span>
                   </div>
@@ -620,13 +620,13 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
             }}
             onInteractOutside={(e) => {
               e.preventDefault();
-              setPreviewTheme(null);
             }}
           >
             <DialogHeader className="p-4 bg-slate-50 dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800 shrink-0 flex flex-row items-center justify-between">
               <DialogTitle className="text-slate-900 dark:text-white text-sm uppercase tracking-widest font-black flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-primary" /> Preview: {previewTheme}
               </DialogTitle>
+              <Button type="button" variant="ghost" size="icon" onClick={() => setPreviewTheme(null)} className="h-8 w-8 rounded-full z-50">✕</Button>
             </DialogHeader>
             <div className="flex-1 overflow-y-auto w-full flex justify-center bg-slate-100 dark:bg-black/50 p-4 sm:p-6 no-scrollbar relative">
               <div className="w-full max-w-[380px] h-fit bg-red-50 relative rounded-xl shadow-2xl overflow-hidden ring-1 ring-black/5">
