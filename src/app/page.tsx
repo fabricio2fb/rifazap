@@ -40,6 +40,26 @@ import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [animationStep, setAnimationStep] = useState(0);
+  const [activeThemeIndex, setActiveThemeIndex] = useState(1); // Default to gold
+
+  const themes = [
+    { id: 'mint', name: 'Mint', color: 'bg-emerald-400' },
+    { id: 'gold', name: 'Gold', color: 'bg-yellow-400' },
+    { id: 'pink', name: 'Pink', color: 'bg-pink-400' },
+    { id: 'solar', name: 'Solar', color: 'bg-orange-400' },
+    { id: 'nebula', name: 'Nebula', color: 'bg-purple-600' },
+    { id: 'scrapbook', name: 'Scrapbook', color: 'bg-stone-300' },
+    { id: 'calor', name: 'Calor', color: 'bg-red-500' },
+    { id: 'juliana', name: 'Juliana', color: 'bg-fuchsia-500' },
+    { id: 'creme', name: 'Creme', color: 'bg-amber-100' }
+  ];
+
+  useEffect(() => {
+    const themeTimer = setInterval(() => {
+      setActiveThemeIndex((prev) => (prev + 1) % themes.length);
+    }, 4000);
+    return () => clearInterval(themeTimer);
+  }, [themes.length]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -294,8 +314,11 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
                 <div className="space-y-4 text-center lg:text-left">
-                  <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">Venda mais com menos esforço</h2>
-                  <p className="text-lg text-muted-foreground font-medium">Nossa interface foi desenhada para facilitar a compra em apenas 3 cliques no celular.</p>
+                  <div className="inline-flex h-8 items-center justify-center rounded-full bg-primary/20 text-slate-800 px-4 mb-2 font-black text-[10px] tracking-widest uppercase border border-primary/30">
+                    Simulação de Compra
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">Como seus clientes participam da campanha</h2>
+                  <p className="text-lg text-muted-foreground font-medium">Nossa interface foi desenhada para facilitar compras incríveis com poucos cliques direto no celular.</p>
                 </div>
 
                 <div className="space-y-6">
@@ -429,46 +452,84 @@ export default function Home() {
           </div>
         </section>
 
-        {/* PRO Editor Showcase Section */}
-        <section className="py-24 bg-zinc-50 border-y border-slate-200">
-          <div className="container mx-auto px-6 space-y-16">
-            <div className="text-center space-y-4 max-w-3xl mx-auto">
-              <div className="inline-flex h-8 items-center justify-center rounded-full bg-orange-100 text-orange-600 px-4 mb-2 font-black text-[10px] tracking-widest uppercase border border-orange-200">
-                <Sparkles className="w-3.5 h-3.5 mr-2" /> Exclusividade TicketOn
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900">Conheça o Editor PRO</h2>
-              <p className="text-lg text-muted-foreground font-medium">A única plataforma que permite você personalizar sua campanha como um verdadeiro site profissional. Venda mais com gatilhos de conversão.</p>
+        {/* PRO Editor Showcase Section - Visual & Interactive */}
+        <section className="py-24 bg-zinc-950 border-y border-zinc-800 relative overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-500/10 blur-[120px] rounded-full point-events-none" />
+
+          <div className="container mx-auto px-6 space-y-16 relative z-10">
+            <div className="text-center space-y-6 max-w-4xl mx-auto">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight">
+                Seu site,<br />sua <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Identidade Visual</span>
+              </h2>
+              <p className="text-xl text-zinc-400 font-medium max-w-2xl mx-auto leading-relaxed">
+                Com o Editor PRO, você tem 9 temas fantásticos. Escolha sua cor, mostre um cronômetro e ative notificações de compras em tempo real.
+              </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
-                <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 border border-orange-100 group-hover:bg-orange-500 transition-colors">
-                  <Palette className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors" />
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
+              {/* Left Side: Features and Theme Selector */}
+              <div className="w-full lg:w-1/3 flex flex-col space-y-10">
+                <div className="space-y-6">
+                  <h3 className="text-white text-2xl font-black flex items-center gap-3">
+                    <Palette className="w-8 h-8 text-orange-400" />
+                    9 Templates Mágicos
+                  </h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    {themes.map((theme, index) => (
+                      <button
+                        key={theme.id}
+                        onClick={() => setActiveThemeIndex(index)}
+                        className={cn(
+                          "flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all duration-300 border-2",
+                          activeThemeIndex === index
+                            ? "bg-zinc-800 border-orange-500 scale-105 shadow-[0_0_20px_rgba(249,115,22,0.3)]"
+                            : "bg-zinc-900 border-zinc-800 hover:bg-zinc-800/80 hover:border-zinc-700"
+                        )}
+                      >
+                        <div className={cn("w-6 h-6 rounded-full shadow-inner", theme.color)} />
+                        <span className="text-[10px] font-bold text-zinc-300 uppercase tracking-wider">{theme.name}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="text-xl font-black mb-3">9 Templates Exclusivos</h3>
-                <p className="text-muted-foreground font-medium text-sm leading-relaxed">
-                  Mint, Gold, Pink, Solar, Nebula, Scrapbook, Calor, Juliana e Creme. Escolha o tema que mais combina com seu prêmio e personalize as cores como quiser.
-                </p>
+
+                <div className="space-y-6 pt-6 border-t border-zinc-800">
+                  <div className="flex gap-4 items-start">
+                    <div className="bg-orange-500/20 p-3 rounded-2xl shrink-0 mt-1">
+                      <Clock className="w-6 h-6 text-orange-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-white font-black text-lg">Contador Regressivo</h4>
+                      <p className="text-sm text-zinc-400 font-medium leading-relaxed">Crie urgência real. Os compradores veem o tempo acabando e compram mais rápido.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4 items-start">
+                    <div className="bg-red-500/20 p-3 rounded-2xl shrink-0 mt-1">
+                      <Sparkles className="w-6 h-6 text-red-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-white font-black text-lg">Notificações ao Vivo</h4>
+                      <p className="text-sm text-zinc-400 font-medium leading-relaxed">Plaquinhas pulando na tela mostrando que outras pessoas estão comprando agora.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
-                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 border border-blue-100 group-hover:bg-blue-500 transition-colors">
-                  <Clock className="w-6 h-6 text-blue-500 group-hover:text-white transition-colors" />
+              {/* Right Side: Visual Image Preview */}
+              <div className="w-full lg:w-1/3 flex justify-center">
+                <div className="relative w-full max-w-[340px] aspect-[9/16] bg-zinc-900 rounded-[2.5rem] shadow-2xl border-8 border-zinc-800 flex items-center justify-center overflow-hidden ring-4 ring-zinc-950">
+                  <div className="absolute inset-0 flex items-center justify-center text-zinc-700">
+                    <Loader2 className="w-8 h-8 animate-spin" />
+                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    key={themes[activeThemeIndex].id}
+                    className="absolute inset-0 w-full h-full object-cover z-10 animate-in fade-in zoom-in-95 duration-500"
+                    src={`/api/campanha/demo/imagem?theme=${themes[activeThemeIndex].id}&title=PC%20GAMER%20GIGABYTE`}
+                    alt={`Preview do ${themes[activeThemeIndex].name}`}
+                  />
+                  <div className="absolute top-0 w-32 h-6 bg-zinc-800 rounded-b-xl z-20 left-1/2 -translate-x-1/2" />
                 </div>
-                <h3 className="text-xl font-black mb-3">Gatilhos de Urgência</h3>
-                <p className="text-muted-foreground font-medium text-sm leading-relaxed">
-                  Adicione contadores regressivos dinâmicos, alertas de "Últimas Cotas!" e banners de compras em tempo real para acelerar o fechamento da sua campanha.
-                </p>
-              </div>
-
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
-                <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mb-6 border border-green-100 group-hover:bg-green-500 transition-colors">
-                  <Trophy className="w-6 h-6 text-green-500 group-hover:text-white transition-colors" />
-                </div>
-                <h3 className="text-xl font-black mb-3">Cupons e Bônus Extras</h3>
-                <p className="text-muted-foreground font-medium text-sm leading-relaxed">
-                  Crie cupons de desconto, configure pacotes promocionais automáticos e ofereça Bônus Garantidos para quem mais apoiar seu projeto.
-                </p>
               </div>
             </div>
           </div>
