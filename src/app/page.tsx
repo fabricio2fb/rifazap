@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -26,7 +26,8 @@ import {
   Signal,
   Sparkles,
   Palette,
-  Clock
+  Clock,
+  ShoppingCart
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -44,7 +45,10 @@ export default function Home() {
   // Editor Mini Showcase States
   const [editorPrimaryColor, setEditorPrimaryColor] = useState('#ea580c');
   const [editorThemeMode, setEditorThemeMode] = useState<'claro' | 'escuro'>('claro');
-  const editorColors = ['#ea580c', '#3b82f6', '#22c55e', '#ef4444', '#eab308', '#a855f7', '#ec4899', '#06b6d4', '#000000'];
+  const [isEditorInteracted, setIsEditorInteracted] = useState(false);
+
+  // We memoize editorColors so it can be used safely in useEffect
+  const editorColors = useMemo(() => ['#ea580c', '#3b82f6', '#22c55e', '#ef4444', '#eab308', '#a855f7', '#ec4899', '#06b6d4', '#000000'], []);
 
   const templatesList = [
     { id: 'mint', name: 'Mint' },
@@ -65,8 +69,34 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (isEditorInteracted) return;
+    const editorTimer = setInterval(() => {
+      setEditorThemeMode(prev => prev === 'claro' ? 'escuro' : 'claro');
+      setEditorPrimaryColor(prev => {
+        const currentIndex = editorColors.indexOf(prev);
+        return editorColors[(currentIndex + 1) % editorColors.length];
+      });
+    }, 3500);
+    return () => clearInterval(editorTimer);
+  }, [isEditorInteracted, editorColors]);
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 40s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+      `}} />
+
       {/* Navbar */}
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between px-6 mx-auto">
@@ -174,12 +204,12 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Smartphone Frame com Preview Real */}
+              {/* Smartphone Frame com Preview Real - Visual Upgrades */}
               <div className="flex-1 relative group">
-                <div className="absolute -inset-10 bg-primary/20 rounded-[4rem] blur-[80px] group-hover:bg-primary/30 transition-all duration-700" />
+                <div className="absolute -inset-10 bg-primary/30 rounded-[4rem] blur-[100px] group-hover:bg-primary/50 group-hover:blur-[120px] transition-all duration-700 animate-pulse" />
 
                 {/* Frame do Smartphone (iPhone Style) */}
-                <div className="relative bg-slate-900 rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border-[12px] border-slate-900 overflow-hidden w-full max-w-[360px] mx-auto transform hover:-translate-y-4 transition-all duration-500 h-[720px] flex flex-col ring-4 ring-slate-800">
+                <div className="relative bg-[#16171a] rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] border-8 border-zinc-800 overflow-hidden w-full max-w-[360px] mx-auto transform hover:-translate-y-4 transition-all duration-500 h-[720px] flex flex-col ring-4 ring-black/80">
                   {/* Dynamic Island */}
                   <div className="bg-black h-7 w-32 mx-auto rounded-full absolute top-3 left-1/2 -translate-x-1/2 z-40 flex items-center justify-around px-4">
                     <div className="h-2 w-2 rounded-full bg-slate-800" />
@@ -286,19 +316,19 @@ export default function Home() {
 
                   {/* Botão de Checkout Flutuante Simulado */}
                   <div className="absolute bottom-6 left-4 right-4 z-40 animate-bounce">
-                    <div className="w-full h-16 rounded-[1.25rem] bg-slate-900 flex items-center justify-between px-6 border-2 border-slate-800 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-                      <div className="text-left">
-                        <p className="text-[10px] font-black uppercase text-slate-400">01 Participação Selecionada</p>
+                    <div className="w-full h-16 rounded-2xl bg-primary flex items-center justify-between px-6 shadow-[0_20px_40px_rgba(234,88,12,0.4)]">
+                      <div className="text-left py-1">
+                        <p className="text-[10px] items-center gap-1 font-black uppercase text-primary-foreground/80 flex"><ShoppingCart className="w-3 h-3" /> 01 Participação</p>
                         <p className="font-black text-white text-base">COMPRAR AGORA</p>
                       </div>
-                      <div className="bg-primary p-2 rounded-lg">
-                        <ArrowRight className="w-5 h-5 text-primary-foreground" />
+                      <div className="bg-white/20 backdrop-blur p-2 rounded-xl">
+                        <ArrowRight className="w-5 h-5 text-white" />
                       </div>
                     </div>
                   </div>
 
                   {/* Home Indicator */}
-                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 w-24 bg-slate-300 rounded-full z-40" />
+                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 w-24 bg-white/40 rounded-full z-40" />
                 </div>
               </div>
             </div>
@@ -436,7 +466,8 @@ export default function Home() {
                         <p className="text-lg text-muted-foreground font-black px-6">Sua reserva da participação 09 foi confirmada. Boa sorte!</p>
                       </div>
                       <div className="w-full space-y-4 pt-6">
-                        <Button className="w-full h-20 rounded-2xl bg-[#25D366] text-white font-black text-xl gap-3 shadow-xl hover:bg-[#128C7E]">
+                        <Button className="w-full h-20 rounded-2xl bg-[#25D366] text-white font-black text-xl gap-3 shadow-[0_20px_40px_rgba(37,211,102,0.4)] hover:bg-[#128C7E] animate-pulse relative overflow-hidden group">
+                          <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                           <MessageCircle className="w-8 h-8 fill-current" /> ENVIAR COMPROVANTE
                         </Button>
                         <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Clique acima para validar sua participação</p>
@@ -492,16 +523,19 @@ export default function Home() {
                     <div className="mb-6">
                       <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-2 block">Tema Base</label>
                       <div className="grid grid-cols-2 gap-2">
-                        <button onClick={() => setEditorThemeMode('claro')} className={`py-2 px-3 rounded-lg text-xs font-bold border-2 transition-all ${editorThemeMode === 'claro' ? 'border-orange-500 text-white bg-zinc-800' : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/50'}`}>Claro</button>
-                        <button onClick={() => setEditorThemeMode('escuro')} className={`py-2 px-3 rounded-lg text-xs font-bold border-2 transition-all ${editorThemeMode === 'escuro' ? 'border-orange-500 text-white bg-zinc-800' : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/50'}`}>Escuro</button>
+                        <button onClick={() => { setEditorThemeMode('claro'); setIsEditorInteracted(true); }} className={`py-2 px-3 rounded-lg text-xs font-bold border-2 transition-all ${editorThemeMode === 'claro' ? 'border-orange-500 text-white bg-zinc-800' : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/50'}`}>Claro</button>
+                        <button onClick={() => { setEditorThemeMode('escuro'); setIsEditorInteracted(true); }} className={`py-2 px-3 rounded-lg text-xs font-bold border-2 transition-all ${editorThemeMode === 'escuro' ? 'border-orange-500 text-white bg-zinc-800' : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/50'}`}>Escuro</button>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-2 block">Cor Primária (Botões)</label>
-                      <div className="bg-white p-3 rounded-2xl grid grid-cols-5 gap-y-3 gap-x-2">
-                        {editorColors.map(c => (
-                          <button key={c} onClick={() => setEditorPrimaryColor(c)} className={`w-9 h-9 mx-auto rounded-full shadow-inner ring-2 ring-offset-2 ring-offset-white ${editorPrimaryColor === c ? 'ring-slate-900 scale-110' : 'ring-transparent hover:scale-110'} transition-all`} style={{ backgroundColor: c }} />
+                      <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-2 flex justify-between items-center">
+                        Cor Primária
+                        {isEditorInteracted && <span className="text-[8px] bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded animate-pulse">INTERAÇÃO ATIVADA</span>}
+                      </label>
+                      <div className="bg-[#09090b] p-3 rounded-2xl grid grid-cols-5 gap-y-3 gap-x-2 border border-zinc-800/80">
+                        {editorColors.map((c: string) => (
+                          <button key={c} onClick={() => { setEditorPrimaryColor(c); setIsEditorInteracted(true); }} className={`w-9 h-9 mx-auto rounded-full shadow-inner ring-2 ring-offset-2 ring-offset-[#09090b] ${editorPrimaryColor === c ? 'ring-slate-400 scale-110' : 'ring-transparent hover:scale-110'} transition-all duration-300`} style={{ backgroundColor: c }} />
                         ))}
                       </div>
                     </div>
@@ -575,24 +609,37 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Templates Showcase (Free for all) */}
-        <section className="py-20 bg-muted/20 border-b">
-          <div className="container mx-auto px-6 space-y-12">
-            <div className="text-center space-y-4 max-w-2xl mx-auto">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight">9 Templates Prontos para Uso</h2>
-              <p className="text-lg text-muted-foreground font-medium">Não perca tempo criando designs do zero. Selecione o modelo que mais combina com a sua campanha em um só clique!</p>
+        {/* Templates Showcase (Free for all) - Infinite Marquee */}
+        <section className="py-24 bg-zinc-50 border-b overflow-hidden relative">
+          {/* Gradient Shadows that fade the edges */}
+          <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-zinc-50 to-transparent z-10" />
+          <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-zinc-50 to-transparent z-10" />
+
+          <div className="container mx-auto px-6 space-y-16">
+            <div className="text-center space-y-4 max-w-2xl mx-auto relative z-20">
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900">9 Templates Prontos <br />para Uso</h2>
+              <p className="text-lg text-slate-600 font-medium">Não perca tempo criando designs do zero. Selecione o modelo visual que mais combina com a sua campanha em apenas um clique e comece a vender.</p>
             </div>
 
-            <div className="flex gap-4 overflow-x-auto pb-8 snap-x no-scrollbar">
-              {templatesList.map((t) => (
-                <div key={t.id} className="shrink-0 snap-center w-[200px] group">
-                  <div className="aspect-[9/16] bg-slate-100 rounded-3xl overflow-hidden shadow-sm border-[6px] border-white group-hover:border-primary group-hover:shadow-2xl transition-all relative ring-1 ring-slate-200">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/tamplates/${t.id}.png`} alt={`Template ${t.name}`} className="w-full h-full object-cover" />
+            {/* Marquee Wrapper */}
+            <div className="relative w-full pb-8">
+              <div className="flex gap-6 w-max animate-marquee cursor-grab active:cursor-grabbing hover:[animation-play-state:paused] pointer-events-auto">
+                {/* Duplicamos os templates para garantir o loop contínuo */}
+                {[...templatesList, ...templatesList, ...templatesList].map((t, idx) => (
+                  <div key={`${t.id}-${idx}`} className="shrink-0 w-[240px] group">
+                    <div className="aspect-[9/16] bg-slate-100 rounded-[2rem] overflow-hidden shadow-md border-[8px] border-white group-hover:border-primary group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] group-hover:-translate-y-2 transition-all duration-300 relative ring-1 ring-slate-200">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`/tamplates/${t.id}.png`} alt={`Template ${t.name}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+
+                      {/* Overlay Hover Text */}
+                      <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                        <span className="bg-white text-slate-900 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full absolute">APLICAR</span>
+                      </div>
+                    </div>
+                    <p className="text-center font-bold text-sm text-slate-500 group-hover:text-slate-900 mt-5 uppercase tracking-widest">{t.name}</p>
                   </div>
-                  <p className="text-center font-bold text-sm text-slate-700 mt-4 uppercase tracking-widest">{t.name}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </section>
