@@ -875,7 +875,7 @@ export default function Home() {
             <p className="text-sm text-muted-foreground font-medium">Precisa de ajuda ou parceria? Fale com nossa equipe agora.</p>
             <Button
               className="w-full bg-green-500 hover:bg-green-600 text-white font-black h-16 gap-3 rounded-2xl shadow-xl transition-all hover:scale-105"
-              onClick={() => window.open("https://wa.me/SEU_NUMERO_AQUI", "_blank")}
+              onClick={() => window.open("https://wa.me/5521996567301", "_blank")}
             >
               <MessageCircle className="w-6 h-6 fill-current" /> Suporte WhatsApp
             </Button>

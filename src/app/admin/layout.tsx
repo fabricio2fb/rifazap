@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Zap, LayoutDashboard, Package, Wallet, LogOut, PlusCircle, Moon, Sun } from "lucide-react";
+import { Zap, LayoutDashboard, Package, Wallet, LogOut, PlusCircle, Moon, Sun, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
 import { createClient } from "@/lib/supabase/client";
@@ -163,6 +163,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         ))}
                     </nav>
                 )}
+                {/* Floating WhatsApp Support Button */}
+                <button
+                    onClick={() => window.open("https://wa.me/5521996567301", "_blank")}
+                    className="fixed bottom-20 md:bottom-8 right-6 z-50 bg-[#25D366] hover:bg-[#128C7E] text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95 group flex items-center gap-2"
+                    title="Suporte WhatsApp"
+                >
+                    <MessageCircle className="w-6 h-6 fill-current" />
+                    <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-bold text-sm whitespace-nowrap">
+                        Suporte
+                    </span>
+                </button>
             </div>
         </div>
     );

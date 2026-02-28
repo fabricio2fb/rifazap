@@ -192,7 +192,7 @@ export default function EticaPage() {
                         </p>
                         <Button
                             className="h-14 px-8 rounded-2xl bg-primary text-primary-foreground font-black text-base gap-3 shadow-xl hover:scale-105 transition-transform"
-                            onClick={() => window.open("https://wa.me/5561995256066", "_blank")}
+                            onClick={() => window.open("https://wa.me/5521996567301", "_blank")}
                         >
                             <MessageCircle className="w-5 h-5 fill-current" /> Fazer uma Denúncia
                         </Button>

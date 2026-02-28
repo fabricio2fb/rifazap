@@ -146,7 +146,10 @@ export default function TermosPage() {
             <section className="py-12 px-6 bg-foreground text-background">
                 <div className="container mx-auto text-center space-y-6">
                     <p className="text-lg font-black">Ainda tem dúvidas sobre os termos?</p>
-                    <Button className="h-14 px-8 rounded-2xl bg-primary text-primary-foreground font-black text-lg gap-3 shadow-xl hover:scale-105 transition-transform">
+                    <Button
+                        className="h-14 px-8 rounded-2xl bg-primary text-primary-foreground font-black text-lg gap-3 shadow-xl hover:scale-105 transition-transform"
+                        onClick={() => window.open("https://wa.me/5521996567301", "_blank")}
+                    >
                         <MessageCircle className="w-5 h-5 fill-current" /> Falar com Suporte
                     </Button>
                 </div>
