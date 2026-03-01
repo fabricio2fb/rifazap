@@ -820,11 +820,12 @@ export async function GET(
 
         const dbTheme = (searchParams.get('theme') as RaffleTheme) ?? raffle?.settings?.image_theme ?? DEFAULT_THEME;
 
-        // 2. Busca participações
+        // 2. Busca participações ativas
         const { data: purchases } = await supabase
             .from('purchases')
             .select('status, numbers')
-            .eq('raffle_id', raffle.id);
+            .eq('raffle_id', raffle.id)
+            .in('status', ['pending', 'confirmed', 'paid', 'paid_delayed']);
 
         // 3. Monta statusMap
         const statusMap = new Map<number, NumStatus>();
