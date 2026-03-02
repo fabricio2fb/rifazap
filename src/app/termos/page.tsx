@@ -9,50 +9,50 @@ const sections = [
         id: "01",
         title: "Natureza do Serviço e Aceitação",
         icon: <CheckCircle2 className="w-5 h-5" />,
-        content: `Ao acessar a TicketOn, você concorda integralmente com estes Termos de Uso. A TicketOn é fornecedora exclusivamente de tecnologia em formato SaaS (Software as a Service) para a gestão de campanhas digitais.
-A TicketOn não atua como intermediadora financeira, instituição de pagamento ou custodiante de valores. Todos os valores arrecadados são enviados diretamente para a conta do organizador por meio de ferramentas de cobrança de terceiros (ex.: PIX ou outro método escolhido), sem qualquer retenção, custódia ou intervenção da TicketOn.`
+        content: `Ao acessar a Apoiêfy, você concorda integralmente com estes Termos de Uso. A Apoiêfy é fornecedora exclusivamente de tecnologia em formato SaaS (Software as a Service) para a gestão de campanhas digitais.
+A Apoiêfy não atua como intermediadora financeira, instituição de pagamento ou custodiante de valores. Todos os valores arrecadados são enviados diretamente para a conta do organizador por meio de ferramentas de cobrança de terceiros (ex.: PIX ou outro método escolhido), sem qualquer retenção, custódia ou intervenção da Apoiêfy.`
     },
     {
         id: "02",
         title: "Provedores de Pagamento e Taxa de Software",
         icon: <Zap className="w-5 h-5" />,
-        content: `O processamento de pagamentos na plataforma é realizado estritamente por provedores externos (ex: Mercado Pago, gateways, PIX). A TicketOn não armazena dados completos de cartão de crédito.
-O único pagamento recebido pela TicketOn via gateway é exclusivamente referente à taxa de licença/ativação do software. O valor arrecadado com as campanhas vai diretamente ao organizador via PIX ou meio por ele escolhido. Eventuais bloqueios, chargebacks ou retenções de saldo pelo gateway recebedor são de exclusiva responsabilidade do processador financeiro utilizado.`
+        content: `O processamento de pagamentos na plataforma é realizado estritamente por provedores externos (ex: Mercado Pago, gateways, PIX). A Apoiêfy não armazena dados completos de cartão de crédito.
+O único pagamento recebido pela Apoiêfy via gateway é exclusivamente referente à taxa de licença/ativação do software. O valor arrecadado com as campanhas vai diretamente ao organizador via PIX ou meio por ele escolhido. Eventuais bloqueios, chargebacks ou retenções de saldo pelo gateway recebedor são de exclusiva responsabilidade do processador financeiro utilizado.`
     },
     {
         id: "03",
         title: "Responsabilidade Exclusiva do Organizador",
         icon: <AlertCircle className="w-5 h-5" />,
         content: `O organizador é integralmente responsável pelo conteúdo, legalidade, e cumprimento das promessas de cada campanha criada na plataforma. 
-A TicketOn não valida a entrega de prêmios ou os bens ofertados. A plataforma atua apenas como espelho tecnológico do evento. Temos o direito de suspender ou banir imediatamente campanhas que violem a legislação vigente, promovam atividades fraudulentas ou apresentem indícios de irregularidades, sem aviso prévio.`
+A Apoiêfy não valida a entrega de prêmios ou os bens ofertados. A plataforma atua apenas como espelho tecnológico do evento. Temos o direito de suspender ou banir imediatamente campanhas que violem a legislação vigente, promovam atividades fraudulentas ou apresentem indícios de irregularidades, sem aviso prévio.`
     },
     {
         id: "04",
         title: "Limitação de Responsabilidade e Isenções",
         icon: <Shield className="w-5 h-5" />,
-        content: `A TicketOn limita sua responsabilidade legal exclusivamente à disponibilidade técnica e manutenção da sua própria plataforma de software (falhas técnicas próprias). 
+        content: `A Apoiêfy limita sua responsabilidade legal exclusivamente à disponibilidade técnica e manutenção da sua própria plataforma de software (falhas técnicas próprias). 
 Em nenhuma hipótese a plataforma, seus sócios ou representantes serão responsabilizados por atos de terceiros, uso indevido da ferramenta pelos organizadores, prejuízos financeiros em campanhas, disputas entre participantes e criadores ou lucros cessantes.`
     },
     {
         id: "05",
         title: "Cancelamento e Reembolso",
         icon: <FileText className="w-5 h-5" />,
-        content: `A taxa paga à TicketOn refere-se unicamente ao serviço digital de ativação e licenciamento da infraestrutura de software no momento da criação da campanha.
+        content: `A taxa paga à Apoiêfy refere-se unicamente ao serviço digital de ativação e licenciamento da infraestrutura de software no momento da criação da campanha.
 Uma vez que o software tenha sido ativado e disponibilizado para uso, a prestação do serviço digital é considerada concluída e consumida. Portanto, não haverá reembolso da taxa de ativação em casos de arrependimento posterior, cancelamento da campanha por parte do organizador ou suspensão por violação dos nossos Termos de Uso.`
     },
     {
         id: "06",
         title: "Código de Ética e Uso Responsável",
         icon: <Shield className="w-5 h-5" />,
-        content: `A plataforma exige conduta ética de todos os seus usuários. É terminantemente proibido o uso da TicketOn para atividades ilícitas, crimes, lavagem de dinheiro, ou ações que violem leis vigentes.
+        content: `A plataforma exige conduta ética de todos os seus usuários. É terminantemente proibido o uso da Apoiêfy para atividades ilícitas, crimes, lavagem de dinheiro, ou ações que violem leis vigentes.
 O organizador compromete-se a atuar com transparência e honestidade. Quaisquer indícios de fraude, manipulação de resultados ou descumprimento intencional da entrega do prêmio resultarão no banimento imediato e definitivo da conta, bem como reporte às autoridades competentes se aplicável.`
     },
     {
         id: "07",
         title: "Canal de Denúncia",
         icon: <MessageCircle className="w-5 h-5" />,
-        content: `A TicketOn leva a segurança do nosso ambiente com absoluta seriedade. Disponibilizamos um canal de denúncia para relatar campanhas que violem as nossas diretrizes, apresentem forte indício de fraude ou descumpram o Código de Defesa do Consumidor.
-Para realizar uma denúncia de uma campanha suspeita, utilize o botão de "Denunciar Campanha" localizado no rodapé do anúncio da própria ação ou envie um e-mail com as provas para denuncia@ticketon.com.br.`
+        content: `A Apoiêfy leva a segurança do nosso ambiente com absoluta seriedade. Disponibilizamos um canal de denúncia para relatar campanhas que violem as nossas diretrizes, apresentem forte indício de fraude ou descumpram o Código de Defesa do Consumidor.
+Para realizar uma denúncia de uma campanha suspeita, utilize o botão de "Denunciar Campanha" localizado no rodapé do anúncio da própria ação ou envie um e-mail com as provas para denuncia@apoiêfy.com.br.`
     }
 ];
 
@@ -64,7 +64,7 @@ export default function TermosPage() {
                 <div className="container flex h-16 items-center justify-between px-6 mx-auto">
                     <Link href="/" className="flex items-center gap-2">
                         <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-                        <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
+                        <span className="text-2xl font-bold tracking-tighter">Apoiêfy</span>
                     </Link>
                     <Link href="/">
                         <Button variant="outline" className="font-bold border-2 gap-2">
@@ -103,7 +103,7 @@ export default function TermosPage() {
                         <div>
                             <p className="font-black text-sm uppercase tracking-widest text-primary-foreground mb-1">Resumo Simples</p>
                             <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                                A TicketOn é uma plataforma digital. Você organiza e é responsável pela sua campanha. Nós fornecemos a tecnologia. O dinheiro vai direto pra você via PIX. A taxa da plataforma é de R$ 14,90 por campanha ativada.
+                                A Apoiêfy é uma plataforma digital. Você organiza e é responsável pela sua campanha. Nós fornecemos a tecnologia. O dinheiro vai direto pra você via PIX. A taxa da plataforma é de R$ 14,90 por campanha ativada.
                             </p>
                         </div>
                     </div>
@@ -133,7 +133,7 @@ export default function TermosPage() {
                     {/* Last Updated */}
                     <div className="text-center py-8 space-y-2">
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                            TicketOn — Termos de Uso • Versão 1.1
+                            Apoiêfy — Termos de Uso • Versão 1.1
                         </p>
                         <p className="text-xs text-muted-foreground">
                             Dúvidas? Entre em contato com nosso suporte via WhatsApp.
@@ -160,14 +160,14 @@ export default function TermosPage() {
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-primary-foreground fill-primary" />
-                        <span className="text-xl font-bold tracking-tighter">TicketOn</span>
+                        <span className="text-xl font-bold tracking-tighter">Apoiêfy</span>
                     </div>
                     <div className="flex gap-6 text-sm font-bold text-muted-foreground">
                         <Link href="/termos" className="text-primary-foreground">Termos de Uso</Link>
                         <Link href="/privacidade" className="hover:text-primary-foreground transition-colors">Privacidade</Link>
                         <Link href="/etica" className="hover:text-primary-foreground transition-colors">Código de Ética</Link>
                     </div>
-                    <p className="text-xs font-bold text-muted-foreground">© 2026 TicketOn</p>
+                    <p className="text-xs font-bold text-muted-foreground">© 2026 Apoiêfy</p>
                 </div>
             </footer>
         </div>

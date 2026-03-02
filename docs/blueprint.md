@@ -1,4 +1,4 @@
-# **App Name**: TicketOn
+# **App Name**: Apoiêfy
 
 ## Core Features:
 

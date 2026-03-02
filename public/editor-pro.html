@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicketOn PRO - Editor de Rifas</title>
-    
+    <title>Apoiêfy PRO - Editor de Rifas</title>
+
     <!-- Fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -25,9 +28,11 @@
             --accent-hover: #e55a20;
 
             /* Variaveis Globais do Card Gerado (Podem mudar por JS) */
-            --card-color: #005ce6; /* Azul padrão */
+            --card-color: #005ce6;
+            /* Azul padrão */
             --card-radius: 16px;
-            --card-bg: #111116; /* Fundo do card, ex: dark */
+            --card-bg: #111116;
+            /* Fundo do card, ex: dark */
             --card-text: #ffffff;
             --grid-cols: 10;
         }
@@ -105,7 +110,7 @@
         }
 
         .btn:hover {
-            background-color: rgba(255,255,255,0.05);
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
         .btn-primary {
@@ -192,7 +197,7 @@
             font-family: inherit;
             font-size: 14px;
         }
-        
+
         .form-input:focus {
             outline: none;
             border-color: var(--accent-color);
@@ -222,7 +227,10 @@
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: var(--border-color);
             transition: .3s;
             border-radius: 24px;
@@ -240,11 +248,11 @@
             border-radius: 50%;
         }
 
-        input:checked + .slider {
+        input:checked+.slider {
             background-color: var(--accent-color);
         }
 
-        input:checked + .slider:before {
+        input:checked+.slider:before {
             transform: translateX(20px);
         }
 
@@ -264,8 +272,14 @@
             border: 2px solid transparent;
             transition: 0.2s;
         }
-        .color-option:hover { transform: scale(1.1); }
-        .color-option.active { border-color: white; }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: white;
+        }
 
         .custom-color-wrapper {
             display: flex;
@@ -274,7 +288,7 @@
             font-size: 14px;
             color: var(--text-secondary);
         }
-        
+
         input[type="color"] {
             -webkit-appearance: none;
             border: none;
@@ -284,8 +298,15 @@
             cursor: pointer;
             background: none;
         }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
 
         /* Template Grid */
         .template-grid {
@@ -293,7 +314,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        
+
         .template-card {
             border: 2px solid var(--border-color);
             border-radius: 8px;
@@ -305,16 +326,37 @@
             background: var(--bg-color);
             transition: 0.2s;
         }
+
         .template-card.active {
             border-color: var(--accent-color);
         }
-        
+
         /* Tema representações na thubmnail */
-        .t-dark { background: #111116; color: white; }
-        .t-light { background: #fafaf7; color: black; }
-        .t-neon { background: #050510; color: #00ffff; border: 1px solid #00ffff;}
-        .t-bold { background: #ff4500; color: white; }
-        .t-paper { background: #fdf5e6; color: #333; }
+        .t-dark {
+            background: #111116;
+            color: white;
+        }
+
+        .t-light {
+            background: #fafaf7;
+            color: black;
+        }
+
+        .t-neon {
+            background: #050510;
+            color: #00ffff;
+            border: 1px solid #00ffff;
+        }
+
+        .t-bold {
+            background: #ff4500;
+            color: white;
+        }
+
+        .t-paper {
+            background: #fdf5e6;
+            color: #333;
+        }
 
         /* --- PREVIEW AREA --- */
         .preview-area {
@@ -331,7 +373,7 @@
         .localhost-banner {
             position: absolute;
             top: 20px;
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255, 255, 255, 0.1);
             color: var(--text-secondary);
             padding: 6px 16px;
             border-radius: 20px;
@@ -342,11 +384,12 @@
         /* --- O CARD EXPORTÁVEL --- */
         /* Esse card é o que o html2canvas vai "Tirar foto" */
         #card-preview {
-            width: 450px; /* Largura base simulando mobile */
+            width: 450px;
+            /* Largura base simulando mobile */
             background-color: var(--card-bg);
             color: var(--card-text);
             border-radius: var(--card-radius);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -384,7 +427,7 @@
             font-size: 32px;
             line-height: 1;
         }
-        
+
         #c-subtitle {
             font-size: 14px;
             opacity: 0.8;
@@ -394,7 +437,7 @@
             position: absolute;
             top: 16px;
             right: 16px;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
             color: white;
             padding: 4px 10px;
@@ -411,8 +454,8 @@
 
         .c-stat-box {
             flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 12px;
             border-radius: 8px;
             display: flex;
@@ -451,7 +494,7 @@
 
         .c-progress-bar-bg {
             height: 8px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             overflow: hidden;
         }
@@ -465,10 +508,10 @@
 
         /* Grade de Tickets Interna */
         .c-grid-wrapper {
-             background: rgba(255,255,255,0.02);
-             padding: 16px;
-             border-radius: 12px;
-             border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         #c-grid-container {
@@ -478,7 +521,8 @@
         }
 
         .c-ticket {
-            background-color: #22c55e; /* Livre */
+            background-color: #22c55e;
+            /* Livre */
             color: white;
             aspect-ratio: 1;
             display: flex;
@@ -488,11 +532,19 @@
             font-weight: bold;
             border-radius: 4px;
         }
-        
+
         /* Modificadores de Status fixos para o demo */
-        .c-ticket.status-reservado { background-color: #f97316; }
-        .c-ticket.status-pago { background-color: #475569; }
-        .c-ticket.status-destaque { background-color: var(--card-color); }
+        .c-ticket.status-reservado {
+            background-color: #f97316;
+        }
+
+        .c-ticket.status-pago {
+            background-color: #475569;
+        }
+
+        .c-ticket.status-destaque {
+            background-color: var(--card-color);
+        }
 
         .c-grid-legend {
             display: flex;
@@ -502,9 +554,18 @@
             font-size: 11px;
             font-weight: 600;
         }
-        
-        .leg-item { display: flex; align-items: center; gap: 4px; }
-        .leg-color { width: 10px; height: 10px; border-radius: 50%; }
+
+        .leg-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .leg-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
 
         .c-footer {
             text-align: center;
@@ -530,38 +591,52 @@
             border: 2px solid var(--card-color);
             box-shadow: 0 0 30px rgba(var(--card-color-rgb), 0.3);
         }
+
         #card-preview.theme-neon #c-title {
             text-shadow: 0 0 10px var(--card-color);
         }
 
         /* Tema Light/Paper Inversoes */
-        #card-preview.theme-light, #card-preview.theme-paper {
+        #card-preview.theme-light,
+        #card-preview.theme-paper {
             --card-bg: #ffffff;
             --card-text: #111;
         }
+
         #card-preview.theme-paper {
             --card-bg: #fdf5e6;
         }
-        #card-preview.theme-light .c-stat-box, #card-preview.theme-paper .c-stat-box {
-            background: rgba(0,0,0,0.03);
-            border-color: rgba(0,0,0,0.05);
+
+        #card-preview.theme-light .c-stat-box,
+        #card-preview.theme-paper .c-stat-box {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.05);
         }
-        #card-preview.theme-light .c-progress-bar-bg, #card-preview.theme-paper .c-progress-bar-bg {
-            background: rgba(0,0,0,0.1);
+
+        #card-preview.theme-light .c-progress-bar-bg,
+        #card-preview.theme-paper .c-progress-bar-bg {
+            background: rgba(0, 0, 0, 0.1);
         }
-        #card-preview.theme-light .c-grid-wrapper, #card-preview.theme-paper .c-grid-wrapper {
-            background: rgba(0,0,0,0.02);
-            border-color: rgba(0,0,0,0.05);
+
+        #card-preview.theme-light .c-grid-wrapper,
+        #card-preview.theme-paper .c-grid-wrapper {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.05);
         }
 
         /* Utility Hide */
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         /* Loader */
         #loading-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -574,64 +649,82 @@
             pointer-events: none;
             transition: 0.3s;
         }
+
         #loading-overlay.show {
             opacity: 1;
             pointer-events: all;
         }
+
         .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
             border-top-color: var(--accent-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Responsivo Mobile */
         @media (max-width: 768px) {
             .main-container {
                 flex-direction: column;
             }
+
             .sidebar {
                 width: 100%;
                 height: 40vh;
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
             }
+
             .preview-area {
                 height: 60vh;
                 padding: 20px;
             }
+
             #card-preview {
                 transform: scale(0.8);
                 transform-origin: top center;
             }
         }
-
     </style>
 </head>
+
 <body>
 
     <!-- TOPBAR -->
     <header class="topbar">
         <div class="logo-area">
-            TicketOn <span class="pro-badge">PRO</span>
+            Apoiêfy <span class="pro-badge">PRO</span>
         </div>
         <div class="topbar-actions">
             <button class="btn" onclick="resetEditor()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                </svg>
                 Reset
             </button>
             <button class="btn btn-primary" onclick="exportImage()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
                 Baixar PNG
             </button>
         </div>
     </header>
 
     <div class="main-container">
-        
+
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="tabs">
@@ -659,13 +752,14 @@
                         <!-- Colors geradas via JS -->
                     </div>
                     <div class="custom-color-wrapper">
-                        Personalizada: <input type="color" id="ctrl-color-picker" value="#005ce6" oninput="setCardColor(this.value)">
+                        Personalizada: <input type="color" id="ctrl-color-picker" value="#005ce6"
+                            oninput="setCardColor(this.value)">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Elementos Visíveis</label>
-                    
+
                     <div class="toggle-row">
                         <span>Foto do prêmio</span>
                         <label class="toggle-switch">
@@ -712,7 +806,9 @@
 
                 <div class="form-group">
                     <label class="form-label">Arredondamento do Card</label>
-                    <input type="range" id="ctrl-radius" min="0" max="32" value="16" class="form-input" style="padding:0; height:4px; max-width: 100%;" oninput="document.documentElement.style.setProperty('--card-radius', this.value + 'px')">
+                    <input type="range" id="ctrl-radius" min="0" max="32" value="16" class="form-input"
+                        style="padding:0; height:4px; max-width: 100%;"
+                        oninput="document.documentElement.style.setProperty('--card-radius', this.value + 'px')">
                 </div>
             </div>
 
@@ -720,18 +816,22 @@
             <div id="tab-content" class="tab-content">
                 <div class="form-group">
                     <label class="form-label">Foto do Prêmio (URL ou Upload)</label>
-                    <input type="text" id="ctrl-img-url" class="form-input" placeholder="https://..." oninput="updateContent()">
-                    <input type="file" id="ctrl-img-file" class="form-input" style="margin-top: 8px;" accept="image/*" onchange="handleImageUpload(this)">
+                    <input type="text" id="ctrl-img-url" class="form-input" placeholder="https://..."
+                        oninput="updateContent()">
+                    <input type="file" id="ctrl-img-file" class="form-input" style="margin-top: 8px;" accept="image/*"
+                        onchange="handleImageUpload(this)">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Nome do Prêmio</label>
-                    <input type="text" id="ctrl-title" class="form-input" value="PC GAMER RTX 4090" oninput="updateContent()">
+                    <input type="text" id="ctrl-title" class="form-input" value="PC GAMER RTX 4090"
+                        oninput="updateContent()">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Subtítulo</label>
-                    <input type="text" id="ctrl-subtitle" class="form-input" value="Rifa oficial - participe e concorra!" oninput="updateContent()">
+                    <input type="text" id="ctrl-subtitle" class="form-input"
+                        value="Rifa oficial - participe e concorra!" oninput="updateContent()">
                 </div>
 
                 <div style="display: flex; gap: 10px;">
@@ -741,18 +841,21 @@
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label class="form-label">Data Sorteio</label>
-                        <input type="text" id="ctrl-date" class="form-input" value="14/01/2025" oninput="updateContent()">
+                        <input type="text" id="ctrl-date" class="form-input" value="14/01/2025"
+                            oninput="updateContent()">
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 10px;">
                     <div class="form-group" style="flex: 1;">
                         <label class="form-label">Total Tickets</label>
-                        <input type="number" id="ctrl-total" class="form-input" value="100" oninput="updateProgressAndGrid()">
+                        <input type="number" id="ctrl-total" class="form-input" value="100"
+                            oninput="updateProgressAndGrid()">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label class="form-label">Vendidos</label>
-                        <input type="number" id="ctrl-sold" class="form-input" value="12" oninput="updateProgressAndGrid()">
+                        <input type="number" id="ctrl-sold" class="form-input" value="12"
+                            oninput="updateProgressAndGrid()">
                     </div>
                 </div>
 
@@ -763,7 +866,8 @@
 
                 <div class="form-group">
                     <label class="form-label">Texto CTA</label>
-                    <input type="text" id="ctrl-cta" class="form-input" value="PARTICIPE AGORA MESMO" oninput="updateContent()">
+                    <input type="text" id="ctrl-cta" class="form-input" value="PARTICIPE AGORA MESMO"
+                        oninput="updateContent()">
                 </div>
             </div>
 
@@ -782,13 +886,17 @@
 
                 <div class="form-group">
                     <label class="form-label">Colunas da Grade (5 a 15)</label>
-                    <input type="range" id="ctrl-cols" min="5" max="15" value="10" class="form-input" style="padding:0; height:4px; max-width: 100%;" oninput="document.documentElement.style.setProperty('--grid-cols', this.value); renderGrid();">
+                    <input type="range" id="ctrl-cols" min="5" max="15" value="10" class="form-input"
+                        style="padding:0; height:4px; max-width: 100%;"
+                        oninput="document.documentElement.style.setProperty('--grid-cols', this.value); renderGrid();">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Tickets em Destaque (Separados por vírgula)</label>
-                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom: 8px;">Ex: 7, 13, 42 (Pintará com a cor principal)</p>
-                    <input type="text" id="ctrl-highlights" class="form-input" value="4, 5, 12, 56" oninput="renderGrid()">
+                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom: 8px;">Ex: 7, 13, 42 (Pintará
+                        com a cor principal)</p>
+                    <input type="text" id="ctrl-highlights" class="form-input" value="4, 5, 12, 56"
+                        oninput="renderGrid()">
                 </div>
             </div>
         </aside>
@@ -796,13 +904,15 @@
         <!-- PREVIEW AREA -->
         <main class="preview-area" id="preview-area">
             <div class="localhost-banner">⚡ Preview em tempo real - protótipo localhost</div>
-            
+
             <div id="card-preview" class="theme-dark">
-                
+
                 <div id="c-badge-org">@seuperfil</div>
-                
+
                 <img id="c-header-img" src="" style="display: none;" />
-                <div id="c-header-emoji" style="width: 100%; height: 240px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 80px;">🏆</div>
+                <div id="c-header-emoji"
+                    style="width: 100%; height: 240px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 80px;">
+                    🏆</div>
 
                 <div class="c-body">
                     <div class="c-title-area">
@@ -836,11 +946,17 @@
                     </div>
 
                     <div id="c-grid-section" class="c-grid-wrapper">
-                        
+
                         <div id="c-legend" class="c-grid-legend">
-                            <div class="leg-item"><div class="leg-color" style="background:#22c55e"></div> Livre</div>
-                            <div class="leg-item"><div class="leg-color" style="background:#f97316"></div> Reservado</div>
-                            <div class="leg-item"><div class="leg-color" style="background:#475569"></div> Pago</div>
+                            <div class="leg-item">
+                                <div class="leg-color" style="background:#22c55e"></div> Livre
+                            </div>
+                            <div class="leg-item">
+                                <div class="leg-color" style="background:#f97316"></div> Reservado
+                            </div>
+                            <div class="leg-item">
+                                <div class="leg-color" style="background:#475569"></div> Pago
+                            </div>
                         </div>
 
                         <div id="c-grid-container">
@@ -851,7 +967,7 @@
                     <div class="c-footer">
                         <div id="c-cta" class="bebas">PARTICIPE AGORA MESMO</div>
                         <div style="font-size: 11px; opacity: 0.6;">COMPRA SEGURA • PAGAMENTO VIA PIX</div>
-                        <div id="c-watermark" style="margin-top: 8px;">✦ ticketon.com.br</div>
+                        <div id="c-watermark" style="margin-top: 8px;">✦ www.apoiêfy.com.br</div>
                     </div>
 
                 </div>
@@ -882,7 +998,7 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
+
             document.getElementById('tab-' + tabId).classList.add('active');
             event.target.classList.add('active');
         }
@@ -903,16 +1019,16 @@
 
         function setCardColor(hex) {
             document.documentElement.style.setProperty('--card-color', hex);
-            
+
             // Calc RGB for Glow (Neon theme)
             let c;
-            if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
-                c= hex.substring(1).split('');
-                if(c.length== 3){
-                    c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+            if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+                c = hex.substring(1).split('');
+                if (c.length == 3) {
+                    c = [c[0], c[0], c[1], c[1], c[2], c[2]];
                 }
-                c= '0x'+c.join('');
-                document.documentElement.style.setProperty('--card-color-rgb', [(c>>16)&255, (c>>8)&255, c&255].join(','));
+                c = '0x' + c.join('');
+                document.documentElement.style.setProperty('--card-color-rgb', [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(','));
             }
         }
 
@@ -920,7 +1036,7 @@
             // Update UI
             document.querySelectorAll('.template-card').forEach(el => el.classList.remove('active'));
             event.target.classList.add('active');
-            
+
             // Update Card
             const card = document.getElementById('card-preview');
             card.className = ''; // reset
@@ -941,7 +1057,7 @@
             const mapUrl = document.getElementById('ctrl-img-url').value;
             const imgEl = document.getElementById('c-header-img');
             const emojiEl = document.getElementById('c-header-emoji');
-            
+
             if (mapUrl && mapUrl.length > 5 && document.getElementById('tgl-foto').checked) {
                 imgEl.src = mapUrl;
                 imgEl.style.display = 'block';
@@ -972,9 +1088,9 @@
         function updateProgressAndGrid() {
             const total = parseInt(document.getElementById('ctrl-total').value) || 100;
             const sold = parseInt(document.getElementById('ctrl-sold').value) || 0;
-            
+
             document.getElementById('c-total').textContent = total;
-            
+
             const pct = total > 0 ? Math.min(100, Math.round((sold / total) * 100)) : 0;
             document.getElementById('c-progress-pct').textContent = pct + '%';
             document.getElementById('c-progress-fill').style.width = pct + '%';
@@ -987,19 +1103,19 @@
             const container = document.getElementById('c-grid-container');
             const showNumbers = document.getElementById('tgl-numbers').checked;
             const highlightsRaw = document.getElementById('ctrl-highlights').value;
-            
+
             // Parse highlights
             const highlights = highlightsRaw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
 
             container.innerHTML = '';
-            
-            // Max 100 on preview to avoid DOM overload, just visual
-            const limit = Math.min(total, 100); 
 
-            for(let i = 1; i <= limit; i++) {
+            // Max 100 on preview to avoid DOM overload, just visual
+            const limit = Math.min(total, 100);
+
+            for (let i = 1; i <= limit; i++) {
                 const div = document.createElement('div');
                 div.className = 'c-ticket';
-                
+
                 if (showNumbers) div.textContent = i;
 
                 // Fake statuses logic for demonstration
@@ -1010,16 +1126,16 @@
                 } else if (i % 3 === 0) {
                     div.classList.add('status-pago');
                 }
-                
+
                 container.appendChild(div);
             }
-            
+
             if (total > 100) {
                 const plus = document.createElement('div');
                 plus.className = 'c-ticket';
                 plus.style.background = 'transparent';
                 plus.style.color = 'var(--text-secondary)';
-                plus.textContent = '+' + (total-100);
+                plus.textContent = '+' + (total - 100);
                 container.appendChild(plus);
             }
         }
@@ -1031,12 +1147,12 @@
             // Foto
             const imgEl = get('c-header-img');
             const emojiEl = get('c-header-emoji');
-            
-            if(!tg('foto')) {
+
+            if (!tg('foto')) {
                 imgEl.style.display = 'none';
                 emojiEl.style.display = 'none';
             } else {
-                if(imgEl.src && imgEl.src.length > 10 && imgEl.src.indexOf('undefined')===-1) {
+                if (imgEl.src && imgEl.src.length > 10 && imgEl.src.indexOf('undefined') === -1) {
                     imgEl.style.display = 'block';
                 } else {
                     emojiEl.style.display = 'flex';
@@ -1052,7 +1168,7 @@
         }
 
         function resetEditor() {
-            if(confirm("Deseja resetar todas as configurações para o padrão?")) {
+            if (confirm("Deseja resetar todas as configurações para o padrão?")) {
                 location.reload();
             }
         }
@@ -1060,9 +1176,9 @@
         async function exportImage() {
             const loader = document.getElementById('loading-overlay');
             const card = document.getElementById('card-preview');
-            
+
             loader.classList.add('show');
-            
+
             // Give browser time to paint loader before freezing thread
             setTimeout(async () => {
                 try {
@@ -1089,4 +1205,5 @@
 
     </script>
 </body>
+
 </html>

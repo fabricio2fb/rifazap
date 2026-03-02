@@ -3,28 +3,28 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ticketon.com.br'),
-  title: 'TicketOn - Gestão de Campanhas Digitais',
+  metadataBase: new URL('https://www.apoiêfy.com.br'),
+  title: 'Apoiêfy - Gestão de Campanhas Digitais',
   description: 'Crie e gerencie campanhas digitais com facilidade e profissionalismo.',
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: 'https://ticketon.com.br',
-    siteName: 'TicketOn',
-    title: 'TicketOn - Gestão de Campanhas Digitais',
+    url: 'https://www.apoiêfy.com.br',
+    siteName: 'Apoiêfy',
+    title: 'Apoiêfy - Gestão de Campanhas Digitais',
     description: 'Crie e gerencie campanhas digitais com facilidade e profissionalismo.',
     images: [
       {
         url: '/android-chrome-512x512.png',
         width: 512,
         height: 512,
-        alt: 'TicketOn Logo',
+        alt: 'Apoiêfy Logo',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'TicketOn - Gestão de Campanhas Digitais',
+    title: 'Apoiêfy - Gestão de Campanhas Digitais',
     description: 'Crie e gerencie campanhas digitais com facilidade e profissionalismo.',
     images: ['/android-chrome-512x512.png'],
   },

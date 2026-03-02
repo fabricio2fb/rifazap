@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const parseUTC = (d: string) => (!d ? "" : (d.includes('T') || d.includes('Z') ? d : d.replace(' ', 'T') + 'Z'));
   const date = new Date(parseUTC(raffle.draw_date)).toLocaleDateString('pt-BR');
   const description = `Cada ticket custa ${price}. Resultado dia ${date}.`;
-  const url = `https://ticketon.com.br/campanha/${slug}`;
+  const url = `https://www.apoiêfy.com.br/campanha/${slug}`;
 
   // Cloudinary Optimization for OG
   let ogImageUrl = `${url}/imagem`; // Default to dynamic image

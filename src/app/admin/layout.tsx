@@ -53,7 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        router.push("/admin/login");
+        router.push("/login");
     };
 
     return (
@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <div className="bg-primary p-1.5 rounded-lg group-hover:scale-110 transition-transform">
                             <Zap className="w-5 h-5 text-primary-foreground fill-current" />
                         </div>
-                        <span className="font-black text-xl tracking-tighter dark:text-white">TicketOn</span>
+                        <span className="font-black text-xl tracking-tighter dark:text-white">Apoiêfy</span>
                     </Link>
                 </div>
 
@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <header className="md:hidden flex-none bg-white dark:bg-zinc-900 border-b dark:border-zinc-800 h-14 flex items-center px-4 z-20 justify-between">
                         <Link href="/admin" className="flex items-center gap-2">
                             <Zap className="w-5 h-5 text-primary fill-current" />
-                            <span className="font-black text-lg tracking-tighter dark:text-white">TicketOn</span>
+                            <span className="font-black text-lg tracking-tighter dark:text-white">Apoiêfy</span>
                         </Link>
                         <div className="flex gap-2 items-center">
                             <button onClick={toggleTheme} className="text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 p-2">

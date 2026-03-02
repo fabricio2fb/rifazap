@@ -43,7 +43,7 @@ Com Provedores de Serviço: Os dados fornecidos podem ser compartilhados com ter
 
 Por Obrigação Legal: quando exigido por lei, ordem judicial ou autoridade competente.
 
-Os dados de pagamento não são tratados nem armazenados pela TicketOn. Todas as transações financeiras são processadas por provedores de pagamento terceirizados, estando sujeitos às políticas de privacidade dos respectivos serviços.
+Os dados de pagamento não são tratados nem armazenados pela Apoiêfy. Todas as transações financeiras são processadas por provedores de pagamento terceirizados, estando sujeitos às políticas de privacidade dos respectivos serviços.
 
 Nunca vendemos ou locamos seus dados a terceiros.`
     },
@@ -65,7 +65,7 @@ Os dados são mantidos pelo período necessário para a prestação dos serviço
 
 Comprometemo-nos a responder e atender a essas solicitações dentro do prazo estipulado pela legislação brasileira vigente. Para exercer qualquer um desses direitos, entre em contato com nossa equipe via WhatsApp DPO.
 
-As bases legais para o tratamento dos seus dados pela TicketOn são estritamente a execução de contrato (prestação do serviço de licenciamento de software SaaS) e o nosso legítimo interesse na manutenção e segurança do ambiente tecnológico.`
+As bases legais para o tratamento dos seus dados pela Apoiêfy são estritamente a execução de contrato (prestação do serviço de licenciamento de software SaaS) e o nosso legítimo interesse na manutenção e segurança do ambiente tecnológico.`
     },
     {
         id: "06",
@@ -93,7 +93,7 @@ Você pode solicitar a exclusão antecipada dos seus dados entrando em contato c
         id: "08",
         title: "Menores de Idade",
         icon: <UserCheck className="w-5 h-5" />,
-        content: `A plataforma TicketOn não é destinada a menores de 18 anos. Não coletamos intencionalmente dados de menores de idade.
+        content: `A plataforma Apoiêfy não é destinada a menores de 18 anos. Não coletamos intencionalmente dados de menores de idade.
 
 Caso identifiquemos que um menor forneceu dados sem o consentimento dos responsáveis, removeremos essas informações imediatamente.
 
@@ -119,7 +119,7 @@ export default function PrivacidadePage() {
                 <div className="container flex h-16 items-center justify-between px-6 mx-auto">
                     <Link href="/" className="flex items-center gap-2">
                         <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-                        <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
+                        <span className="text-2xl font-bold tracking-tighter">Apoiêfy</span>
                     </Link>
                     <Link href="/">
                         <Button variant="outline" className="font-bold border-2 gap-2">
@@ -210,7 +210,7 @@ export default function PrivacidadePage() {
                     {/* Version */}
                     <div className="text-center py-8 space-y-2">
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                            TicketOn — Política de Privacidade • Versão 1.1
+                            Apoiêfy — Política de Privacidade • Versão 1.1
                         </p>
                         <p className="text-xs text-muted-foreground">
                             Em conformidade com a Lei nº 13.709/2018 (LGPD).
@@ -224,14 +224,14 @@ export default function PrivacidadePage() {
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-primary-foreground fill-primary" />
-                        <span className="text-xl font-bold tracking-tighter">TicketOn</span>
+                        <span className="text-xl font-bold tracking-tighter">Apoiêfy</span>
                     </div>
                     <div className="flex gap-6 text-sm font-bold text-muted-foreground">
                         <Link href="/termos" className="hover:text-primary-foreground transition-colors">Termos de Uso</Link>
                         <Link href="/privacidade" className="text-primary-foreground">Privacidade</Link>
                         <Link href="/etica" className="hover:text-primary-foreground transition-colors">Código de Ética</Link>
                     </div>
-                    <p className="text-xs font-bold text-muted-foreground">© 2026 TicketOn</p>
+                    <p className="text-xs font-bold text-muted-foreground">© 2026 Apoiêfy</p>
                 </div>
             </footer>
         </div>

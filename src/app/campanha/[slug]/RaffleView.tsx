@@ -178,7 +178,7 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
     };
 
     const shareOnWhatsApp = () => {
-        const url = `https://ticketon.com.br/campanha/${initialRaffle.slug}`;
+        const url = `https://www.apoiêfy.com.br/campanha/${initialRaffle.slug}`;
         const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(initialRaffle.pricePerNumber);
         const date = new Date(initialRaffle.drawDate).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
@@ -460,25 +460,25 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
                 )}
 
                 {/* Branding ALWAYS, but Report ALWAYS accessible */}
-                {!settings.hideTicketonBranding && (
+                {!settings.hideApoiefyBranding && (
                     <div className="pt-12 pb-2 text-center space-y-4">
                         <div className="flex items-center justify-center gap-2 opacity-50">
                             <Zap className="w-4 h-4" />
-                            <span className="font-bold text-sm uppercase tracking-wider">TicketOn</span>
+                            <span className="font-bold text-sm uppercase tracking-wider">Apoiêfy</span>
                         </div>
                         <p className="text-[10px] opacity-60 max-w-xs mx-auto leading-relaxed">
-                            Esta campanha é de responsabilidade do organizador. A TicketOn fornece a tecnologia para realização do evento.
+                            Esta campanha é de responsabilidade do organizador. A Apoiêfy fornece a tecnologia para realização do evento.
                         </p>
                     </div>
                 )}
 
-                <div className={`pb-8 text-center ${settings.hideTicketonBranding ? 'pt-12' : 'pt-2'}`}>
+                <div className={`pb-8 text-center ${settings.hideApoiefyBranding ? 'pt-12' : 'pt-2'}`}>
                     <Button
                         variant="ghost"
                         size="sm"
                         className="text-[10px] uppercase font-bold tracking-wider opacity-70 hover:opacity-100 transition-opacity hover:text-red-500"
                         onClick={() => {
-                            const message = `*Denúncia da Campanha: ${initialRaffle.title}*\n\nLink: https://ticketon.com.br/campanha/${initialRaffle.slug}\n\nMotivo: `;
+                            const message = `*Denúncia da Campanha: ${initialRaffle.title}*\n\nLink: https://www.apoiêfy.com.br/campanha/${initialRaffle.slug}\n\nMotivo: `;
                             window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(message)}`, '_blank');
                         }}
                     >

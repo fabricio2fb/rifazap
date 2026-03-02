@@ -102,7 +102,7 @@ export default function RafflesPage() {
     };
 
     const shareOnWhatsApp = (raffle: any) => {
-        const url = `https://ticketon.com.br/campanha/${raffle.slug}`;
+        const url = `https://www.apoiêfy.com.br/campanha/${raffle.slug}`;
         const price = new Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",

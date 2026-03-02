@@ -102,7 +102,7 @@ export default function Home() {
         <div className="container flex h-16 items-center justify-between px-6 mx-auto">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-            <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
+            <span className="text-2xl font-bold tracking-tighter"> Apoiêfy</span>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <Link href="#exemplo" className="text-sm font-bold hover:text-primary-foreground transition-colors">Exemplo</Link>
@@ -138,10 +138,10 @@ export default function Home() {
               A maneira mais simples, rápida e profissional de organizar campanhas online, gerenciar participações e arrecadar muito mais.
             </p>
             <div className="max-w-3xl mx-auto mt-6 bg-white/40 backdrop-blur-md border border-black/10 rounded-2xl p-6 text-sm md:text-base text-slate-800 font-medium text-left shadow-lg">
-              <p className="mb-3 font-bold text-slate-900 text-base md:text-lg">A TicketOn fornece infraestrutura tecnológica para criação e gestão de campanhas digitais.</p>
+              <p className="mb-3 font-bold text-slate-900 text-base md:text-lg">A Apoiêfy fornece infraestrutura tecnológica para criação e gestão de campanhas digitais.</p>
               <ul className="list-disc pl-5 space-y-2 text-slate-800">
                 <li>Os valores pagos pelos apoiadores são enviados diretamente para a conta do organizador via PIX.</li>
-                <li>A TicketOn não intermedeia, retém ou movimenta valores financeiros.</li>
+                <li>A Apoiêfy não intermedeia, retém ou movimenta valores financeiros.</li>
               </ul>
             </div>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
@@ -487,7 +487,7 @@ export default function Home() {
           <div className="container mx-auto px-6 space-y-16 relative z-10 text-center">
             <div className="space-y-6 max-w-4xl mx-auto">
               <div className="inline-flex h-8 items-center justify-center rounded-full bg-orange-500/20 text-orange-500 px-4 mb-2 font-black text-[10px] tracking-widest uppercase border border-orange-500/30">
-                <Sparkles className="w-3.5 h-3.5 mr-2" /> Exclusividade TicketOn
+                <Sparkles className="w-3.5 h-3.5 mr-2" /> Exclusividade Apoiêfy
               </div>
               <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
                 Experimente o Editor PRO Exclusivo
@@ -506,7 +506,7 @@ export default function Home() {
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center text-white"><Palette className="w-4 h-4" /></div>
                   <div>
                     <h3 className="text-white font-black text-sm">Editor da Campanha</h3>
-                    <p className="text-[10px] font-bold text-orange-500 uppercase">TicketOn PRO</p>
+                    <p className="text-[10px] font-bold text-orange-500 uppercase">Apoiêfy PRO</p>
                   </div>
                 </div>
 
@@ -688,14 +688,14 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Plano TicketOn PRO */}
+              {/* Plano Apoiêfy PRO */}
               <div className="bg-gradient-to-b from-orange-500 to-red-500 rounded-[2.5rem] p-1 shadow-2xl relative flex flex-col transform md:-translate-y-4">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1 z-10">
                   <Sparkles className="w-3 h-3" /> Máxima Conversão
                 </div>
                 <div className="bg-white rounded-[2.3rem] p-10 relative flex flex-col h-full text-left">
                   <div className="mb-6">
-                    <h3 className="text-2xl font-black text-orange-600 flex items-center gap-2">TicketOn PRO</h3>
+                    <h3 className="text-2xl font-black text-orange-600 flex items-center gap-2">Apoiêfy PRO</h3>
                     <p className="text-sm text-slate-500 mt-2 font-medium">Editor Visual com ferramentas de venda.</p>
                   </div>
 
@@ -715,7 +715,7 @@ export default function Home() {
                       "Notificações ao Vivo de Compras",
                       "Contador Regressivo (Gatilho de Urgência)",
                       "Cupons de Desconto Automáticos",
-                      "Ocultar logo da TicketOn do Rodapé"
+                      "Ocultar logo da Apoiêfy do Rodapé"
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm font-semibold text-slate-700">
                         <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
@@ -750,11 +750,11 @@ export default function Home() {
               {[
                 {
                   q: "Como recebo o dinheiro das minhas campanhas?",
-                  a: "O valor pago pelos apoiadores é transferido diretamente para sua conta via PIX. A TicketOn não recebe nem administra os valores arrecadados."
+                  a: "O valor pago pelos apoiadores é transferido diretamente para sua conta via PIX. A Apoiêfy não recebe nem administra os valores arrecadados."
                 },
                 {
                   q: "As campanhas online são permitidas?",
-                  a: "Sim, desde que respeitadas as normas vigentes. A TicketOn é uma ferramenta de gestão. Recomendamos que o organizador utilize a plataforma para campanhas filantrópicas ou promocionais."
+                  a: "Sim, desde que respeitadas as normas vigentes. A Apoiêfy é uma ferramenta de gestão. Recomendamos que o organizador utilize a plataforma para campanhas filantrópicas ou promocionais."
                 },
                 {
                   q: "Como funciona a gestão interna de resultados?",
@@ -787,7 +787,7 @@ export default function Home() {
           <div className="container mx-auto text-center space-y-8">
             <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight">Sua jornada de sucesso começa aqui.</h2>
             <p className="text-xl text-background/70 max-w-2xl mx-auto">
-              Pare de lutar com planilhas e cadernos. Profissionalize sua gestão hoje mesmo com a TicketOn.
+              Pare de lutar com planilhas e cadernos. Profissionalize sua gestão hoje mesmo com a Apoiêfy.
             </p>
             <div className="pt-4">
               <Link href="/login">
@@ -796,7 +796,7 @@ export default function Home() {
                 </Button>
               </Link>
             </div>
-            <p className="text-xs font-bold text-background/40 uppercase tracking-[0.3em]">Crie agora • Pague apenas R$ 9,90</p>
+            <p className="text-xs font-bold text-background/40 uppercase tracking-[0.3em]">Crie agora • Pague apenas R$ 14,90</p>
           </div>
         </section>
       </main>
@@ -807,7 +807,7 @@ export default function Home() {
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-              <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
+              <span className="text-2xl font-bold tracking-tighter">Apoiêfy</span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed font-medium">
               A maior e mais segura plataforma de infraestrutura e gestão para campanhas digitais do Brasil.
@@ -820,12 +820,12 @@ export default function Home() {
                 onClick={async () => {
                   if (navigator.share) {
                     await navigator.share({
-                      title: "TicketOn",
+                      title: "Apoiêfy",
                       text: "A plataforma #1 para gestão de campanhas digitais!",
-                      url: "https://www.ticketon.com.br",
+                      url: "https://www.apoiêfy.com.br",
                     });
                   } else {
-                    await navigator.clipboard.writeText("https://www.ticketon.com.br");
+                    await navigator.clipboard.writeText("https://www.apoiêfy.com.br");
                     alert("Link copiado!");
                   }
                 }}
@@ -838,7 +838,7 @@ export default function Home() {
                 className="rounded-2xl bg-muted/30 shadow-sm hover:bg-primary/20"
                 onClick={() => {
                   const texto = encodeURIComponent(
-                    "Conheça a TicketOn — a forma mais fácil de gerenciar campanhas de forma online e automatizada!\nhttps://www.ticketon.com.br"
+                    "Conheça a Apoiêfy — a forma mais fácil de gerenciar campanhas de forma online e automatizada!\nhttps://www.apoiêfy.com.br"
                   );
                   window.open(`https://wa.me/?text=${texto}`, "_blank");
                 }}
@@ -866,7 +866,7 @@ export default function Home() {
             <div className="pt-2">
               <p className="text-xs text-muted-foreground/80 font-medium">CNPJ: 00.000.000/0001-00</p>
               <p className="text-xs text-muted-foreground/80 font-medium">São Gonçalo - RJ</p>
-              <p className="text-xs text-muted-foreground/80 font-medium">contato@ticketon.com.br</p>
+              <p className="text-xs text-muted-foreground/80 font-medium">contato@apoiêfy.com.br</p>
             </div>
           </div>
 
@@ -882,7 +882,7 @@ export default function Home() {
           </div>
         </div>
         <div className="container mx-auto mt-20 pt-8 border-t text-center space-y-2">
-          <p className="text-xs font-bold text-muted-foreground tracking-widest">© 2026 TICKETON - TECNOLOGIA PARA GESTÃO. TODOS OS DIREITOS RESERVADOS.</p>
+          <p className="text-xs font-bold text-muted-foreground tracking-widest">© 2026 APOIÊFY - TECNOLOGIA PARA GESTÃO. TODOS OS DIREITOS RESERVADOS.</p>
           <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Orgulhosamente desenvolvido para inovadores digitais.</p>
         </div>
       </footer>

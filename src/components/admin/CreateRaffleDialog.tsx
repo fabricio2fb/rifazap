@@ -264,7 +264,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
               <Button variant="outline" className="w-full mt-6 h-12 text-base gap-2 text-slate-600 font-bold border-2 rounded-xl group-hover:bg-slate-50">Selecionar Sem Edição <ArrowRight className="w-4 h-4 ml-1" /></Button>
             </div>
 
-            {/* Card TICKETON PRO */}
+            {/* Card APOIÊFY PRO */}
             <div
               onClick={() => { setCreationType('pro'); setStep('form'); }}
               className="flex flex-col border-[3px] border-[#f97316] rounded-3xl p-6 cursor-pointer bg-orange-50/30 dark:bg-zinc-900 hover:bg-orange-50 dark:hover:bg-zinc-800 hover:shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1 transition-all relative overflow-hidden group"
@@ -276,7 +276,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
               </div>
 
               <div className="mb-4 relative z-10">
-                <h3 className="text-xl font-black text-[#ea580c] dark:text-orange-400 mb-1 flex items-center gap-2">TicketOn PRO</h3>
+                <h3 className="text-xl font-black text-[#ea580c] dark:text-orange-400 mb-1 flex items-center gap-2">Apoiêfy PRO</h3>
                 <p className="text-sm text-slate-800 dark:text-zinc-300 font-medium leading-snug mb-2"><strong>Editor da Rifa</strong> completo para você vender muito mais com:</p>
                 <div className="flex flex-wrap gap-1.5 text-[9px] font-black uppercase tracking-wider text-[#ea580c] dark:text-orange-400">
                   <span className="bg-orange-100/80 px-2 py-1 rounded border border-orange-200">🔔 Notificações</span>
@@ -352,7 +352,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
               </div>
 
               <Button className="w-full mt-6 h-12 flex-shrink-0 text-base gap-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:from-[#ea580c] hover:to-[#c2410c] font-black text-white shadow-lg shadow-orange-500/30 rounded-xl relative z-10 transition-transform active:scale-95">
-                Escolher TicketOn PRO <Sparkles className="w-5 h-5 ml-1" />
+                Escolher Apoiêfy PRO <Sparkles className="w-5 h-5 ml-1" />
               </Button>
             </div>
 

@@ -90,21 +90,21 @@ content = content.replace(
     aspectControl + '\n                                <div>\n                                    <Label className="text-xs uppercase text-slate-400 mb-2 block">Canto Arredondado'
 );
 
-// 4. Update the CSS for the 'ticketon' theme
-// First remove previously injected ticketon CSS
-content = content.replace(/\.card-theme-ticketon {.*?}/g, '');
-content = content.replace(/\.card-theme-ticketon \.card-stat-box {[\s\S]*?}/g, '');
+// 4. Update the CSS for the 'apoiefy' theme
+// First remove previously injected apoiefy CSS
+content = content.replace(/\.card-theme-apoiefy {.*?}/g, '');
+content = content.replace(/\.card-theme-apoiefy \.card-stat-box {[\s\S]*?}/g, '');
 
 const originalThemeCSS = `
-                        .card-theme-ticketon { 
+                        .card-theme-apoiefy { 
                             --card-bg: #f8fafc; 
                             --card-text: #0f172a;
                             background-color: #f6f7f9;
                             background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l-15 35h12l-6 25 20-30H29l8-30z' fill='%23eab308' fill-opacity='0.08' fill-rule='evenodd'/%3E%3C/svg%3E");
                         }
-                        .card-theme-ticketon h2 { text-align: center; font-size: 3.5rem !important; margin-bottom: 0px; letter-spacing: 0px; font-weight: normal; }
+                        .card-theme-apoiefy h2 { text-align: center; font-size: 3.5rem !important; margin-bottom: 0px; letter-spacing: 0px; font-weight: normal; }
                         
-                        .card-theme-ticketon .card-stat-box {
+                        .card-theme-apoiefy .card-stat-box {
                             background: #ffffff !important;
                             border: none !important;
                             border-radius: 12px;
@@ -115,20 +115,20 @@ const originalThemeCSS = `
                             align-items: center;
                             gap: 16px;
                         }
-                        .card-theme-ticketon .card-stat-box span.opacity-60 { font-size: 10px; opacity: 0.5; font-weight: bold; }
-                        .card-theme-ticketon .card-stat-box span.text-lg { font-size: 24px; color: #1e293b; font-weight: normal; font-family: 'Plus Jakarta Sans', sans-serif;}
+                        .card-theme-apoiefy .card-stat-box span.opacity-60 { font-size: 10px; opacity: 0.5; font-weight: bold; }
+                        .card-theme-apoiefy .card-stat-box span.text-lg { font-size: 24px; color: #1e293b; font-weight: normal; font-family: 'Plus Jakarta Sans', sans-serif;}
                         
-                        .card-theme-ticketon .c-progress-header span:first-child { color: #475569; opacity: 1; font-weight: 500; font-size: 14px; }
-                        .card-theme-ticketon .c-progress-bar-bg { background: #e2e8f0; height: 10px; border: none; }
+                        .card-theme-apoiefy .c-progress-header span:first-child { color: #475569; opacity: 1; font-weight: 500; font-size: 14px; }
+                        .card-theme-apoiefy .c-progress-bar-bg { background: #e2e8f0; height: 10px; border: none; }
                         
-                        .card-theme-ticketon .c-grid-wrapper {
+                        .card-theme-apoiefy .c-grid-wrapper {
                             background-color: #fbbf24 !important;
                             border: 4px solid #f59e0b !important;
                             border-radius: 20px !important;
                             padding: 24px !important;
                         }
-
-                        .card-theme-ticketon .c-ticket-box {
+ 
+                        .card-theme-apoiefy .c-ticket-box {
                             background: white !important;
                             color: #334155 !important;
                             border-radius: 6px !important;
@@ -137,18 +137,18 @@ const originalThemeCSS = `
                             font-size: 11px;
                             font-weight: 500;
                         }
-                        .card-theme-ticketon .c-ticket-box.is-reserved {
+                        .card-theme-apoiefy .c-ticket-box.is-reserved {
                             background: #f97316 !important;
                             color: white !important;
                             border: none;
                         }
-                        .card-theme-ticketon .c-ticket-box.is-paid {
+                        .card-theme-apoiefy .c-ticket-box.is-paid {
                             background: #cbd5e1 !important;
                             color: #334155 !important;
                             border: none;
                         }
-
-                        .card-theme-ticketon .c-footer-cta {
+ 
+                        .card-theme-apoiefy .c-footer-cta {
                             font-family: 'Plus Jakarta Sans', sans-serif !important;
                             font-size: 1.6rem !important;
                             color: #0f172a !important;
@@ -177,7 +177,7 @@ content = content.replace(
 // Stat boxes restructuring
 const statBoxesHTML = `
                                 {/* 3 CAIXAS DE INFO - ADAPTADO PARA MOCKUP */}
-                                {theme === 'ticketon' ? (
+                                {theme === 'apoiefy' ? (
                                     <div className="flex gap-4 px-2">
                                         <div className="card-stat-box flex-1">
                                             <div className="text-yellow-600 bg-yellow-100 p-2.5 rounded text-xl">🏆</div>
@@ -228,7 +228,7 @@ content = content.replace(
 
 content = content.replace(
     'className="uppercase opacity-70">Progresso',
-    'className="uppercase opacity-70 tracking-wide">{theme === "ticketon" ? "Progresso da Rifa" : "Progresso"}'
+    'className="uppercase opacity-70 tracking-wide">{theme === "apoiefy" ? "Progresso da Rifa" : "Progresso"}'
 );
 
 content = content.replace(
@@ -242,7 +242,7 @@ content = content.replace(
     'className={`aspect-square flex justify-center items-center text-white text-[9px] sm:text-xs font-bold rounded shadow-sm c-ticket-box ${realTicketsMap[num] === "paid" ? "is-paid" : realTicketsMap[num] === "reserved" ? "is-reserved" : ""}`}'
 );
 
-// Bottom Footer specific text for Ticketon theme
+// Bottom Footer specific text for apoiefy theme
 content = content.replace(
     'className="card-bebas text-3xl"',
     'className="card-bebas text-3xl c-footer-cta"'

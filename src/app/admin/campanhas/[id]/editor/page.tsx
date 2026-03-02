@@ -213,9 +213,10 @@ function LivePreview({ raffle, settings, mode }: { raffle: any, settings: any, m
                         </div>
                     )}
 
-                    {!settings.hideTicketonBranding && (
-                        <div className="pt-8 pb-4 text-center space-y-4 opacity-50">
-                            <div className="font-bold text-sm tracking-widest uppercase">TicketOn</div>
+                    {!settings.hideApoiefyBranding && (
+                        <div className="flex items-center gap-2 opacity-30">
+                            <Zap className="w-4 h-4" />
+                            <div className="font-bold text-sm tracking-widest uppercase">Apoiêfy</div>
                         </div>
                     )}
                 </div>
@@ -262,7 +263,7 @@ export default function RaffleEditorPage({ params }: { params: Promise<{ id: str
         countdown: { enabled: false, targetDate: '' },
         badges: { verified: true },
         rules: { enabled: false, content: '' },
-        hideTicketonBranding: false,
+        hideApoiefyBranding: false,
         packages: [], // { quantity: 10, discount: 10, active: true } (percentual)
         coupons: [] // { code: 'VIP', discount: 15, active: true } (percentual)
     });
@@ -426,11 +427,11 @@ export default function RaffleEditorPage({ params }: { params: Promise<{ id: str
                                 </div>
 
                                 <div className="border-t border-slate-100 pt-8">
-                                    <h3 className="font-bold text-lg mb-1">Branding TicketOn</h3>
-                                    <p className="text-sm text-slate-500 mb-4">Remova nossa logo do rodapé para uma experiência mais Premium.</p>
-                                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800 rounded-xl shadow-sm">
-                                        <span className="text-sm font-bold text-slate-700 dark:text-zinc-200">Ocultar marca "TicketOn"</span>
-                                        <Switch checked={settings.hideTicketonBranding} onCheckedChange={(c) => setSettings({ ...settings, hideTicketonBranding: c })} />
+                                    <h3 className="font-bold text-lg mb-1">Branding Apoiêfy</h3>
+                                    <p className="text-xs text-slate-500 dark:text-zinc-400 mb-4">Escolha se deseja exibir a marca da plataforma no rodapé.</p>
+                                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-zinc-900/50 rounded-xl border-2 border-slate-100 dark:border-zinc-800">
+                                        <span className="text-sm font-bold text-slate-700 dark:text-zinc-200">Ocultar marca "Apoiêfy"</span>
+                                        <Switch checked={settings.hideApoiefyBranding} onCheckedChange={(c) => setSettings({ ...settings, hideApoiefyBranding: c })} />
                                     </div>
                                 </div>
                             </div>

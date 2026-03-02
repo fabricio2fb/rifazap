@@ -66,9 +66,9 @@ export async function POST(request: Request) {
             raffleId: raffle.id,
             amount,
             customer: {
-                name: profile?.full_name || "Organizador TicketOn",
+                name: profile?.full_name || "Organizador Apoiêfy",
                 cpf: "00000000000", // Idealmente teríamos o CPF no perfil, usando mock por enquanto se não houver
-                email: profile?.email || "contato@ticketon.com.br",
+                email: profile?.email || "contato@apoiêfy.com.br",
                 phone: profile?.whatsapp || "00000000000"
             },
             postbackUrl

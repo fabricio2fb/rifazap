@@ -5,4 +5,4 @@ Disallow: /customer/
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://ticketon.com.br/sitemap.xml
+Sitemap: https://www.apoiêfy.com.br/sitemap.xml

@@ -20,7 +20,7 @@ const principles = [
         id: "02",
         title: "Compromisso com o Organizador",
         icon: <Users className="w-5 h-5" />,
-        content: `O organizador é o coração da TicketOn. Nos comprometemos a:
+        content: `O organizador é o coração da Apoiêfy. Nos comprometemos a:
 
 — Oferecer ferramentas que realmente facilitem a gestão das suas campanhas.
 — Garantir que o dinheiro chegue 100% na sua conta, sem intermediações.
@@ -44,7 +44,7 @@ Denúncias de organizadores que descumpram essas regras serão investigadas e po
         id: "04",
         title: "Uso Responsável da Plataforma",
         icon: <Scale className="w-5 h-5" />,
-        content: `A TicketOn é uma ferramenta de gestão digital. Esperamos que todos os usuários:
+        content: `A Apoiêfy é uma ferramenta de gestão digital. Esperamos que todos os usuários:
 
 — Utilizem a plataforma apenas para campanhas legítimas, filantrópicas ou promocionais autorizadas.
 — Não criem campanhas com fins de lavagem de dinheiro, fraude ou qualquer atividade ilícita.
@@ -55,7 +55,7 @@ Denúncias de organizadores que descumpram essas regras serão investigadas e po
         id: "05",
         title: "O que Não Toleramos",
         icon: <Ban className="w-5 h-5" />,
-        content: `A TicketOn tem tolerância zero com:
+        content: `A Apoiêfy tem tolerância zero com:
 
 — Campanhas fraudulentas: organizar eventos de arrecadação sem intenção de cumprir as metas ou benefícios.
 — Benefícios falsos: usar imagens ou descrições enganosas para atrair participantes.
@@ -69,7 +69,7 @@ Contas que violem essas regras serão suspensas permanentemente e, quando necess
         id: "06",
         title: "Responsabilidade Social",
         icon: <Heart className="w-5 h-5" />,
-        content: `Acreditamos no poder das campanhas de arrecadação para fazer o bem. A TicketOn apoia e valoriza:
+        content: `Acreditamos no poder das campanhas de arrecadação para fazer o bem. A Apoiêfy apoia e valoriza:
 
 — Campanhas com fins filantrópicos e beneficentes.
 — Organizadores que usam a plataforma para ajudar comunidades, animais e causas sociais.
@@ -94,7 +94,7 @@ Sua denúncia é confidencial e essencial para mantermos a plataforma segura par
         id: "08",
         title: "Nosso Compromisso Contínuo",
         icon: <CheckCircle2 className="w-5 h-5" />,
-        content: `Este Código de Ética não é apenas um documento — é o reflexo dos valores que guiam cada decisão da TicketOn.
+        content: `Este Código de Ética não é apenas um documento — é o reflexo dos valores que guiam cada decisão da Apoiêfy.
 
 Revisamos e atualizamos nossas diretrizes regularmente para acompanhar o crescimento da plataforma e as necessidades dos nossos usuários.
 
@@ -110,7 +110,7 @@ export default function EticaPage() {
                 <div className="container flex h-16 items-center justify-between px-6 mx-auto">
                     <Link href="/" className="flex items-center gap-2">
                         <Zap className="h-6 w-6 text-primary-foreground fill-primary" />
-                        <span className="text-2xl font-bold tracking-tighter">TicketOn</span>
+                        <span className="text-2xl font-bold tracking-tighter">Apoiêfy</span>
                     </Link>
                     <Link href="/">
                         <Button variant="outline" className="font-bold border-2 gap-2">
@@ -132,7 +132,7 @@ export default function EticaPage() {
                         Código de Ética
                     </h1>
                     <p className="text-primary-foreground/80 font-medium max-w-xl mx-auto">
-                        Os princípios que guiam cada decisão da TicketOn e o que esperamos de todos que usam nossa plataforma.
+                        Os princípios que guiam cada decisão da Apoiêfy e o que esperamos de todos que usam nossa plataforma.
                     </p>
                 </div>
             </section>
@@ -149,7 +149,7 @@ export default function EticaPage() {
                         <div>
                             <p className="font-black text-sm uppercase tracking-widest text-primary-foreground mb-1">Nossa Missão</p>
                             <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                                A TicketOn é estritamente uma provedora de tecnologia SaaS. Você organiza e é total responsável pela sua campanha. Nós fornecemos apenas o painel e os links. O dinheiro vai direto pra você via PIX. A taxa da plataforma é de R$ 14,90 por campanha ativada.r com ética, respeito e responsabilidade.
+                                A Apoiêfy é estritamente uma provedora de tecnologia SaaS. Você organiza e é total responsável pela sua campanha. Nós fornecemos apenas o painel e os links. O dinheiro vai direto pra você via PIX. A taxa da plataforma é de R$ 14,90 por campanha ativada.r com ética, respeito e responsabilidade.
                             </p>
                         </div>
                     </div>
@@ -201,10 +201,10 @@ export default function EticaPage() {
                     {/* Version */}
                     <div className="text-center py-8 space-y-2">
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                            TicketOn — Código de Ética • Versão 1.1
+                            Apoiêfy — Código de Ética • Versão 1.1
                         </p>
                         <p className="text-xs text-muted-foreground">
-                            Revisado e atualizado regularmente pela equipe TicketOn.
+                            Revisado e atualizado regularmente pela equipe Apoiêfy.
                         </p>
                     </div>
                 </div>
@@ -215,14 +215,14 @@ export default function EticaPage() {
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-primary-foreground fill-primary" />
-                        <span className="text-xl font-bold tracking-tighter">TicketOn</span>
+                        <span className="text-xl font-bold tracking-tighter">Apoiêfy</span>
                     </div>
                     <div className="flex gap-6 text-sm font-bold text-muted-foreground">
                         <Link href="/termos" className="hover:text-primary-foreground transition-colors">Termos de Uso</Link>
                         <Link href="/privacidade" className="hover:text-primary-foreground transition-colors">Privacidade</Link>
                         <Link href="/etica" className="text-primary-foreground">Código de Ética</Link>
                     </div>
-                    <p className="text-xs font-bold text-muted-foreground">© 2026 TicketOn</p>
+                    <p className="text-xs font-bold text-muted-foreground">© 2026 Apoiêfy</p>
                 </div>
             </footer>
         </div>
