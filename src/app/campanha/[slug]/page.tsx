@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: raffle.title,
     description: description,
+    robots: 'noindex, nofollow',
     openGraph: {
       type: "website",
       title: raffle.title,
