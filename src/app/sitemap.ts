@@ -12,6 +12,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 1.0,
         },
         {
+            url: `${baseUrl}/#preços`,
+            lastModified: new Date().toISOString(),
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
+        {
+            url: `${baseUrl}/login`,
+            lastModified: new Date().toISOString(),
+            changeFrequency: 'monthly',
+            priority: 0.6,
+        },
+        {
+            url: `${baseUrl}/campanha/exemplo-pc-gamer`,
+            lastModified: new Date().toISOString(),
+            changeFrequency: 'weekly',
+            priority: 0.7,
+        },
+        {
             url: `${baseUrl}/termos`,
             lastModified: new Date().toISOString(),
             changeFrequency: 'yearly',
