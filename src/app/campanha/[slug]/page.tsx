@@ -9,6 +9,11 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+// FUNÇÃO DE METADADOS (SEO)
+// Chamada pelo Next.js no servidor antes de renderizar a página.
+// Responsável por buscar no banco o nome e imagem da rifa para gerar
+// as tags HTML (OpenGraph/Twitter) usadas quando o link é compartilhado no WhatsApp/Facebook.
+// Aqui foi adicionado 'noindex' para não expor a rifa no Google Publlicamente livremente.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const supabase = await createClient();
@@ -61,6 +66,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// COMPONENTE SERVIDOR PRINCIPAL (SERVER COMPONENT)
+// É renderizado no servidor da Vercel antes de ir para o navegador.
+// Vantagem: Busca os dados pesados (Rifa e Compradores iniciais) de forma rápida no Backend.
 export default async function PublicRafflePage({ params }: Props) {
   const { slug } = await params;
   const supabase = await createClient();
@@ -108,6 +116,9 @@ export default async function PublicRafflePage({ params }: Props) {
     .select('*')
     .eq('raffle_id', raffleData.id);
 
+  // NORMALIZAÇÃO DE DADOS
+  // Converte a estrutura bruta do Supabase em um objeto mais amigável
+  // que o componente cliente (RaffleView) exige.
   const initialRaffle = {
     id: raffleData.id,
     slug: raffleData.slug,

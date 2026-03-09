@@ -13,6 +13,9 @@ import { createClient } from "@/lib/supabase/client";
 
 import { MyNumbersModal } from "@/components/campanha/MyNumbersModal";
 
+// HOOK CUSTOMIZADO DE CONTAGEM REGRESSIVA (COUNTDOWN)
+// Calcula a diferença entre a data atual e a data do sorteio.
+// Retorna um objeto formatado com Dias (d), Horas (h), Minutos (m) e Segundos (s)
 function useCountdown(targetDate: string | undefined, enabled: boolean) {
     const [timeLeft, setTimeLeft] = useState<{ d: number, h: number, m: number, s: number } | null>(null);
 
@@ -47,6 +50,9 @@ function useCountdown(targetDate: string | undefined, enabled: boolean) {
     return timeLeft;
 }
 
+// COMPONENTE PRINCIPAL DE VISUALIZAÇÃO DA CAMPANHA (PÁGINA PÚBLICA)
+// Recebe os dados iniciais do banco (SSR) para renderizar rápido,
+// e depois os atualiza em tempo real (CSR) via Supabase na linha 100.
 export default function RaffleView({ initialRaffle, initialParticipants }: { initialRaffle: any, initialParticipants: any[] }) {
     const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -59,7 +65,8 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
     const primaryColor = settings.primaryColor || '#2563eb'; // fallback default blue
     const isDark = settings.theme === 'dark';
 
-    // Urgency Popup Logic
+    // GATILHO DE URGÊNCIA (POPUP DE VENDAS FALSAS/SIMULADAS)
+    // Se ativado no painel, exibe notificações de que outras pessoas estão comprando.
     const [showUrgencyPopup, setShowUrgencyPopup] = useState(false);
     const [urgencyData, setUrgencyData] = useState({ name: '', phone: '', quantity: 0 });
 
@@ -96,6 +103,9 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
         fetch(`/api/campanha_api/${initialRaffle.slug}/cleanup`, { method: 'POST', keepalive: true }).catch(console.error);
     }, [initialRaffle.slug]);
 
+    // CONEXÃO EM TEMPO REAL (WEBSOCKETS SUPABASE)
+    // Fica 'escutando' a tabela de compras ('purchases') no banco.
+    // Se alguém comprar ou pagar um número, atualiza a tela de todos automaticamente.
     useEffect(() => {
         const channel = supabase
             .channel(`raffle-${initialRaffle.id}`)
@@ -146,6 +156,7 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
         };
     }, [initialRaffle.id, supabase, toast]);
 
+    // FILTROS: Calcula quais números estão pagos ou reservados usando as listas em tempo real.
     const paidNumbers = useMemo(() =>
         participants
             .filter(p => ['confirmed', 'paid', 'paid_delayed'].includes(p.status))
@@ -186,6 +197,9 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
         window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     };
 
+    // COMPARTILHAMENTO COM IMAGEM DINÂMICA
+    // Faz um fetch na rota /api/campanha/[slug]/imagem que converte HTML/Tailwind em uma imagem estática
+    // Baixa a imagem no dispositivo e depois tenta abrir o WhatsApp
     const shareWithImage = async () => {
         toast({ title: "Gerando imagem...", description: "Aguarde enquanto preparamos sua imagem." });
         try {
@@ -215,7 +229,8 @@ export default function RaffleView({ initialRaffle, initialParticipants }: { ini
         window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
     };
 
-    // Calculate Bonus Garantido logic
+    // LÓGICA DO BÔNUS GARANTIDO (Compre X e ganhe Y)
+    // Percorre os níveis configurados para ver se a quantidade selecionada bateu a meta
     const bonusTiers = settings.bonusTiers || [];
     const sortedBonuses = [...bonusTiers].sort((a: any, b: any) => a.targetTickets - b.targetTickets);
     let unlockedBonus: any = null;
