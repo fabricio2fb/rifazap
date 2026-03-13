@@ -324,7 +324,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
 
                   <div className="px-1 w-full mb-1.5 mt-1 relative z-10">
                     <div className="flex justify-between items-end mb-0.5">
-                      <span className="text-[5px] font-medium text-zinc-500 uppercase tracking-widest">PROGRESSO PREMIUM</span>
+                      <span className="text-[5px] font-medium text-zinc-500 uppercase tracking-widest">PROGRESSO</span>
                       <span className="text-[6px] font-black text-orange-500">98% VENDIDO</span>
                     </div>
                     <div className="bg-zinc-800 rounded-full h-[6px] w-full flex overflow-hidden shadow-inner border border-zinc-700">
