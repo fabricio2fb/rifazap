@@ -117,28 +117,6 @@ export default function Home() {
 
   return (
     <div style={{ background: T.bg, color: T.ink, fontFamily: "'Geist', system-ui, sans-serif", overflowX: "hidden", minHeight: "100vh" }}>
-      {/* Meta Pixel Code */}
-      <Script id="meta-pixel" strategy="afterInteractive">
-        {`
-          !function(f,b,e,v,n,t,s)
-          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-          n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
-          'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '3040398653014881');
-          fbq('track', 'PageView');
-        `}
-      </Script>
-      <noscript>
-        <img height="1" width="1" style={{ display: "none" }}
-          src="https://www.facebook.com/tr?id=3040398653014881&ev=PageView&noscript=1"
-          alt=""
-        />
-      </noscript>
-      {/* End Meta Pixel Code */}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500&display=swap');
