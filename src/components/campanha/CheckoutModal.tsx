@@ -107,7 +107,7 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
 
       // Success!
       if (typeof window !== "undefined" && (window as any).fbq) {
-        (window as any).fbq('track', 'Lead');
+        (window as any).fbq('track', 'Purchase', { value: finalTotal, currency: 'BRL' });
       }
       setStep('payment');
 
