@@ -106,6 +106,9 @@ export function CheckoutModal({ isOpen, onClose, selectedNumbers, raffle }: Chec
       if (!res.ok) throw new Error(data.error || 'Erro ao processar reserva');
 
       // Success!
+      if (typeof window !== "undefined" && (window as any).fbq) {
+        (window as any).fbq('track', 'Lead');
+      }
       setStep('payment');
 
     } catch (error: any) {
