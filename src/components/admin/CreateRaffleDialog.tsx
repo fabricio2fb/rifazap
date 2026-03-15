@@ -152,6 +152,21 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
       if (!res.ok) throw new Error(data.error || 'Erro ao criar campanha');
 
       setPendingRaffle(data);
+
+      try {
+        const payRes = await fetch('/api/payments/syncpay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ raffleId: data.id })
+        });
+        const payData = await payRes.json();
+        if (payRes.ok && payData.pix_code) {
+          setSyncPayData({ pix_code: payData.pix_code, amount: payData.amount });
+        }
+      } catch (err: any) {
+        console.error("Erro ao auto-gerar PIX", err);
+      }
+
       setStep('payment');
 
       if (onCreate) onCreate(data);
@@ -526,13 +541,13 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
           </form>
         ) : (
           <div className="p-6 flex flex-col items-center space-y-6 text-center">
-            <div className="w-full bg-primary/10 p-4 rounded-2xl flex flex-col items-center gap-1 border border-primary/20">
-              <p className="text-sm font-bold text-primary-foreground uppercase tracking-widest">Valor da Taxa</p>
-              <p className="text-4xl font-black text-primary-foreground">R$ 0,20</p>
+            <div className="w-full bg-primary/10 dark:bg-primary/20 p-4 rounded-2xl flex flex-col items-center gap-1 border border-primary/20">
+              <p className="text-sm font-bold text-primary-foreground dark:text-white uppercase tracking-widest">Valor da Taxa</p>
+              <p className="text-4xl font-black text-primary-foreground dark:text-white">{creationType === 'pro' ? 'R$ 25,90' : 'R$ 14,90'}</p>
             </div>
 
             <div className="w-full py-4 space-y-4">
-              <div className="w-full py-4 space-y-4">
+              <div className="w-full py-2 space-y-4">
                 <div className="text-sm text-muted-foreground font-medium">
                   {creationType === 'pro'
                     ? "Uma taxa única de R$ 25,90 será cobrada para ativar as ferramentas PRO de gestão. Suas vendas caem direto no seu PIX."
@@ -574,7 +589,7 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
                     }}
                   >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 fill-current" />}
-                    GERAR PIX DE ATIVAÇÃO
+                    TENTAR GERAR PIX NOVAMENTE
                   </Button>
                 ) : (
                   <div className="space-y-4 animate-in fade-in zoom-in duration-300">
@@ -583,12 +598,12 @@ export function CreateRaffleDialog({ onCreate, children }: CreateRaffleDialogPro
                         <PixQRCode code={syncPayData.pix_code} />
                       </div>
                       <div className="w-full space-y-2">
-                        <Label className="text-[10px] font-black uppercase text-muted-foreground text-center block">Código Copia e Cola</Label>
+                        <Label className="text-[10px] font-black uppercase text-slate-500 text-center block">Código Copia e Cola / Pix Link</Label>
                         <div className="relative">
                           <Input
                             readOnly
                             value={syncPayData.pix_code}
-                            className="pr-24 font-mono text-[10px] h-12 bg-slate-50 border-slate-200"
+                            className="pr-24 font-mono text-[10px] h-12 bg-slate-50 border-slate-200 text-slate-900"
                           />
                           <Button
                             size="sm"
