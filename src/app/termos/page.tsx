@@ -130,6 +130,22 @@ export default function TermosPage() {
                         </div>
                     ))}
 
+                    {/* Responsável Legal */}
+                    <div className="bg-muted/30 border rounded-2xl p-6 space-y-3">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">
+                            Responsável pela Plataforma
+                        </h3>
+                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                            Esta plataforma é operada por <strong>Fabricio Ferreira Brito</strong>, responsável pela administração e funcionamento do sistema Apoiêfy.
+                        </p>
+                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                            Para contato direto, utilize o canal oficial:
+                        </p>
+                        <p className="text-sm font-bold text-foreground">
+                            WhatsApp: 21971537691
+                        </p>
+                    </div>
+
                     {/* Last Updated */}
                     <div className="text-center py-8 space-y-2">
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">

@@ -923,7 +923,7 @@ export default function Home() {
               </div>
               <p style={{ fontSize: ".82rem", color: "rgba(255,255,255,.4)", lineHeight: 1.6, marginBottom: "1rem" }}>A maior e mais segura plataforma de infraestrutura e gestão para campanhas digitais do Brasil.</p>
               <div style={{ fontSize: ".75rem", color: "rgba(255,255,255,.3)", lineHeight: 1.8 }}>
-                CNPJ: 00.000.000/0001-00<br />São Gonçalo - RJ<br />contato@apoiêfy.com.br
+                <br />São Gonçalo - RJ<br />contato@apoiêfy.com.br
               </div>
             </div>
             <div>
