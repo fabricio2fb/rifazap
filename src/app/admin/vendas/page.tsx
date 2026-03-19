@@ -91,6 +91,34 @@ export default function VendasPage() {
         }
     };
 
+    const sendTestNotification = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        toast({ title: "Enviando teste...", description: "Aguarde um momento." });
+        
+        try {
+            const res = await fetch('/api/notify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    title: "Teste de Notificação 🔔",
+                    body: "Se você está vendo isso, as notificações estão funcionando perfeitamente!",
+                    url: '/admin/vendas'
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast({ title: "Teste enviado!", description: "Verifique seu celular/navegador." });
+            } else {
+                toast({ variant: "destructive", title: "Falha no teste", description: data.error || "Erro desconhecido" });
+            }
+        } catch (e: any) {
+            toast({ variant: "destructive", title: "Erro técnico", description: e.message });
+        }
+    };
+
     const requestNotificationPermission = async () => {
         const sub = await subscribeUser();
         if (sub) {
@@ -294,6 +322,16 @@ export default function VendasPage() {
                             🔔 Ativar Alertas no Celular
                         </Button>
                     )}
+
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={sendTestNotification}
+                        className="rounded-2xl w-10 h-10 shadow-sm border border-slate-200 text-blue-600 hover:bg-blue-50"
+                        title="Enviar Notificação de Teste"
+                    >
+                        <BellRing className="w-5 h-5" />
+                    </Button>
 
                     <Button
                         variant="secondary"
