@@ -13,8 +13,10 @@ import {
   Users,
   ArrowUpRight,
   Clock,
+  Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InstallPWA } from "@/components/InstallPWA";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -193,9 +195,10 @@ export default function AdminDashboard() {
       <div>
         <h1 className="text-3xl font-black tracking-tight">Visão Geral</h1>
         <p className="text-muted-foreground font-medium">
-
         </p>
       </div>
+
+      <InstallPWA variant="inline" />
 
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 w-full">
         {statsCards.map((stat, i) => (

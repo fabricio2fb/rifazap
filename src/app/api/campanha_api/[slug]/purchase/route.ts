@@ -34,7 +34,7 @@ export async function POST(
     // 2. Buscar campanha
     const { data: raffle } = await supabase
         .from('raffles')
-        .select('id, ticket_price, settings')
+        .select('id, title, ticket_price, settings, organizer_id')
         .eq('slug', slug)
         .single();
 
@@ -117,6 +117,25 @@ export async function POST(
 
     if (reservationError) {
         return NextResponse.json({ error: 'Erro ao reservar números' }, { status: 500 });
+    }
+
+    // Trigger Push Notification para o Organizador
+    try {
+        const host = request.headers.get('host');
+        const protocol = host?.includes('localhost') ? 'http' : 'https';
+        const notifyUrl = `${protocol}://${host}/api/notify`;
+        
+        await fetch(notifyUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                user_id: raffle.organizer_id,
+                title: 'Nova Reserva! 🎟️',
+                body: `O número [${numbers.join(', ')}] foi reservado na sua campanha '${raffle.title}'!`,
+                url: `/admin/campanhas`
+            })
+        });
+    } catch (pushError) {
+        console.error('Error triggering reservation push notification:', pushError);
     }
 
     return NextResponse.json({

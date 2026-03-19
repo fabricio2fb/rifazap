@@ -7,6 +7,7 @@ import { Zap, LayoutDashboard, Package, Wallet, LogOut, PlusCircle, Moon, Sun, M
 import { cn } from "@/lib/utils";
 import { CreateRaffleDialog } from "@/components/admin/CreateRaffleDialog";
 import { createClient } from "@/lib/supabase/client";
+import { InstallPWA } from "@/components/InstallPWA";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -95,7 +96,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     ))}
                 </nav>
 
-                <div className="p-4 border-t mt-auto space-y-2 border-slate-200 dark:border-zinc-800">
+                <div className="p-4 border-t mt-auto space-y-1 border-slate-200 dark:border-zinc-800">
+                    <InstallPWA variant="sidebar" />
                     <button
                         onClick={toggleTheme}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-zinc-800 dark:hover:text-slate-100 transition-colors"

@@ -3,11 +3,13 @@
 import {
     Dialog,
     DialogContent,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, DollarSign, Ticket, Calendar } from "lucide-react";
+import { Users, DollarSign, Ticket, Calendar, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface RaffleSummaryDialogProps {
     raffle: any;
@@ -42,6 +44,31 @@ export function RaffleSummaryDialog({
         0
     );
 
+    const handleDownloadCSV = () => {
+        const headers = ["Número reservado", "Nome do comprador", "Telefone", "Status do pagamento", "Data da reserva"];
+        const rows = raffleSales.map(s => [
+            `"${(s.selectedNumbers || []).join(', ')}"`,
+            `"${s.name}"`,
+            `"${s.whatsapp}"`,
+            `"${s.status === 'paid' ? 'Pago' : s.status === 'pending' ? 'Pendente' : s.status}"`,
+            `"${new Date(s.createdAt).toLocaleString('pt-BR')}"`
+        ]);
+
+        const csvContent = [
+            headers.join(';'),
+            ...rows.map(r => r.join(';'))
+        ].join('\n');
+
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `relatorio-${raffle.slug}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[600px]">
@@ -58,12 +85,20 @@ export function RaffleSummaryDialog({
                                 className="w-16 h-16 rounded-md object-cover"
                             />
                         )}
-                        <div>
+                        <div className="flex-1">
                             <h3 className="font-bold text-lg">{raffle.title}</h3>
                             <p className="text-sm text-muted-foreground">
                                 Status: {raffle.status === 'active' ? 'Ativa' : 'Encerrada'}
                             </p>
                         </div>
+                        <Button
+                            onClick={handleDownloadCSV}
+                            variant="outline"
+                            className="bg-[#F5C518] border-none text-navy hover:bg-[#d4a914] font-bold gap-2"
+                        >
+                            <Download className="w-4 h-4" />
+                            Baixar relatório
+                        </Button>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
