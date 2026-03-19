@@ -17,11 +17,16 @@ export function InstallPWA({ variant = 'floating', className }: InstallPWAProps)
   const [showIOSHint, setShowIOSHint] = useState(false);
 
   useEffect(() => {
-    // Detect iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    // Better iOS detection
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOSDevice = /iphone|ipad|ipod/.test(userAgent) || 
+                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPad Pro
     setIsIOS(isIOSDevice);
 
+    console.log('PWA: Initializing...', { isIOSDevice, standalone: window.matchMedia('(display-mode: standalone)').matches });
+
     const handler = (e: any) => {
+      console.log('PWA: beforeinstallprompt event fired');
       e.preventDefault();
       setDeferredPrompt(e);
       setIsVisible(true);
@@ -32,8 +37,6 @@ export function InstallPWA({ variant = 'floating', className }: InstallPWAProps)
     if (typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches) {
       setIsVisible(false);
     } else if (variant === 'inline' || variant === 'sidebar') {
-      // In these variants, we might want to show the button even before the prompt event
-      // Especially on iOS where the event never fires
       setIsVisible(true);
     }
 
@@ -43,9 +46,12 @@ export function InstallPWA({ variant = 'floating', className }: InstallPWAProps)
   }, [variant]);
 
   const handleInstallClick = async () => {
+    console.log('PWA: Install clicked', { hasPrompt: !!deferredPrompt, isIOS, isSecure: window.isSecureContext });
+
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      console.log('PWA: Install outcome:', outcome);
       if (outcome === 'accepted') {
         setIsVisible(false);
       }
@@ -53,7 +59,15 @@ export function InstallPWA({ variant = 'floating', className }: InstallPWAProps)
     } else if (isIOS) {
       setShowIOSHint(true);
     } else {
-      alert('Para instalar, use o menu do seu navegador e selecione "Instalar aplicativo" ou "Adicionar à tela de início".');
+      let msg = 'Não foi possível acionar a instalação automática.';
+      
+      if (!window.isSecureContext) {
+        msg += '\n\nMotivo: O site não está em uma conexão segura (HTTPS). PWAs exigem HTTPS para instalação.';
+      } else {
+        msg += '\n\nPara instalar manualmente:\n1. Use o menu do seu navegador (três pontos ou seta);\n2. Selecione "Instalar aplicativo" ou "Adicionar à tela de início".';
+      }
+      
+      alert(msg);
     }
   };
 

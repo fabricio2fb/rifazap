@@ -8,8 +8,9 @@ import SalesList from "@/components/admin/SalesList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Bell, Volume2, RefreshCw } from "lucide-react";
+import { Search, Bell, Volume2, RefreshCw, BellRing } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 export default function VendasPage() {
     const [sales, setSales] = useState<any[]>([]);
@@ -26,6 +27,7 @@ export default function VendasPage() {
     const router = useRouter();
     const supabase = createClient();
     const { toast } = useToast();
+    const { isSubscribed, subscribeUser } = usePushNotifications();
 
     useEffect(() => {
         setIsMounted(true);
@@ -90,11 +92,12 @@ export default function VendasPage() {
     };
 
     const requestNotificationPermission = async () => {
-        const permission = await Notification.requestPermission();
-        setNotifPermission(permission);
-        if (permission === "granted") {
-            toast({ title: "Notificações Ativadas!", description: "Você receberá alertas de novas vendas." });
-            playNotificationSound(); // Teste inicial
+        const sub = await subscribeUser();
+        if (sub) {
+            toast({ title: "Notificações Ativadas!", description: "Você agora receberá alertas reais de novas vendas, mesmo com o site fechado." });
+            playNotificationSound();
+        } else {
+            toast({ variant: "destructive", title: "Erro", description: "Não foi possível ativar as notificações persistentes." });
         }
     };
 
@@ -273,15 +276,15 @@ export default function VendasPage() {
                     {/* Status das Notificações */}
                     <div className={cn(
                         "flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold uppercase transition-all shadow-sm border",
-                        notifPermission === "granted"
+                        isSubscribed
                             ? "bg-blue-50 text-blue-700 border-blue-200"
                             : "bg-rose-50 text-rose-700 border-rose-200"
                     )}>
-                        <Bell className={cn("w-4 h-4", notifPermission === "granted" && "fill-current")} />
-                        {notifPermission === "granted" ? "Sino Ligado" : "Sino Desligado"}
+                        <Bell className={cn("w-4 h-4", isSubscribed && "fill-current")} />
+                        {isSubscribed ? "Notificações Ativas" : "Sino Desligado"}
                     </div>
 
-                    {notifPermission !== "granted" && (
+                    {!isSubscribed && (
                         <Button
                             variant="default"
                             size="default"

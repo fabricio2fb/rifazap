@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InstallPWA } from "@/components/InstallPWA";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -35,6 +36,7 @@ export default function AdminDashboard() {
 
   const router = useRouter();
   const supabase = createClient();
+  const { toast } = useToast();
 
   useEffect(() => {
     const loadData = async () => {
