@@ -55,7 +55,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Solo cache para documentos o estáticos si se desea, por ahora paso normal con fallback
+  // Ignorar requisições que não sejam http ou https (ex: chrome-extension)
+  if (!event.request.url.startsWith('http')) return;
+
   event.respondWith(
     caches.match(event.request).then((response) => {
       return response || fetch(event.request);

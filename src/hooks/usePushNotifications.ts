@@ -36,11 +36,11 @@ export function usePushNotifications() {
 
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Armazenar subscrição
-      const { error } = await supabase.from('push_subscriptions').upsert({
+      // Armazenar subscrição (usando insert simples para evitar erro de constraint)
+      const { error } = await supabase.from('push_subscriptions').insert({
         user_id: user?.id || null,
         subscription: JSON.parse(JSON.stringify(sub))
-      }, { onConflict: 'subscription' }); // Using subscription content as conflict target if possible, or just insert
+      });
 
       if (error) {
         console.error('Supabase error saving subscription:', error);
