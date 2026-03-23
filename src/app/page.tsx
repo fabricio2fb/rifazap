@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/accordion";
 import Image from "next/image";
 import Script from "next/script";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const T = {
@@ -66,16 +66,18 @@ export default function Home() {
   const [showNotif, setShowNotif] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-
+  
   // Redireciona se encontrar um código de autenticação (OAuth Relay)
   useEffect(() => {
-    const code = searchParams.get("code");
-    if (code) {
-      console.log("[Auth Relay] Código detectado na Home, redirecionando para callback...");
-      router.push(`/auth/callback?${searchParams.toString()}`);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (code) {
+        console.log("[Auth Relay] Código detectado na Home, redirecionando para callback...");
+        router.push(`/auth/callback?${params.toString()}`);
+      }
     }
-  }, [searchParams, router]);
+  }, [router]);
 
   const editorColors = useMemo(
     () => ["#F5C800", "#0A0A08", "#2D9E6B", "#3b82f6", "#ef4444", "#a855f7", "#ec4899", "#06b6d4", "#D4A800"],
